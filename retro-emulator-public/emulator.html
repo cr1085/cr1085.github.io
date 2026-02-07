@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Retro Emulator</title>
+  <style>
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      background: black;
+      overflow: hidden;
+    }
+    #game {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div id="game"></div>
+
+  <!-- Loader LOCAL -->
+  <script src="./emulatorjs/loader.js"></script>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+
+    window.EJS_player = "#game";
+    window.EJS_core = params.get("system"); // gb | nes
+    window.EJS_gameUrl = params.get("rom");
+    window.EJS_pathtodata = "./emulatorjs/";
+    window.EJS_startOnLoaded = true;
+  </script>
+</body>
+</html>
