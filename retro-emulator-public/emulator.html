@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Retro Emulator</title>
   <style>
     html, body {
@@ -18,19 +17,20 @@
     }
   </style>
 </head>
+
 <body>
   <div id="game"></div>
 
-  <!-- Loader LOCAL -->
-  <script src="./emulatorjs/loader.js"></script>
+  <!-- loader desde CDN OFICIAL -->
+  <script src="https://cdn.emulatorjs.org/stable/data/loader.js"></script>
 
   <script>
     const params = new URLSearchParams(window.location.search);
 
     window.EJS_player = "#game";
-    window.EJS_core = params.get("system"); // gb | nes
-    window.EJS_gameUrl = params.get("rom");
-    window.EJS_pathtodata = "./emulatorjs/";
+    window.EJS_core = params.get("system"); // nes | gb
+    window.EJS_gameUrl = params.get("rom"); // URL ABSOLUTA
+    window.EJS_pathtodata = "https://cdn.emulatorjs.org/stable/data/";
     window.EJS_startOnLoaded = true;
   </script>
 </body>
