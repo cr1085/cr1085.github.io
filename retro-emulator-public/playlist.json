@@ -17,6 +17,15 @@
     }
     
   ],
+  "gbc": [
+    {
+      "id": "Froggy_Kong_jam",
+      "title": "Froggy_Kong_jam",
+      "file": "roms/gbc/Froggy_Kong_jam.gbc"
+    }
+    
+    
+  ],
   "nes": [
     {
       "id": "example",
