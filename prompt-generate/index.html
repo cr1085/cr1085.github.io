@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+
+<!-- ✅ Viewport obligatorio -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Generador de Prompts Inteligentes</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f6f8;
+  padding: 20px;
+  max-width: 900px;
+  margin: auto;
+}
+h1 {
+  text-align: center;
+}
+label {
+  font-weight: bold;
+  display: block;
+  margin-top: 15px;
+}
+input, textarea, select, button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  font-size: 14px;
+}
+button {
+  margin-top: 15px;
+  cursor: pointer;
+}
+.output {
+  height: 260px;
+}
+.badge {
+  margin-top: 15px;
+  font-size: 18px;
+  font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🧠 Generador de Prompts Inteligentes</h1>
+<p>Completa el formulario y genera un prompt listo para usar en cualquier IA.</p>
+
+<label for="rol">Rol que necesita la IA</label>
+<input 
+  id="rol" 
+  type="text"
+  title="Rol que debe asumir la IA"
+  placeholder="Ej: creador de contenido, profesor, asesor"
+>
+
+<label for="objetivo">Qué quieres lograr</label>
+<input 
+  id="objetivo" 
+  type="text"
+  title="Objetivo principal del prompt"
+  placeholder="Ej: crear un guion para un video corto"
+>
+
+<label for="publico">Público objetivo</label>
+<input 
+  id="publico" 
+  type="text"
+  title="A quién va dirigido el resultado"
+  placeholder="Ej: estudiantes, emprendedores, clientes"
+>
+
+<label for="contexto">Contexto o problema</label>
+<textarea 
+  id="contexto"
+  title="Describe la situación o necesidad"
+  placeholder="Ej: necesito explicar un tema complejo de forma sencilla"
+></textarea>
+
+<label for="tono">Tono del resultado</label>
+<select id="tono" title="Selecciona el tono deseado">
+  <option value="">Selecciona una opción</option>
+  <option>Simple</option>
+  <option>Creativo</option>
+  <option>Profesional</option>
+  <option>Cercano</option>
+</select>
+
+<label for="lenguaje">Tipo de lenguaje</label>
+<select id="lenguaje" title="Nivel de complejidad del lenguaje">
+  <option value="">Selecciona una opción</option>
+  <option>Fácil y sin tecnicismos</option>
+  <option>Claro y directo</option>
+</select>
+
+<label for="extension">Extensión del resultado</label>
+<select id="extension" title="Longitud del contenido">
+  <option value="">Selecciona una opción</option>
+  <option>Corto</option>
+  <option>Medio</option>
+  <option>Largo</option>
+</select>
+
+<label for="formato">Formato de respuesta</label>
+<select id="formato" title="Cómo quieres la respuesta">
+  <option value="">Selecciona una opción</option>
+  <option>Lista</option>
+  <option>Pasos</option>
+  <option>Tabla</option>
+  <option>Guion</option>
+  <option>Texto</option>
+</select>
+
+<label for="evitar">Qué debe evitar la IA</label>
+<input 
+  id="evitar"
+  type="text"
+  title="Elementos que no quieres en la respuesta"
+  placeholder="Ej: tecnicismos, explicaciones largas"
+>
+
+<label for="incluir">Qué debe incluir (opcional)</label>
+<input 
+  id="incluir"
+  type="text"
+  title="Elementos extra deseados"
+  placeholder="Ej: ejemplos, pasos claros, llamada a la acción"
+>
+
+<button type="button" onclick="generarPrompt()">🚀 Generar Prompt</button>
+<button type="button" onclick="copiarPrompt()">📋 Copiar Prompt</button>
+<button type="button" onclick="descargarPrompt()">⬇️ Descargar .txt</button>
+
+<div class="badge" id="eficiencia"></div>
+
+<label for="resultado">Prompt generado</label>
+<textarea 
+  id="resultado" 
+  class="output"
+  title="Prompt final listo para usar"
+  placeholder="Aquí aparecerá el prompt generado"
+></textarea>
+
+<script>
+function generarPrompt() {
+  const prompt = `
+Actúa como ${rol.value}.
+
+Ayúdame a ${objetivo.value}.
+
+Contexto:
+Esto es para ${publico.value}.
+La situación es: ${contexto.value}.
+
+Quiero que el resultado sea:
+- Tono: ${tono.value}
+- Lenguaje: ${lenguaje.value}
+- Extensión: ${extension.value}
+
+Formato de respuesta:
+- ${formato.value}
+
+Extra importante:
+- Evita ${evitar.value}
+- Incluye ${incluir.value || "lo necesario"}
+`.trim();
+
+  resultado.value = prompt;
+  calcularEficiencia();
+}
+
+function copiarPrompt() {
+  navigator.clipboard.writeText(resultado.value);
+  alert("✅ Prompt copiado al portapapeles");
+}
+
+function descargarPrompt() {
+  const blob = new Blob([resultado.value], { type: "text/plain" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "prompt.txt";
+  link.click();
+}
+
+function calcularEficiencia() {
+  let score = 0;
+  if (rol.value) score += 15;
+  if (objetivo.value) score += 20;
+  if (publico.value && contexto.value) score += 20;
+  if (tono.value && lenguaje.value) score += 15;
+  if (formato.value) score += 15;
+  if (evitar.value || incluir.value) score += 15;
+
+  eficiencia.textContent = `📊 Eficiencia del prompt: ${score}%`;
+}
+</script>
+
+</body>
+</html>
