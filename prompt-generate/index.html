@@ -86,6 +86,12 @@ button {
   color: #555;
 }
 
+.help {
+  font-size: 13px;
+  color: #666;
+  margin-top: 3px;
+}
+
 </style>
 </head>
 
@@ -106,7 +112,9 @@ Si quieres más recursos, sígueme y forma parte de la comunidad.
   type="text"
   title="Rol que debe asumir la IA"
   placeholder="Ej: creador de contenido, profesor, asesor"
->
+><div class="help">
+  Define quién debe “ser” la IA. Entre más específico, mejor resultado.
+</div>
 
 <label for="objetivo">Qué quieres lograr</label>
 <input 
@@ -115,6 +123,10 @@ Si quieres más recursos, sígueme y forma parte de la comunidad.
   title="Objetivo principal del prompt"
   placeholder="Ej: crear un guion para un video corto"
 >
+<div class="help">
+  Escribe qué quieres lograr exactamente. Evita frases vagas.
+</div>
+
 
 <label for="publico">Público objetivo</label>
 <input 
@@ -123,6 +135,9 @@ Si quieres más recursos, sígueme y forma parte de la comunidad.
   title="A quién va dirigido el resultado"
   placeholder="Ej: estudiantes, emprendedores, clientes"
 >
+<div class="help">
+  Indica a quién va dirigido el resultado (edad, profesión, tipo de persona).
+</div>
 
 <label for="contexto">Contexto o problema</label>
 <textarea 
@@ -130,6 +145,9 @@ Si quieres más recursos, sígueme y forma parte de la comunidad.
   title="Describe la situación o necesidad"
   placeholder="Ej: necesito explicar un tema complejo de forma sencilla"
 ></textarea>
+<div class="help">
+  Explica la situación o problema para evitar respuestas genéricas.
+</div>
 
 <label for="tono">Tono del resultado</label>
 <select id="tono" title="Selecciona el tono deseado">
@@ -139,6 +157,9 @@ Si quieres más recursos, sígueme y forma parte de la comunidad.
   <option>Profesional</option>
   <option>Cercano</option>
 </select>
+<div class="help">
+  Explica la situación o problema para evitar respuestas genéricas.
+</div>
 
 <label for="lenguaje">Tipo de lenguaje</label>
 <select id="lenguaje" title="Nivel de complejidad del lenguaje">
@@ -146,6 +167,9 @@ Si quieres más recursos, sígueme y forma parte de la comunidad.
   <option>Fácil y sin tecnicismos</option>
   <option>Claro y directo</option>
 </select>
+<div class="help">
+  Selecciona el nivel de complejidad del texto.
+</div>
 
 <label for="extension">Extensión del resultado</label>
 <select id="extension" title="Longitud del contenido">
@@ -154,6 +178,9 @@ Si quieres más recursos, sígueme y forma parte de la comunidad.
   <option>Medio</option>
   <option>Largo</option>
 </select>
+<div class="help">
+  Controla qué tan largo será el resultado.
+</div>
 
 <label for="formato">Formato de respuesta</label>
 <select id="formato" title="Cómo quieres la respuesta">
@@ -164,6 +191,9 @@ Si quieres más recursos, sígueme y forma parte de la comunidad.
   <option>Guion</option>
   <option>Texto</option>
 </select>
+<div class="help">
+  Elige cómo quieres recibir la respuesta: lista, tabla, pasos, etc.
+</div>
 
 <label for="evitar">Qué debe evitar la IA</label>
 <input 
@@ -172,6 +202,9 @@ Si quieres más recursos, sígueme y forma parte de la comunidad.
   title="Elementos que no quieres en la respuesta"
   placeholder="Ej: tecnicismos, explicaciones largas"
 >
+<div class="help">
+  Indica qué cosas NO quieres que aparezcan en la respuesta.
+</div>
 
 <label for="incluir">Qué debe incluir (opcional)</label>
 <input 
@@ -180,6 +213,10 @@ Si quieres más recursos, sígueme y forma parte de la comunidad.
   title="Elementos extra deseados"
   placeholder="Ej: ejemplos, pasos claros, llamada a la acción"
 >
+<div class="help">
+  Añade elementos específicos que quieres que estén presentes.
+</div>
+
 
 <button type="button" onclick="generarPrompt()">🚀 Generar Prompt</button>
 <button type="button" onclick="copiarPrompt()">📋 Copiar Prompt</button>
