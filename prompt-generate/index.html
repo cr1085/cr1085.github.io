@@ -92,6 +92,13 @@ button {
   margin-top: 3px;
 }
 
+.tooltip {
+  cursor: pointer;
+  color: #0073e6;
+  font-weight: bold;
+}
+
+
 </style>
 </head>
 
@@ -102,11 +109,18 @@ button {
 Esta herramienta fue creada para ayudar a estudiantes y creadores a dominar el uso estratégico de la IA.
 Si quieres más recursos, sígueme y forma parte de la comunidad.
 </p>
+
+<div class="help" style="background:#fff3cd; padding:10px; border-radius:6px;">
+  💡 Consejo: Entre más específico seas en cada campo, mejor será el resultado generado.
+</div>
+
 <p>Completa el formulario y genera un prompt listo para usar en cualquier IA.</p>
 
 
 
-<label for="rol">Rol que necesita la IA</label>
+<label for="rol">Rol que necesita la IA
+  <span class="tooltip" title="Define la identidad profesional que debe asumir la IA.">?</span>
+</label>
 <input 
   id="rol" 
   type="text"
@@ -116,7 +130,9 @@ Si quieres más recursos, sígueme y forma parte de la comunidad.
   Define quién debe “ser” la IA. Entre más específico, mejor resultado.
 </div>
 
-<label for="objetivo">Qué quieres lograr</label>
+<label for="objetivo">Qué quieres lograr
+   <span class="tooltip" title="Define el objetivo principal del prompt.">?</span>
+</label>
 <input 
   id="objetivo" 
   type="text"
@@ -128,7 +144,9 @@ Si quieres más recursos, sígueme y forma parte de la comunidad.
 </div>
 
 
-<label for="publico">Público objetivo</label>
+<label for="publico">Público objetivo
+   <span class="tooltip" title="Define a quién va dirigido el resultado.">?</span>
+</label>
 <input 
   id="publico" 
   type="text"
@@ -139,7 +157,9 @@ Si quieres más recursos, sígueme y forma parte de la comunidad.
   Indica a quién va dirigido el resultado (edad, profesión, tipo de persona).
 </div>
 
-<label for="contexto">Contexto o problema</label>
+<label for="contexto">Contexto o problema
+   <span class="tooltip" title="Define la situación o necesidad que debe abordar la IA.">?</span>
+</label>
 <textarea 
   id="contexto"
   title="Describe la situación o necesidad"
@@ -149,7 +169,9 @@ Si quieres más recursos, sígueme y forma parte de la comunidad.
   Explica la situación o problema para evitar respuestas genéricas.
 </div>
 
-<label for="tono">Tono del resultado</label>
+<label for="tono">Tono del resultado
+   <span class="tooltip" title="Define el tono que debe tener la respuesta.">?</span>
+</label>
 <select id="tono" title="Selecciona el tono deseado">
   <option value="">Selecciona una opción</option>
   <option>Simple</option>
@@ -161,7 +183,9 @@ Si quieres más recursos, sígueme y forma parte de la comunidad.
   Explica la situación o problema para evitar respuestas genéricas.
 </div>
 
-<label for="lenguaje">Tipo de lenguaje</label>
+<label for="lenguaje">Tipo de lenguaje
+   <span class="tooltip" title="Define el tipo de lenguaje que debe asumir la IA.">?</span>
+</label>
 <select id="lenguaje" title="Nivel de complejidad del lenguaje">
   <option value="">Selecciona una opción</option>
   <option>Fácil y sin tecnicismos</option>
@@ -171,7 +195,9 @@ Si quieres más recursos, sígueme y forma parte de la comunidad.
   Selecciona el nivel de complejidad del texto.
 </div>
 
-<label for="extension">Extensión del resultado</label>
+<label for="extension">Extensión del resultado
+   <span class="tooltip" title="Define la extensión del resultado deseado.">?</span>
+</label>
 <select id="extension" title="Longitud del contenido">
   <option value="">Selecciona una opción</option>
   <option>Corto</option>
@@ -182,7 +208,9 @@ Si quieres más recursos, sígueme y forma parte de la comunidad.
   Controla qué tan largo será el resultado.
 </div>
 
-<label for="formato">Formato de respuesta</label>
+<label for="formato">Formato de respuesta
+   <span class="tooltip" title="Define el formato de la respuesta deseado.">?</span>
+</label>
 <select id="formato" title="Cómo quieres la respuesta">
   <option value="">Selecciona una opción</option>
   <option>Lista</option>
@@ -195,7 +223,9 @@ Si quieres más recursos, sígueme y forma parte de la comunidad.
   Elige cómo quieres recibir la respuesta: lista, tabla, pasos, etc.
 </div>
 
-<label for="evitar">Qué debe evitar la IA</label>
+<label for="evitar">Qué debe evitar la IA
+   <span class="tooltip" title="Define elementos que no debe incluir la IA.">?</span>
+</label>
 <input 
   id="evitar"
   type="text"
@@ -206,7 +236,9 @@ Si quieres más recursos, sígueme y forma parte de la comunidad.
   Indica qué cosas NO quieres que aparezcan en la respuesta.
 </div>
 
-<label for="incluir">Qué debe incluir (opcional)</label>
+<label for="incluir">Qué debe incluir (opcional)
+   <span class="tooltip" title="Opcional define elementos de ejemplos o pasos que debe asumir la IA.">?</span>
+</label>
 <input 
   id="incluir"
   type="text"
