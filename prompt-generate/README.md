@@ -108,7 +108,7 @@ Compatible con modelos como:
 
 ---
 
-## 🚀 Filosofía del proyecto
+##  Filosofía del proyecto
 
 > La IA no es poderosa por sí sola.  
 > La claridad en las instrucciones lo es todo.
