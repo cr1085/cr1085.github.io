@@ -42,13 +42,63 @@ button {
   font-size: 18px;
   font-weight: bold;
 }
+
+
+.comunidad {
+  text-align: center;
+  margin-top: 20px;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+}
+
+.links a {
+  display: inline-block;
+  margin: 10px 15px;
+  text-decoration: none;
+  font-weight: bold;
+  color: #0073e6;
+}
+
+.links a:hover {
+  text-decoration: underline;
+}
+
+.btn-cafe {
+  display: inline-block;
+  margin-top: 15px;
+  padding: 12px 20px;
+  background: #ff813f;
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 6px;
+}
+
+.btn-cafe:hover {
+  background: #e76f2e;
+}
+
+.mensaje {
+  margin-top: 15px;
+  font-size: 14px;
+  color: #555;
+}
+
 </style>
 </head>
 
 <body>
 
 <h1>🧠 Generador de Prompts Inteligentes</h1>
+<p>
+Esta herramienta fue creada para ayudar a estudiantes y creadores a dominar el uso estratégico de la IA.
+Si quieres más recursos, sígueme y forma parte de la comunidad.
+</p>
 <p>Completa el formulario y genera un prompt listo para usar en cualquier IA.</p>
+
+
 
 <label for="rol">Rol que necesita la IA</label>
 <input 
@@ -144,6 +194,31 @@ button {
   title="Prompt final listo para usar"
   placeholder="Aquí aparecerá el prompt generado"
 ></textarea>
+
+<hr style="margin:40px 0;">
+
+<section class="comunidad">
+  <h2>🚀 Únete a la Comunidad</h2>
+  <p>Si esta herramienta te ayuda, puedes apoyarla, seguirme y ser parte del crecimiento.</p>
+
+  <div class="links">
+    <a href="https://github.com/TU_USUARIO" target="_blank" rel="noopener noreferrer">💻 GitHub</a>
+    <a href="https://www.instagram.com/TU_USUARIO" target="_blank" rel="noopener noreferrer">📸 Instagram</a>
+    <a href="https://www.linkedin.com/in/TU_USUARIO" target="_blank" rel="noopener noreferrer">💼 LinkedIn</a>
+    <a href="https://twitter.com/TU_USUARIO" target="_blank" rel="noopener noreferrer">🐦 X / Twitter</a>
+  </div>
+
+  <div class="donar">
+    <a href="https://buymeacoffee.com/TU_USUARIO" target="_blank" rel="noopener noreferrer" class="btn-cafe">
+      ☕ Invítame un café
+    </a>
+  </div>
+
+  <p class="mensaje">
+    Tu apoyo ayuda a mantener y mejorar esta herramienta gratuita 🙌
+  </p>
+</section>
+
 
 <script>
 function generarPrompt() {
