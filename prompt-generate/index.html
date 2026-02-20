@@ -123,28 +123,29 @@
     }
 
     .plantillas {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 20px;
-}
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
 
-.plantillas button {
-  flex: 1 1 auto;
-  width: auto; /* Esto rompe el width:100% global */
-  padding: 8px 15px;
-  font-size: 14px;
-  border-radius: 6px;
-  border: none;
-  background: #0073e6;
-  color: white;
-  transition: 0.2s ease;
-}
+    .plantillas button {
+      flex: 1 1 auto;
+      width: auto;
+      /* Esto rompe el width:100% global */
+      padding: 8px 15px;
+      font-size: 14px;
+      border-radius: 6px;
+      border: none;
+      background: #0073e6;
+      color: white;
+      transition: 0.2s ease;
+    }
 
-.plantillas button:hover {
-  background: #005bb5;
-  transform: translateY(-2px);
-}
+    .plantillas button:hover {
+      background: #005bb5;
+      transform: translateY(-2px);
+    }
   </style>
 </head>
 
@@ -161,16 +162,16 @@
     💡 Consejo: Entre más específico seas en cada campo, mejor será el resultado generado.
   </div>
 
-  <h3>🎯 Plantillas Rápidas</h3>
+  <h3>Plantillas Rápidas</h3>
 
-<div class="plantillas">
-  <button onclick="plantillaMarketing()">📈 Marketing</button>
-  <button onclick="plantillaEmprendimiento()">🚀 Emprendimiento</button>
-  <button onclick="plantillaMarca()">💼 Marca Personal</button>
-  <button onclick="plantillaEducacion()">🎓 Educación</button>
-  <button onclick="plantillaMonetizacion()">💰 Monetización</button>
-  <button onclick="plantillaProductividad()">🧠 Productividad</button>
-</div>
+  <div class="plantillas">
+    <button onclick="plantillaMarketing()"> Marketing</button>
+    <button onclick="plantillaEmprendimiento()"> Emprendimiento</button>
+    <button onclick="plantillaMarca()"> Marca Personal</button>
+    <button onclick="plantillaEducacion()"> Educación</button>
+    <button onclick="plantillaMonetizacion()">Monetización</button>
+    <button onclick="plantillaProductividad()">Productividad</button>
+  </div>
 
   <p>Construye prompts estratégicos, aprende y forma parte del laboratorio.</p>
 
@@ -291,9 +292,9 @@
   </div>
 
 
-  <button type="button" onclick="generarPrompt()">🚀 Generar Prompt</button>
-  <button type="button" onclick="copiarPrompt()">📋 Copiar Prompt</button>
-  <button type="button" onclick="descargarPrompt()">⬇️ Descargar .txt</button>
+  <button type="button" onclick="generarPrompt()"> Generar Prompt</button>
+  <button type="button" onclick="copiarPrompt()">Copiar Prompt</button>
+  <button type="button" onclick="descargarPrompt()">Descargar .txt</button>
 
   <div class="badge" id="eficiencia"></div>
 
@@ -306,12 +307,13 @@
   <hr style="margin:40px 0;">
 
   <section style="margin-top:40px;text-align:center;">
-  <h2>📩 Únete al Laboratorio</h2>
-  <p>Recibe retos, plantillas y recursos exclusivos.</p>
-  <a href="https://whatsapp.com/channel/0029VbAyIhDAjPXUVJr5LE3z" target="_blank" rel="noopener noreferrer" class="btn-cafe">
-    Suscribirme
-  </a>
-</section>
+    <h2>📩 Únete al Laboratorio</h2>
+    <p>Recibe retos, plantillas y recursos exclusivos.</p>
+    <a href="https://whatsapp.com/channel/0029VbAyIhDAjPXUVJr5LE3z" target="_blank" rel="noopener noreferrer"
+      class="btn-cafe">
+      Suscribirme
+    </a>
+  </section>
 
   <section class="comunidad">
     <h2>🚀 Únete a la Comunidad</h2>
@@ -428,126 +430,126 @@ Extra importante:
       document.body.classList.toggle("dark");
     }
 
-    function plantillaMarketing(){
-  rol.value = "estratega experto en marketing digital";
-  objetivo.value = "crear una estrategia de contenido que genere clientes";
-  publico.value = "emprendedores y pequeñas empresas";
-  contexto.value = "quiero aumentar ventas usando redes sociales";
-  tono.value = "Profesional";
-  lenguaje.value = "Claro y directo";
-  extension.value = "Medio";
-  formato.value = "Pasos";
-}
+    function plantillaMarketing() {
+      rol.value = "estratega experto en marketing digital";
+      objetivo.value = "crear una estrategia de contenido que genere clientes";
+      publico.value = "emprendedores y pequeñas empresas";
+      contexto.value = "quiero aumentar ventas usando redes sociales";
+      tono.value = "Profesional";
+      lenguaje.value = "Claro y directo";
+      extension.value = "Medio";
+      formato.value = "Pasos";
+    }
 
-function plantillaEmprendimiento(){
-  rol.value = "consultor experto en emprendimiento y modelos de negocio";
-  objetivo.value = "diseñar una idea de negocio rentable";
-  publico.value = "personas que quieren iniciar un emprendimiento";
-  contexto.value = "busco oportunidades digitales con bajo presupuesto";
-  tono.value = "Creativo";
-  lenguaje.value = "Claro y directo";
-  extension.value = "Medio";
-  formato.value = "Lista";
-}
+    function plantillaEmprendimiento() {
+      rol.value = "consultor experto en emprendimiento y modelos de negocio";
+      objetivo.value = "diseñar una idea de negocio rentable";
+      publico.value = "personas que quieren iniciar un emprendimiento";
+      contexto.value = "busco oportunidades digitales con bajo presupuesto";
+      tono.value = "Creativo";
+      lenguaje.value = "Claro y directo";
+      extension.value = "Medio";
+      formato.value = "Lista";
+    }
 
-function plantillaMarca(){
-  rol.value = "estratega en marca personal y posicionamiento profesional";
-  objetivo.value = "optimizar mi perfil profesional en redes sociales";
-  publico.value = "reclutadores y clientes potenciales";
-  contexto.value = "quiero mejorar mi presencia digital";
-  tono.value = "Profesional";
-  lenguaje.value = "Claro y directo";
-  extension.value = "Corto";
-  formato.value = "Pasos";
-}
+    function plantillaMarca() {
+      rol.value = "estratega en marca personal y posicionamiento profesional";
+      objetivo.value = "optimizar mi perfil profesional en redes sociales";
+      publico.value = "reclutadores y clientes potenciales";
+      contexto.value = "quiero mejorar mi presencia digital";
+      tono.value = "Profesional";
+      lenguaje.value = "Claro y directo";
+      extension.value = "Corto";
+      formato.value = "Pasos";
+    }
 
-function plantillaEducacion(){
-  rol.value = "profesor experto en enseñanza práctica";
-  objetivo.value = "explicar un tema complejo de forma sencilla";
-  publico.value = "estudiantes principiantes";
-  contexto.value = "necesito simplificar un concepto técnico";
-  tono.value = "Simple";
-  lenguaje.value = "Fácil y sin tecnicismos";
-  extension.value = "Medio";
-  formato.value = "Lista";
-}
+    function plantillaEducacion() {
+      rol.value = "profesor experto en enseñanza práctica";
+      objetivo.value = "explicar un tema complejo de forma sencilla";
+      publico.value = "estudiantes principiantes";
+      contexto.value = "necesito simplificar un concepto técnico";
+      tono.value = "Simple";
+      lenguaje.value = "Fácil y sin tecnicismos";
+      extension.value = "Medio";
+      formato.value = "Lista";
+    }
 
-function plantillaMonetizacion(){
-  rol.value = "asesor experto en monetización digital";
-  objetivo.value = "identificar oportunidades reales para generar ingresos";
-  publico.value = "personas que quieren ganar dinero online";
-  contexto.value = "quiero usar inteligencia artificial para crear ingresos";
-  tono.value = "Profesional";
-  lenguaje.value = "Claro y directo";
-  extension.value = "Medio";
-  formato.value = "Pasos";
-}
+    function plantillaMonetizacion() {
+      rol.value = "asesor experto en monetización digital";
+      objetivo.value = "identificar oportunidades reales para generar ingresos";
+      publico.value = "personas que quieren ganar dinero online";
+      contexto.value = "quiero usar inteligencia artificial para crear ingresos";
+      tono.value = "Profesional";
+      lenguaje.value = "Claro y directo";
+      extension.value = "Medio";
+      formato.value = "Pasos";
+    }
 
-function plantillaMarketing(){
-  rol.value = "estratega experto en marketing digital";
-  objetivo.value = "crear una estrategia de contenido que genere clientes";
-  publico.value = "emprendedores y pequeñas empresas";
-  contexto.value = "quiero aumentar ventas usando redes sociales";
-  tono.value = "Profesional";
-  lenguaje.value = "Claro y directo";
-  extension.value = "Medio";
-  formato.value = "Pasos";
-}
+    function plantillaMarketing() {
+      rol.value = "estratega experto en marketing digital";
+      objetivo.value = "crear una estrategia de contenido que genere clientes";
+      publico.value = "emprendedores y pequeñas empresas";
+      contexto.value = "quiero aumentar ventas usando redes sociales";
+      tono.value = "Profesional";
+      lenguaje.value = "Claro y directo";
+      extension.value = "Medio";
+      formato.value = "Pasos";
+    }
 
-function plantillaEmprendimiento(){
-  rol.value = "consultor experto en emprendimiento y modelos de negocio";
-  objetivo.value = "diseñar una idea de negocio rentable";
-  publico.value = "personas que quieren iniciar un emprendimiento";
-  contexto.value = "busco oportunidades digitales con bajo presupuesto";
-  tono.value = "Creativo";
-  lenguaje.value = "Claro y directo";
-  extension.value = "Medio";
-  formato.value = "Lista";
-}
+    function plantillaEmprendimiento() {
+      rol.value = "consultor experto en emprendimiento y modelos de negocio";
+      objetivo.value = "diseñar una idea de negocio rentable";
+      publico.value = "personas que quieren iniciar un emprendimiento";
+      contexto.value = "busco oportunidades digitales con bajo presupuesto";
+      tono.value = "Creativo";
+      lenguaje.value = "Claro y directo";
+      extension.value = "Medio";
+      formato.value = "Lista";
+    }
 
-function plantillaMarca(){
-  rol.value = "estratega en marca personal y posicionamiento profesional";
-  objetivo.value = "optimizar mi perfil profesional en redes sociales";
-  publico.value = "reclutadores y clientes potenciales";
-  contexto.value = "quiero mejorar mi presencia digital";
-  tono.value = "Profesional";
-  lenguaje.value = "Claro y directo";
-  extension.value = "Corto";
-  formato.value = "Pasos";
-}
+    function plantillaMarca() {
+      rol.value = "estratega en marca personal y posicionamiento profesional";
+      objetivo.value = "optimizar mi perfil profesional en redes sociales";
+      publico.value = "reclutadores y clientes potenciales";
+      contexto.value = "quiero mejorar mi presencia digital";
+      tono.value = "Profesional";
+      lenguaje.value = "Claro y directo";
+      extension.value = "Corto";
+      formato.value = "Pasos";
+    }
 
-function plantillaEducacion(){
-  rol.value = "profesor experto en enseñanza práctica";
-  objetivo.value = "explicar un tema complejo de forma sencilla";
-  publico.value = "estudiantes principiantes";
-  contexto.value = "necesito simplificar un concepto técnico";
-  tono.value = "Simple";
-  lenguaje.value = "Fácil y sin tecnicismos";
-  extension.value = "Medio";
-  formato.value = "Lista";
-}
+    function plantillaEducacion() {
+      rol.value = "profesor experto en enseñanza práctica";
+      objetivo.value = "explicar un tema complejo de forma sencilla";
+      publico.value = "estudiantes principiantes";
+      contexto.value = "necesito simplificar un concepto técnico";
+      tono.value = "Simple";
+      lenguaje.value = "Fácil y sin tecnicismos";
+      extension.value = "Medio";
+      formato.value = "Lista";
+    }
 
-function plantillaMonetizacion(){
-  rol.value = "asesor experto en monetización digital";
-  objetivo.value = "identificar oportunidades reales para generar ingresos";
-  publico.value = "personas que quieren ganar dinero online";
-  contexto.value = "quiero usar inteligencia artificial para crear ingresos";
-  tono.value = "Profesional";
-  lenguaje.value = "Claro y directo";
-  extension.value = "Medio";
-  formato.value = "Pasos";
-}
+    function plantillaMonetizacion() {
+      rol.value = "asesor experto en monetización digital";
+      objetivo.value = "identificar oportunidades reales para generar ingresos";
+      publico.value = "personas que quieren ganar dinero online";
+      contexto.value = "quiero usar inteligencia artificial para crear ingresos";
+      tono.value = "Profesional";
+      lenguaje.value = "Claro y directo";
+      extension.value = "Medio";
+      formato.value = "Pasos";
+    }
 
-function plantillaProductividad(){
-  rol.value = "consultor experto en productividad y automatización";
-  objetivo.value = "crear un sistema eficiente para organizar mi trabajo";
-  publico.value = "profesionales ocupados";
-  contexto.value = "quiero optimizar tiempo usando IA";
-  tono.value = "Cercano";
-  lenguaje.value = "Claro y directo";
-  extension.value = "Corto";
-  formato.value = "Lista";
-}
+    function plantillaProductividad() {
+      rol.value = "consultor experto en productividad y automatización";
+      objetivo.value = "crear un sistema eficiente para organizar mi trabajo";
+      publico.value = "profesionales ocupados";
+      contexto.value = "quiero optimizar tiempo usando IA";
+      tono.value = "Cercano";
+      lenguaje.value = "Claro y directo";
+      extension.value = "Corto";
+      formato.value = "Lista";
+    }
   </script>
 
 </body>
