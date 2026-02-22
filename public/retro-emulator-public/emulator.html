@@ -18,58 +18,21 @@
   <div id="game" style="width:100%;height:100%"></div>
 
   <script>
-    const params = new urlsearchparams(window.location.search);
+    const params = new URLSearchParams(window.location.search);
     const system = params.get("system");
     const rom = params.get("rom");
 
     if (!system || !rom) {
-      document.body.innerhtml =
-        "<h2 style='color:white'>no rom selected</h2>";
-      throw new error("missing params");
+      document.body.innerHTML =
+        "<h2 style='color:white'>NO ROM SELECTED</h2>";
+      throw new Error("Missing params");
     }
 
-    ejs_player = "#game";
-    ejs_core = system;
-    ejs_pathtodata = "data/";
-    ejs_gameurl = rom;
+    EJS_player = "#game";
+    EJS_core = system;
+    EJS_pathtodata = "data/";
+    EJS_gameUrl = rom;
   </script>
-
-  <!-- <script>
-  const params = new URLSearchParams(window.location.search);
-  const system = params.get("system");
-
-  if (!system) {
-    document.body.innerHTML =
-      "<h2 style='color:white'>NO SYSTEM SELECTED</h2>";
-    throw new Error("Missing system");
-  }
-
-  EJS_player = "#game";
-  EJS_core = system;
-  EJS_pathtodata = "https://cdn.emulatorjs.org/stable/data/";
-
-  let romLoaded = false;
-
-  // Avisar al padre que el emulador está listo
-  window.parent.postMessage({ type: "EMULATOR_READY" }, "*");
-
-  window.addEventListener("message", function (event) {
-    if (!event.data || event.data.type !== "LOAD_ROM") return;
-
-    if (romLoaded) return;
-    romLoaded = true;
-
-    if (event.data.romType === "url") {
-      EJS_gameUrl = event.data.rom;
-    }
-
-    if (event.data.romType === "base64") {
-      EJS_gameUrl = event.data.rom;
-    }
-  });
-</script>
-
-<script src="https://cdn.emulatorjs.org/stable/data/loader.js"></script> -->
 
   <!-- <script src="https://cdn.emulatorjs.org/stable/data/loader.js"></script>
     -->
