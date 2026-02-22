@@ -17,24 +17,24 @@
 <body>
   <div id="game" style="width:100%;height:100%"></div>
 
-  <!-- <script>
-    const params = new URLSearchParams(window.location.search);
+  <script>
+    const params = new urlsearchparams(window.location.search);
     const system = params.get("system");
     const rom = params.get("rom");
 
     if (!system || !rom) {
-      document.body.innerHTML =
-        "<h2 style='color:white'>NO ROM SELECTED</h2>";
-      throw new Error("Missing params");
+      document.body.innerhtml =
+        "<h2 style='color:white'>no rom selected</h2>";
+      throw new error("missing params");
     }
 
-    EJS_player = "#game";
-    EJS_core = system;
-    EJS_pathtodata = "data/";
-    EJS_gameUrl = rom;
-  </script> -->
+    ejs_player = "#game";
+    ejs_core = system;
+    ejs_pathtodata = "data/";
+    ejs_gameurl = rom;
+  </script>
 
-  <script>
+  <!-- <script>
   const params = new URLSearchParams(window.location.search);
   const system = params.get("system");
 
@@ -69,11 +69,11 @@
   });
 </script>
 
-<script src="https://cdn.emulatorjs.org/stable/data/loader.js"></script>
+<script src="https://cdn.emulatorjs.org/stable/data/loader.js"></script> -->
 
   <!-- <script src="https://cdn.emulatorjs.org/stable/data/loader.js"></script>
     -->
-  <!-- <script src="data/loader.js"></script> -->
+  <script src="data/loader.js"></script>
 
 </body>
 </html>
