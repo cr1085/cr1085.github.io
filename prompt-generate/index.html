@@ -12,7 +12,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Merriweather:wght@700&display=swap"
     rel="stylesheet">
-
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
   <style>
     :root {
       --bg: #f7fafc;
@@ -499,6 +499,185 @@
   height: 45px;
   border-radius: 50%;
 }
+
+.template-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.book-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
+  gap:30px;
+  margin-top:25px;
+}
+
+.book{
+  position:relative;
+  width:100%;
+  height:190px;
+  perspective:1000px;
+  cursor:pointer;
+}
+
+.book-inner{
+  position:relative;
+  width:100%;
+  height:100%;
+  transition:transform .4s ease;
+  transform-style:preserve-3d;
+}
+
+.book:hover .book-inner{
+  transform:rotateY(-12deg) scale(1.05);
+}
+
+.book-front{
+  position:absolute;
+  inset:0;
+  background:linear-gradient(135deg,var(--accent),#063ea8);
+  border-radius:6px 12px 12px 6px;
+  box-shadow:8px 8px 20px rgba(0,0,0,0.15);
+  padding:14px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  color:white;
+  font-weight:700;
+  text-align:center;
+}
+
+.book-front .material-symbols-outlined{
+  font-size:38px;
+  margin-bottom:10px;
+}
+
+.book-spine{
+  position:absolute;
+  left:-8px;
+  top:0;
+  width:8px;
+  height:100%;
+  background:#041f5c;
+  border-radius:6px 0 0 6px;
+}
+
+.template-card {
+  background: white;
+  border-radius: 14px;
+  padding: 18px;
+  text-align: center;
+  cursor: pointer;
+  transition: all .2s ease;
+  border: 1px solid #e6eef8;
+}
+
+.template-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+}
+
+.template-card .material-symbols-outlined {
+  font-size: 34px;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+
+.template-title {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.library-shelf{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(120px,1fr));
+  gap:30px;
+  margin-top:25px;
+}
+
+.book-item{
+  position:relative;
+  height:200px;
+  cursor:pointer;
+  perspective:1000px;
+}
+
+.book-3d{
+  width:100%;
+  height:100%;
+  position:relative;
+  transform-style:preserve-3d;
+  transition:transform .4s ease;
+}
+
+.book-item:hover .book-3d{
+  transform:rotateY(-15deg) scale(1.05);
+}
+
+.book-cover{
+  position:absolute;
+  inset:0;
+  border-radius:6px 12px 12px 6px;
+  padding:12px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  color:white;
+  font-weight:700;
+  box-shadow:10px 10px 25px rgba(0,0,0,0.15);
+}
+
+.book-spine{
+  position:absolute;
+  left:-8px;
+  top:0;
+  width:8px;
+  height:100%;
+  border-radius:6px 0 0 6px;
+  background:#111;
+}
+
+.book-actions{
+  position:absolute;
+  bottom:-30px;
+  left:0;
+  right:0;
+  display:flex;
+  justify-content:center;
+  gap:6px;
+}
+
+.book-actions button{
+  border:none;
+  padding:5px 8px;
+  border-radius:6px;
+  font-size:11px;
+  cursor:pointer;
+  font-weight:600;
+}
+
+.book-use{
+  background:var(--accent);
+  color:white;
+}
+
+.book-delete{
+  background:#e2e8f0;
+}
+
+.btn-use{
+  background:var(--accent);
+  color:white;
+}
+
+.btn-delete{
+  background:#f1f5f9;
+}
   </style>
 </head>
 
@@ -528,12 +707,19 @@
     </header>
 
     <div class="app-bar">
-      <div class="tools">
+      <!-- <div class="tools">
         <button class="tool active">Generador</button>
         <button class="tool">Optimizador</button>
         <button class="tool">Plantillas</button>
         <button class="tool">Biblioteca</button>
-      </div>
+      </div> -->
+
+      <div id="toolsBar" class="tools" style="display:none;">
+  <button class="tool active" onclick="changeTab('generador', this)">Generador</button>
+  <button class="tool" onclick="changeTab('optimizador', this)">Optimizador</button>
+  <button class="tool" onclick="changeTab('plantillas', this)">Plantillas</button>
+  <button class="tool" onclick="changeTab('biblioteca', this)">Biblioteca</button>
+</div>
 
       <!-- <div class="profile-box">
         <span id="planBadge">Plan Free</span>
@@ -740,7 +926,7 @@
             </div>
 
           </div>
-
+<div id="aiHint" style="margin-bottom:10px;font-weight:600;color:#0b5cff"></div>
           <div class="controls">
             <button id="generarBtn" class="btn btn-cta" type="button" onclick="generarPrompt()">Generar mi
               prompt</button>
@@ -769,6 +955,90 @@
 
         </form>
       </section>
+
+      <!-- OPTIMIZADOR -->
+<section id="section-optimizador" class="card" style="display:none;">
+  <h2>Optimiza tu Prompt</h2>
+  <p class="muted">Pega un prompt y hazlo más claro, estructurado y profesional.</p>
+
+  <textarea id="optimizarInput" placeholder="Pega aquí tu prompt..." style="min-height:150px;"></textarea>
+
+  <div style="margin-top:10px;">
+    <button class="btn btn-cta" onclick="runStandaloneOptimizer()">Optimizar</button>
+  </div>
+
+  <textarea id="optimizarOutput" class="output" placeholder="Aquí aparecerá la versión optimizada..." style="margin-top:15px;"></textarea>
+</section>
+
+
+<!-- PLANTILLAS -->
+<section id="section-plantillas" class="card" style="display:none;">
+  <h2>Plantillas PRO</h2>
+  <p class="muted">Accede a prompts listos para usar.</p>
+
+  <!-- <div style="display:grid;gap:10px;margin-top:10px;">
+    <button class="btn" onclick="insertTemplate('ventas')">Plantilla Ventas</button>
+    <button class="btn" onclick="insertTemplate('youtube')">Plantilla YouTube</button>
+    <button class="btn" onclick="insertTemplate('funnels')">Plantilla Funnel</button>
+  </div> -->
+
+  <div class="template-grid">
+
+  <div class="template-card" onclick="insertTemplate('youtube')">
+    <span class="material-symbols-outlined">smart_display</span>
+    <div class="template-title">YouTube</div>
+  </div>
+
+  <div class="template-card" onclick="insertTemplate('tiktok')">
+    <span class="material-symbols-outlined">music_note</span>
+    <div class="template-title">TikTok</div>
+  </div>
+
+  <div class="template-card" onclick="insertTemplate('instagram')">
+    <span class="material-symbols-outlined">photo_camera</span>
+    <div class="template-title">Instagram</div>
+  </div>
+
+  <div class="template-card" onclick="insertTemplate('ventas')">
+    <span class="material-symbols-outlined">shopping_cart</span>
+    <div class="template-title">Ventas</div>
+  </div>
+
+  <div class="template-card" onclick="insertTemplate('funnels')">
+    <span class="material-symbols-outlined">conversion_path</span>
+    <div class="template-title">Funnels</div>
+  </div>
+
+  <div class="template-card" onclick="insertTemplate('imagenIA')">
+    <span class="material-symbols-outlined">image</span>
+    <div class="template-title">Imagen IA</div>
+  </div>
+
+  <div class="template-card" onclick="insertTemplate('videoIA')">
+    <span class="material-symbols-outlined">movie</span>
+    <div class="template-title">Video IA</div>
+  </div>
+
+</div>
+
+  <textarea id="plantillaOutput" class="output" style="margin-top:15px;"></textarea>
+</section>
+
+<!-- BIBLIOTECA -->
+<!-- <section id="section-biblioteca" class="card" style="display:none;">
+  <h2>Biblioteca Personal</h2>
+  <p class="muted">Aquí se mostrarán tus prompts guardados.</p>
+
+  <div id="libraryList" style="margin-top:15px;"></div>
+</section> -->
+
+<section id="section-biblioteca" class="card" style="display:none;">
+  <h2>Biblioteca Personal</h2>
+  <p class="muted">Tus prompts guardados listos para reutilizar.</p>
+
+  <!-- <div class="library-grid" id="libraryList"></div> -->
+   <div class="library-shelf" id="libraryList"></div>
+</section>
 
       <aside>
         <div class="card">
@@ -866,6 +1136,77 @@
 </div>
 
   <script>
+
+
+ const templates = {
+
+  youtube: `... plantilla pro youtube ...`,
+
+  tiktok: `
+Actúa como creador experto en contenido viral para TikTok.
+
+Crea un guion ultra dinámico de máximo 45 segundos.
+
+Estructura:
+- Hook disruptivo inmediato.
+- Problema común.
+- Solución rápida.
+- CTA claro.
+
+Optimizado para retención y compartidos.
+`.trim(),
+
+  instagram: `
+Actúa como estratega de crecimiento en Instagram.
+
+Crea un carrusel viral estructurado así:
+Slide 1: Hook poderoso.
+Slides 2-5: Desarrollo práctico.
+Último slide: CTA fuerte.
+
+Tono cercano y persuasivo.
+`.trim(),
+
+  ventas: `... versión pro ...`,
+
+  funnels: `... versión pro ...`,
+
+  imagenIA: `
+Actúa como experto en generación de imágenes IA.
+
+Crea un prompt detallado incluyendo:
+- Estilo artístico
+- Iluminación
+- Cámara
+- Colores
+- Nivel de detalle
+- Referencias visuales
+
+Optimizado para Midjourney / DALL·E.
+`.trim(),
+
+  videoIA: `
+Actúa como experto en generación de video IA.
+
+Crea un prompt estructurado incluyendo:
+- Descripción escena
+- Movimiento de cámara
+- Ambiente
+- Iluminación
+- Duración estimada
+
+Optimizado para Runway o Pika.
+`.trim()
+};
+
+function insertTemplate(type){
+
+ const output = document.getElementById('plantillaOutput');
+
+   output.value = templates[type] || '';
+}
+
+
     function showUpgradeModal() {
       document.getElementById('upgradeModal').style.display = 'flex';
     }
@@ -1305,6 +1646,8 @@ Extra importante:
           document.getElementById('usageNumber').textContent = 0;
           document.getElementById('optNumber').textContent = 0;
 
+          document.getElementById('toolsBar').style.display = 'none';
+
           // ocultar barra de perfil y dropdown cuando no hay sesión
           const profileBox = document.getElementById('profileBox');
           if (profileBox) profileBox.style.display = 'none';
@@ -1319,6 +1662,8 @@ Extra importante:
           await ensureUserData(session.user.id);
 
         const plan = row.plan || 'free';
+
+        document.getElementById('toolsBar').style.display = 'flex';
 
         if (plan === 'pro') {
           planBadge.textContent = 'PRO';
@@ -1432,16 +1777,16 @@ Extra importante:
       formato.value = "Pasos";
     }
 
-    function plantillaMarketing() {
-      rol.value = "estratega experto en marketing digital";
-      objetivo.value = "crear una estrategia de contenido que genere clientes";
-      publico.value = "emprendedores y pequeñas empresas";
-      contexto.value = "quiero aumentar ventas usando redes sociales";
-      tono.value = "Profesional";
-      lenguaje.value = "Claro y directo";
-      extension.value = "Medio";
-      formato.value = "Pasos";
-    }
+   // function plantillaMarketing() {
+   //   rol.value = "estratega experto en marketing digital";
+   //   objetivo.value = "crear una estrategia de contenido que genere clientes";
+   //   publico.value = "emprendedores y pequeñas empresas";
+   //   contexto.value = "quiero aumentar ventas usando redes sociales";
+   //   tono.value = "Profesional";
+   //   lenguaje.value = "Claro y directo";
+   //   extension.value = "Medio";
+   //   formato.value = "Pasos";
+   // }
 
     function plantillaEmprendimiento() {
       rol.value = "consultor experto en emprendimiento y modelos de negocio";
@@ -1672,6 +2017,238 @@ async function loadProfile(){
     document.getElementById('avatarMini').src = avatar;
   }
 }
+
+function changeTab(tabName, button){
+
+  document.querySelectorAll('.tool').forEach(btn=>{
+    btn.classList.remove('active');
+  });
+
+  button.classList.add('active');
+
+  document.querySelectorAll('[id^="section-"]').forEach(sec=>{
+    sec.style.display = 'none';
+  });
+
+  document.getElementById('section-' + tabName).style.display = 'block';
+
+  if(tabName === 'biblioteca'){
+    loadLibrary();
+  }
+}
+
+async function runStandaloneOptimizer(){
+
+  const input = document.getElementById('optimizarInput').value.trim();
+
+  if(!input){
+    alert("Escribe un prompt primero.");
+    return;
+  }
+
+  await initSupabase();
+  const { data:{session} } = await supabase.auth.getSession();
+
+  if(!session){
+    showAuthModal();
+    return;
+  }
+
+  const userId = session.user.id;
+  let row = await fetchUserData(userId) || await ensureUserData(userId);
+
+  if(row.plan !== 'pro' && row.total_optimizations >= 5){
+    showUpgradeModal();
+    return;
+  }
+
+  const optimized = `
+Mejora este prompt haciéndolo más claro, específico y profesional:
+
+${input}
+  `.trim();
+
+  document.getElementById('optimizarOutput').value = optimized;
+
+  await updateUserData(userId,{
+    total_optimizations:(row.total_optimizations||0)+1
+  });
+
+  updateUI();
+}
+
+
+const powerLibrary = [
+
+{
+  title: "Libro Comercial",
+  icon: "menu_book",
+  ai: "ChatGPT 4o",
+  badge: "Pro",
+  prompt: `
+Actúa como escritor profesional experto en libros comerciales digitales.
+
+Crea un libro completo listo para vender.
+
+Incluye obligatoriamente:
+- Título atractivo y comercial
+- Subtítulo estratégico
+- Tabla de contenidos optimizada
+- Desarrollo por capítulos
+- Ejemplos prácticos
+- Conclusión con llamada a la acción
+
+Formato claro y estructurado.
+No agregues explicaciones fuera del contenido del libro.
+`.trim()
+},
+
+{
+  title: "Videojuego Indie",
+  icon: "sports_esports",
+  ai: "Claude 3.5",
+  badge: "Avanzado",
+  prompt: `
+Actúa como diseñador senior de videojuegos y arquitecto de sistemas.
+
+Diseña un videojuego indie completo incluyendo:
+
+- Concepto principal
+- Mecánica central
+- Historia base
+- Sistema de progresión
+- Economía interna
+- Modelo de monetización
+- Roadmap de desarrollo técnico
+
+Estructura todo en formato profesional listo para desarrollo.
+`.trim()
+},
+
+{
+  title: "Startup IA",
+  icon: "rocket_launch",
+  ai: "Gemini 1.5",
+  badge: "Pro",
+  prompt: `
+Actúa como consultor senior de startups tecnológicas con enfoque en IA.
+
+Desarrolla:
+
+- Problema validado
+- Propuesta de valor clara
+- Modelo de negocio
+- Estrategia de adquisición
+- Proyección inicial
+- Roadmap MVP
+
+Formato ejecutivo estructurado.
+`.trim()
+},
+
+{
+  title: "Investigación con fuentes",
+  icon: "search",
+  ai: "Perplexity",
+  badge: "Pro",
+  prompt: `
+Actúa como investigador profesional.
+
+Desarrolla un informe profundo incluyendo:
+
+- Introducción clara
+- Análisis estructurado
+- Datos actualizados
+- Referencias citables
+- Conclusiones estratégicas
+
+Entrega contenido listo para presentar.
+`.trim()
+}
+
+];
+
+function loadLibrary(){
+
+  const container = document.getElementById('libraryList');
+  container.innerHTML = '';
+
+  const colors = [
+    "linear-gradient(135deg,#0b5cff,#063ea8)",
+    "linear-gradient(135deg,#16a34a,#065f46)",
+    "linear-gradient(135deg,#ff6b35,#c2410c)",
+    "linear-gradient(135deg,#7c3aed,#4c1d95)",
+    "linear-gradient(135deg,#ef4444,#7f1d1d)"
+  ];
+
+  powerLibrary.forEach((item,index)=>{
+
+    const div = document.createElement('div');
+    div.className = 'book-item';
+
+    const color = colors[index % colors.length];
+
+    div.innerHTML = `
+      <div class="book-3d">
+        <div class="book-spine"></div>
+        <div class="book-cover" style="background:${color}">
+          <span class="material-symbols-outlined" style="font-size:28px;margin-bottom:6px;">${item.icon}</span>
+          <div style="font-size:13px;font-weight:700">${item.title}</div>
+          <div style="font-size:10px;margin-top:4px;opacity:.9">${item.ai}</div>
+        </div>
+      </div>
+
+      <div class="book-actions">
+        <button class="book-use" onclick="usePowerPrompt(${index})">Usar</button>
+      </div>
+    `;
+
+    container.appendChild(div);
+  });
+}
+function usePowerPrompt(index){
+
+  const item = powerLibrary[index];
+
+  // Mostrar sección generador manualmente
+  document.querySelectorAll('[id^="section-"]').forEach(sec=>{
+    sec.style.display = 'none';
+  });
+
+  document.getElementById('section-generador').style.display = 'block';
+
+  // Activar botón generador visualmente
+  document.querySelectorAll('.tool').forEach(btn=>{
+    btn.classList.remove('active');
+  });
+
+  const generadorBtn = document.querySelector('.tool');
+  if(generadorBtn){
+    generadorBtn.classList.add('active');
+  }
+
+  document.getElementById('aiHint').textContent =
+  "Recomendado para: " + item.ai;
+
+  // Insertar prompt
+  document.getElementById('resultado').value = item.prompt;
+
+  alert(`Optimizado para ${item.ai}`);
+}
+function usePrompt(index){
+  const library = JSON.parse(localStorage.getItem('historialPrompts')) || [];
+  const prompt = library[index];
+
+  changeTab('generador', document.querySelector('.tool'));
+  document.getElementById('resultado').value = prompt;
+}
+
+//function deletePrompt(index){
+//  let library = JSON.parse(localStorage.getItem('historialPrompts')) || [];
+//  library.splice(index,1);
+//  localStorage.setItem('historialPrompts', JSON.stringify(library));
+//  loadLibrary();
+//}
   </script>
 
   
