@@ -1014,8 +1014,6 @@ Extra importante:
     const SUPABASE_URL = 'https://rvgaozmexpocgxtlomkh.supabase.co';
     const SUPABASE_ANON_KEY =
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ2Z2Fvem1leHBvY2d4dGxvbWtoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwNzMzOTIsImV4cCI6MjA4NzY0OTM5Mn0.SPssPQGYL541QpD7GZv6WHzCSMzmXAFGYHJRsfjfWmQ';
-    // avatar base URL + default image (using provided bucket path)
-    const DEFAULT_AVATAR = 'https://rvgaozmexpocgxtlomkh.supabase.co/storage/v1/object/public/avatars/5372211.png';
 
     let supabase = null;
 
@@ -1056,15 +1054,6 @@ Extra importante:
           password
         });
         if (error) throw error;
-        // cuando se crea el usuario, también insertamos una fila de perfil
-        await supabase.from('profiles').upsert({
-          id: user.id,
-          full_name: null,
-          username: null,
-          bio: null,
-          avatar_url: DEFAULT_AVATAR,
-          updated_at: new Date()
-        });
         msgEl.textContent = 'Revisa tu email para confirmar el registro.';
       } catch (e) {
         msgEl.textContent = e.message || String(e);
@@ -1565,26 +1554,8 @@ document.addEventListener('click', function(e){
 });
 
 
-async function openProfileModal(){
-  // cargar valores actuales antes de mostrar
-  await populateProfileForm();
+function openProfileModal(){
   document.getElementById('profileModal').style.display = 'flex';
-}
-
-async function populateProfileForm(){
-  await initSupabase();
-  const { data:{session} } = await supabase.auth.getSession();
-  if(!session) return;
-  const { data } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', session.user.id)
-    .single();
-  if(data){
-    document.getElementById('profileFullName').value = data.full_name || '';
-    document.getElementById('profileUsername').value = data.username || '';
-    document.getElementById('profileBio').value = data.bio || '';
-  }
 }
 
 function closeProfileModal(){
@@ -1604,18 +1575,7 @@ async function saveProfile(){
   const username = document.getElementById('profileUsername').value;
   const bio = document.getElementById('profileBio').value;
 
-  // obtener fila existente para preservar avatar si no se sube uno nuevo
-  let existingAvatar = null;
-  const { data: existing } = await supabase
-    .from('profiles')
-    .select('avatar_url')
-    .eq('id', userId)
-    .single();
-  if (existing && existing.avatar_url) {
-    existingAvatar = existing.avatar_url;
-  }
-
-  let avatar_url = existingAvatar || DEFAULT_AVATAR;
+  let avatar_url = null;
 
   const fileInput = document.getElementById('profileAvatarFile');
   const file = fileInput.files[0];
@@ -1623,10 +1583,9 @@ async function saveProfile(){
   if(file){
     const filePath = `${userId}-${Date.now()}`;
 
-    const { error: upErr } = await supabase.storage
+    await supabase.storage
       .from('avatars')
       .upload(filePath, file, { upsert: true });
-    if(upErr) console.error('upload avatar', upErr);
 
     const { data } = supabase
       .storage
@@ -1666,10 +1625,10 @@ async function loadProfile(){
     document.getElementById('profileName').textContent = data.full_name || 'Usuario';
     document.getElementById('profileEmail').textContent = session.user.email;
 
-    // muestra avatar, usando el por defecto si la fila está vacía
-    const avatar = data.avatar_url || DEFAULT_AVATAR;
-    document.getElementById('avatarImg').src = avatar;
-    document.getElementById('avatarMini').src = avatar;
+    if(data.avatar_url){
+      document.getElementById('avatarImg').src = data.avatar_url;
+      document.getElementById('avatarMini').src = data.avatar_url;
+    }
   }
 }
   </script>

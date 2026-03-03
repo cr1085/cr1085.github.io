@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+
+  <!-- ✅ Viewport obligatorio -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- <title>Generador de Prompts Inteligentes</title> -->
+  <title>Prompt Lab – Laboratorio Estratégico de IA</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      padding: 20px;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 15px;
+    }
+
+    input,
+    textarea,
+    select,
+    button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      font-size: 14px;
+    }
+
+    button {
+      margin-top: 15px;
+      cursor: pointer;
+    }
+
+    .output {
+      height: 260px;
+    }
+
+    .badge {
+      margin-top: 15px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+
+    .comunidad {
+      text-align: center;
+      margin-top: 20px;
+      padding: 20px;
+      background: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .links a {
+      display: inline-block;
+      margin: 10px 15px;
+      text-decoration: none;
+      font-weight: bold;
+      color: #0073e6;
+    }
+
+    .links a:hover {
+      text-decoration: underline;
+    }
+
+    .btn-cafe {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 12px 20px;
+      background: #ff813f;
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      border-radius: 6px;
+    }
+
+    .btn-cafe:hover {
+      background: #e76f2e;
+    }
+
+    .mensaje {
+      margin-top: 15px;
+      font-size: 14px;
+      color: #555;
+    }
+
+    .help {
+      font-size: 13px;
+      color: #666;
+      margin-top: 3px;
+    }
+
+    .tooltip {
+      cursor: pointer;
+      color: #0073e6;
+      font-weight: bold;
+    }
+
+    .dark {
+      background: #121212;
+      color: #f1f1f1;
+    }
+
+    .dark input,
+    .dark textarea,
+    .dark select {
+      background: #1e1e1e;
+      color: white;
+      border: 1px solid #333;
+    }
+
+    .plantillas {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .plantillas button {
+      flex: 1 1 auto;
+      width: auto;
+      /* Esto rompe el width:100% global */
+      padding: 8px 15px;
+      font-size: 14px;
+      border-radius: 6px;
+      border: none;
+      background: #0073e6;
+      color: white;
+      transition: 0.2s ease;
+    }
+
+    .plantillas button:hover {
+      background: #005bb5;
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Prompt Lab</h1>
+  <p>
+    Esta herramienta fue creada para ayudar a estudiantes y creadores a dominar el uso estratégico de la IA.
+    Si quieres más recursos, sígueme y forma parte de la comunidad.
+  </p>
+  <button onclick="modoOscuro()">🌙 Modo Oscuro</button>
+
+  <div class="help" style="background:#fff3cd; padding:10px; border-radius:6px;">
+    💡 Consejo: Entre más específico seas en cada campo, mejor será el resultado generado.
+  </div>
+
+  <h3>Plantillas Rápidas</h3>
+
+  <div class="plantillas">
+    <button onclick="plantillaMarketing()"> Marketing</button>
+    <button onclick="plantillaEmprendimiento()"> Emprendimiento</button>
+    <button onclick="plantillaMarca()"> Marca Personal</button>
+    <button onclick="plantillaEducacion()"> Educación</button>
+    <button onclick="plantillaMonetizacion()">Monetización</button>
+    <button onclick="plantillaProductividad()">Productividad</button>
+  </div>
+
+  <p>Construye prompts estratégicos, aprende y forma parte del laboratorio.</p>
+
+  <div style="background:#e3f2fd;padding:15px;border-radius:8px;margin-bottom:20px;">
+    <strong>🔥 Reto del Laboratorio:</strong><br>
+    Crea un prompt que ayude a generar ingresos usando IA.<br>
+    Comparte tu resultado en LinkedIn con #PromptLab
+  </div>
+
+
+  <label for="rol">Rol que necesita la IA
+    <span class="tooltip" title="Define la identidad profesional que debe asumir la IA.">?</span>
+  </label>
+  <input id="rol" type="text" title="Rol que debe asumir la IA"
+    placeholder="Ej: creador de contenido, profesor, asesor">
+  <div class="help">
+    Define quién debe “ser” la IA. Entre más específico, mejor resultado.
+  </div>
+
+  <label for="objetivo">Qué quieres lograr
+    <span class="tooltip" title="Define el objetivo principal del prompt.">?</span>
+  </label>
+  <input id="objetivo" type="text" title="Objetivo principal del prompt"
+    placeholder="Ej: crear un guion para un video corto">
+  <div class="help">
+    Escribe qué quieres lograr exactamente. Evita frases vagas.
+  </div>
+
+
+  <label for="publico">Público objetivo
+    <span class="tooltip" title="Define a quién va dirigido el resultado.">?</span>
+  </label>
+  <input id="publico" type="text" title="A quién va dirigido el resultado"
+    placeholder="Ej: estudiantes, emprendedores, clientes">
+  <div class="help">
+    Indica a quién va dirigido el resultado (edad, profesión, tipo de persona).
+  </div>
+
+  <label for="contexto">Contexto o problema
+    <span class="tooltip" title="Define la situación o necesidad que debe abordar la IA.">?</span>
+  </label>
+  <textarea id="contexto" title="Describe la situación o necesidad"
+    placeholder="Ej: necesito explicar un tema complejo de forma sencilla"></textarea>
+  <div class="help">
+    Explica la situación o problema para evitar respuestas genéricas.
+  </div>
+
+  <label for="tono">Tono del resultado
+    <span class="tooltip" title="Define el tono que debe tener la respuesta.">?</span>
+  </label>
+  <select id="tono" title="Selecciona el tono deseado">
+    <option value="">Selecciona una opción</option>
+    <option>Simple</option>
+    <option>Creativo</option>
+    <option>Profesional</option>
+    <option>Cercano</option>
+  </select>
+  <div class="help">
+    Explica la situación o problema para evitar respuestas genéricas.
+  </div>
+
+  <label for="lenguaje">Tipo de lenguaje
+    <span class="tooltip" title="Define el tipo de lenguaje que debe asumir la IA.">?</span>
+  </label>
+  <select id="lenguaje" title="Nivel de complejidad del lenguaje">
+    <option value="">Selecciona una opción</option>
+    <option>Fácil y sin tecnicismos</option>
+    <option>Claro y directo</option>
+  </select>
+  <div class="help">
+    Selecciona el nivel de complejidad del texto.
+  </div>
+
+  <label for="extension">Extensión del resultado
+    <span class="tooltip" title="Define la extensión del resultado deseado.">?</span>
+  </label>
+  <select id="extension" title="Longitud del contenido">
+    <option value="">Selecciona una opción</option>
+    <option>Corto</option>
+    <option>Medio</option>
+    <option>Largo</option>
+  </select>
+  <div class="help">
+    Controla qué tan largo será el resultado.
+  </div>
+
+  <label for="formato">Formato de respuesta
+    <span class="tooltip" title="Define el formato de la respuesta deseado.">?</span>
+  </label>
+  <select id="formato" title="Cómo quieres la respuesta">
+    <option value="">Selecciona una opción</option>
+    <option>Lista</option>
+    <option>Pasos</option>
+    <option>Tabla</option>
+    <option>Guion</option>
+    <option>Texto</option>
+  </select>
+  <div class="help">
+    Elige cómo quieres recibir la respuesta: lista, tabla, pasos, etc.
+  </div>
+
+  <label for="evitar">Qué debe evitar la IA
+    <span class="tooltip" title="Define elementos que no debe incluir la IA.">?</span>
+  </label>
+  <input id="evitar" type="text" title="Elementos que no quieres en la respuesta"
+    placeholder="Ej: tecnicismos, explicaciones largas">
+  <div class="help">
+    Indica qué cosas NO quieres que aparezcan en la respuesta.
+  </div>
+
+  <label for="incluir">Qué debe incluir (opcional)
+    <span class="tooltip" title="Opcional define elementos de ejemplos o pasos que debe asumir la IA.">?</span>
+  </label>
+  <input id="incluir" type="text" title="Elementos extra deseados"
+    placeholder="Ej: ejemplos, pasos claros, llamada a la acción">
+  <div class="help">
+    Añade elementos específicos que quieres que estén presentes.
+  </div>
+
+
+  <button type="button" onclick="generarPrompt()"> Generar Prompt</button>
+  <button type="button" onclick="copiarPrompt()">Copiar Prompt</button>
+  <button type="button" onclick="descargarPrompt()">Descargar .txt</button>
+
+  <div class="badge" id="eficiencia"></div>
+
+  <label for="resultado">Prompt generado</label>
+  <textarea id="resultado" class="output" title="Prompt final listo para usar"
+    placeholder="Aquí aparecerá el prompt generado"></textarea>
+  <h3>Historial de Prompts</h3>
+  <ul id="historial"></ul>
+
+  <hr style="margin:40px 0;">
+
+  <section style="margin-top:40px;text-align:center;">
+    <h2>📩 Únete al Laboratorio</h2>
+    <p>Recibe retos, plantillas y recursos exclusivos.</p>
+    <a href="https://whatsapp.com/channel/0029VbAyIhDAjPXUVJr5LE3z" target="_blank" rel="noopener noreferrer"
+      class="btn-cafe">
+      Suscribirme
+    </a>
+  </section>
+
+  <section class="comunidad">
+    <h2>🚀 Únete a la Comunidad</h2>
+    <p>Si esta herramienta te ayuda, puedes apoyarla, seguirme y ser parte del crecimiento.</p>
+
+    <div class="links">
+      <a href="https://github.com/cr1085" target="_blank" rel="noopener noreferrer">💻 GitHub</a>
+      <a href="https://www.instagram.com/3cbsoluciones/" target="_blank" rel="noopener noreferrer">📸 Instagram</a>
+      <a href="https://www.linkedin.com/in/cristian-cuadrado-beltran-983ba126/" target="_blank"
+        rel="noopener noreferrer">💼 LinkedIn</a>
+      <a href="https://x.com/cr1085" target="_blank" rel="noopener noreferrer">🐦 X / Twitter</a>
+    </div>
+
+    <div class="donar">
+      <a href="https://buymeacoffee.com/cristiancua" target="_blank" rel="noopener noreferrer" class="btn-cafe">
+        ☕ Invítame un café
+      </a>
+    </div>
+
+    <p class="mensaje">
+      Tu apoyo ayuda a mantener y mejorar esta herramienta gratuita 🙌
+    </p>
+  </section>
+
+  <section style="margin-top:40px;">
+    <h2>🏆 Prompts Destacados</h2>
+    <p>Próximamente: mejores prompts creados por la comunidad.</p>
+  </section>
+
+
+  <script>
+    function generarPrompt() {
+      const prompt = `
+Actúa como ${rol.value}.
+
+Ayúdame a ${objetivo.value}.
+
+Contexto:
+Esto es para ${publico.value}.
+La situación es: ${contexto.value}.
+
+Quiero que el resultado sea:
+- Tono: ${tono.value}
+- Lenguaje: ${lenguaje.value}
+- Extensión: ${extension.value}
+
+Formato de respuesta:
+- ${formato.value}
+
+Extra importante:
+- Evita ${evitar.value}
+- Incluye ${incluir.value || "lo necesario"}
+`.trim();
+
+      resultado.value = prompt;
+      guardarHistorial(prompt);
+      calcularEficiencia();
+    }
+
+    function copiarPrompt() {
+      navigator.clipboard.writeText(resultado.value);
+      alert("✅ Prompt copiado al portapapeles");
+    }
+
+    function descargarPrompt() {
+      const blob = new Blob([resultado.value], {
+        type: "text/plain"
+      });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "prompt.txt";
+      link.click();
+    }
+
+    function calcularEficiencia() {
+      let score = 0;
+
+      if (rol.value.length > 10) score += 15;
+      if (objetivo.value.length > 15) score += 20;
+      if (contexto.value.length > 20) score += 20;
+      if (publico.value.length > 5) score += 10;
+      if (tono.value) score += 10;
+      if (lenguaje.value) score += 10;
+      if (formato.value) score += 10;
+      if (evitar.value || incluir.value) score += 5;
+
+      eficiencia.textContent = `📊 Nivel Estratégico del Prompt: ${score}%`;
+    }
+
+
+
+    function guardarHistorial(prompt) {
+      let historial = JSON.parse(localStorage.getItem("historialPrompts")) || [];
+      historial.unshift(prompt);
+      localStorage.setItem("historialPrompts", JSON.stringify(historial));
+      mostrarHistorial();
+    }
+
+    function mostrarHistorial() {
+      let historial = JSON.parse(localStorage.getItem("historialPrompts")) || [];
+      const lista = document.getElementById("historial");
+      lista.innerHTML = "";
+
+      historial.slice(0, 5).forEach(p => {
+        const li = document.createElement("li");
+        li.textContent = p.substring(0, 80) + "...";
+        lista.appendChild(li);
+      });
+    }
+
+    window.onload = mostrarHistorial;
+
+    function modoOscuro() {
+      document.body.classList.toggle("dark");
+    }
+
+    function plantillaMarketing() {
+      rol.value = "estratega experto en marketing digital";
+      objetivo.value = "crear una estrategia de contenido que genere clientes";
+      publico.value = "emprendedores y pequeñas empresas";
+      contexto.value = "quiero aumentar ventas usando redes sociales";
+      tono.value = "Profesional";
+      lenguaje.value = "Claro y directo";
+      extension.value = "Medio";
+      formato.value = "Pasos";
+    }
+
+    function plantillaEmprendimiento() {
+      rol.value = "consultor experto en emprendimiento y modelos de negocio";
+      objetivo.value = "diseñar una idea de negocio rentable";
+      publico.value = "personas que quieren iniciar un emprendimiento";
+      contexto.value = "busco oportunidades digitales con bajo presupuesto";
+      tono.value = "Creativo";
+      lenguaje.value = "Claro y directo";
+      extension.value = "Medio";
+      formato.value = "Lista";
+    }
+
+    function plantillaMarca() {
+      rol.value = "estratega en marca personal y posicionamiento profesional";
+      objetivo.value = "optimizar mi perfil profesional en redes sociales";
+      publico.value = "reclutadores y clientes potenciales";
+      contexto.value = "quiero mejorar mi presencia digital";
+      tono.value = "Profesional";
+      lenguaje.value = "Claro y directo";
+      extension.value = "Corto";
+      formato.value = "Pasos";
+    }
+
+    function plantillaEducacion() {
+      rol.value = "profesor experto en enseñanza práctica";
+      objetivo.value = "explicar un tema complejo de forma sencilla";
+      publico.value = "estudiantes principiantes";
+      contexto.value = "necesito simplificar un concepto técnico";
+      tono.value = "Simple";
+      lenguaje.value = "Fácil y sin tecnicismos";
+      extension.value = "Medio";
+      formato.value = "Lista";
+    }
+
+    function plantillaMonetizacion() {
+      rol.value = "asesor experto en monetización digital";
+      objetivo.value = "identificar oportunidades reales para generar ingresos";
+      publico.value = "personas que quieren ganar dinero online";
+      contexto.value = "quiero usar inteligencia artificial para crear ingresos";
+      tono.value = "Profesional";
+      lenguaje.value = "Claro y directo";
+      extension.value = "Medio";
+      formato.value = "Pasos";
+    }
+
+    function plantillaMarketing() {
+      rol.value = "estratega experto en marketing digital";
+      objetivo.value = "crear una estrategia de contenido que genere clientes";
+      publico.value = "emprendedores y pequeñas empresas";
+      contexto.value = "quiero aumentar ventas usando redes sociales";
+      tono.value = "Profesional";
+      lenguaje.value = "Claro y directo";
+      extension.value = "Medio";
+      formato.value = "Pasos";
+    }
+
+    function plantillaEmprendimiento() {
+      rol.value = "consultor experto en emprendimiento y modelos de negocio";
+      objetivo.value = "diseñar una idea de negocio rentable";
+      publico.value = "personas que quieren iniciar un emprendimiento";
+      contexto.value = "busco oportunidades digitales con bajo presupuesto";
+      tono.value = "Creativo";
+      lenguaje.value = "Claro y directo";
+      extension.value = "Medio";
+      formato.value = "Lista";
+    }
+
+    function plantillaMarca() {
+      rol.value = "estratega en marca personal y posicionamiento profesional";
+      objetivo.value = "optimizar mi perfil profesional en redes sociales";
+      publico.value = "reclutadores y clientes potenciales";
+      contexto.value = "quiero mejorar mi presencia digital";
+      tono.value = "Profesional";
+      lenguaje.value = "Claro y directo";
+      extension.value = "Corto";
+      formato.value = "Pasos";
+    }
+
+    function plantillaEducacion() {
+      rol.value = "profesor experto en enseñanza práctica";
+      objetivo.value = "explicar un tema complejo de forma sencilla";
+      publico.value = "estudiantes principiantes";
+      contexto.value = "necesito simplificar un concepto técnico";
+      tono.value = "Simple";
+      lenguaje.value = "Fácil y sin tecnicismos";
+      extension.value = "Medio";
+      formato.value = "Lista";
+    }
+
+    function plantillaMonetizacion() {
+      rol.value = "asesor experto en monetización digital";
+      objetivo.value = "identificar oportunidades reales para generar ingresos";
+      publico.value = "personas que quieren ganar dinero online";
+      contexto.value = "quiero usar inteligencia artificial para crear ingresos";
+      tono.value = "Profesional";
+      lenguaje.value = "Claro y directo";
+      extension.value = "Medio";
+      formato.value = "Pasos";
+    }
+
+    function plantillaProductividad() {
+      rol.value = "consultor experto en productividad y automatización";
+      objetivo.value = "crear un sistema eficiente para organizar mi trabajo";
+      publico.value = "profesionales ocupados";
+      contexto.value = "quiero optimizar tiempo usando IA";
+      tono.value = "Cercano";
+      lenguaje.value = "Claro y directo";
+      extension.value = "Corto";
+      formato.value = "Lista";
+    }
+  </script>
+
+</body>
+
+</html>

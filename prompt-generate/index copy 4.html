@@ -450,55 +450,6 @@
     .usage-box strong {
       font-size: 20px;
     }
-
-    .profile-avatar {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  overflow: hidden;
-  cursor: pointer;
-  border: 2px solid var(--accent);
-}
-
-.profile-avatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.profile-dropdown {
-  position: absolute;
-  top: 70px;
-  right: 40px;
-  background: white;
-  width: 240px;
-  border-radius: 12px;
-  box-shadow: var(--shadow);
-  padding: 12px;
-  display: none;
-  z-index: 1500;
-}
-
-.profile-dropdown button {
-  width: 100%;
-  border: none;
-  padding: 8px;
-  text-align: left;
-  background: transparent;
-  cursor: pointer;
-}
-
-.profile-info {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-.profile-info img {
-  width: 45px;
-  height: 45px;
-  border-radius: 50%;
-}
   </style>
 </head>
 
@@ -535,33 +486,12 @@
         <button class="tool">Biblioteca</button>
       </div>
 
-      <!-- <div class="profile-box">
+      <div class="profile-box">
         <span id="planBadge">Plan Free</span>
         <span id="userEmailMini"></span>
         <button class="btn btn-cta" style="padding:6px 12px;" onclick="showUpgradeModal()">Mejorar</button>
 
-      </div> -->
-
-      <div id="profileBox" class="profile-box">
-  <span id="planBadge">Plan Free</span>
-
-  <div class="profile-avatar" onclick="toggleProfileMenu()">
-    <img id="avatarImg" src="https://i.pravatar.cc/100" alt="Avatar del usuario" />
-  </div>
-
-  <div id="profileDropdown" class="profile-dropdown">
-    <div class="profile-info">
-      <img id="avatarMini" src="https://i.pravatar.cc/100" alt="Avatar del usuario en menú" />
-      <div>
-        <strong id="profileName">Usuario</strong>
-        <div class="muted" id="profileEmail"></div>
       </div>
-    </div>
-    <hr>
-    <button onclick="openProfileModal()">Editar perfil</button>
-    <button onclick="authButtonAction()">Cerrar sesión</button>
-  </div>
-</div>
     </div>
 
     <!-- Modal de autenticación (login / register) -->
@@ -847,24 +777,6 @@
 
   </div>
 
-
-  <div id="profileModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);align-items:center;justify-content:center;z-index:2000;">
-  <div style="background:white;padding:30px;border-radius:16px;max-width:480px;width:100%;">
-    <h2>Editar perfil</h2>
-
-    <input type="text" id="profileFullName" placeholder="Nombre completo" />
-    <input type="text" id="profileUsername" placeholder="Username" />
-    <textarea id="profileBio" placeholder="Biografía"></textarea>
-
-    <input type="file" id="profileAvatarFile" accept="image/*" />
-
-    <div style="margin-top:15px;text-align:right">
-      <button onclick="closeProfileModal()">Cancelar</button>
-      <button class="btn btn-cta" onclick="saveProfile()">Guardar</button>
-    </div>
-  </div>
-</div>
-
   <script>
     function showUpgradeModal() {
       document.getElementById('upgradeModal').style.display = 'flex';
@@ -1014,8 +926,6 @@ Extra importante:
     const SUPABASE_URL = 'https://rvgaozmexpocgxtlomkh.supabase.co';
     const SUPABASE_ANON_KEY =
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ2Z2Fvem1leHBvY2d4dGxvbWtoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwNzMzOTIsImV4cCI6MjA4NzY0OTM5Mn0.SPssPQGYL541QpD7GZv6WHzCSMzmXAFGYHJRsfjfWmQ';
-    // avatar base URL + default image (using provided bucket path)
-    const DEFAULT_AVATAR = 'https://rvgaozmexpocgxtlomkh.supabase.co/storage/v1/object/public/avatars/5372211.png';
 
     let supabase = null;
 
@@ -1056,15 +966,6 @@ Extra importante:
           password
         });
         if (error) throw error;
-        // cuando se crea el usuario, también insertamos una fila de perfil
-        await supabase.from('profiles').upsert({
-          id: user.id,
-          full_name: null,
-          username: null,
-          bio: null,
-          avatar_url: DEFAULT_AVATAR,
-          updated_at: new Date()
-        });
         msgEl.textContent = 'Revisa tu email para confirmar el registro.';
       } catch (e) {
         msgEl.textContent = e.message || String(e);
@@ -1210,36 +1111,36 @@ Extra importante:
       };
     }
 
-//    async function incrementOptUsage() {
-//
-//      if (row.plan === 'free' && row.total_optimizations >= 5) {
-//        showUpgradeModal();
-//        return;
-//      }
-//
-//      await initSupabase();
-//
-//      const {
-//        data: {
-//          session
-//        }
-//      } = await supabase.auth.getSession();
-//
-//      if (!session || !session.user) {
-//        showAuthModal();
-//        throw new Error('Inicia sesión para usar Prompt Lab');
-//      }
-//
-//      const userId = session.user.id;
-//
-//      await ensureUserData(userId);
-//
-//      const row = await fetchUserData(userId);
-//
-//      await updateUserData(userId, {
-//        total_optimizations: ((row?.total_optimizations) || 0) + 1
-//      });
-//    } // fin de la funcion
+    async function incrementOptUsage() {
+
+      if (row.plan === 'free' && row.total_optimizations >= 5) {
+        showUpgradeModal();
+        return;
+      }
+
+      await initSupabase();
+
+      const {
+        data: {
+          session
+        }
+      } = await supabase.auth.getSession();
+
+      if (!session || !session.user) {
+        showAuthModal();
+        throw new Error('Inicia sesión para usar Prompt Lab');
+      }
+
+      const userId = session.user.id;
+
+      await ensureUserData(userId);
+
+      const row = await fetchUserData(userId);
+
+      await updateUserData(userId, {
+        total_optimizations: ((row?.total_optimizations) || 0) + 1
+      });
+    }
 
     async function getOptUsage() {
       await initSupabase();
@@ -1305,12 +1206,6 @@ Extra importante:
           document.getElementById('usageNumber').textContent = 0;
           document.getElementById('optNumber').textContent = 0;
 
-          // ocultar barra de perfil y dropdown cuando no hay sesión
-          const profileBox = document.getElementById('profileBox');
-          if (profileBox) profileBox.style.display = 'none';
-          const profileDropdown = document.getElementById('profileDropdown');
-          if (profileDropdown) profileDropdown.style.display = 'none';
-
           return;
         }
 
@@ -1336,27 +1231,10 @@ Extra importante:
         document.getElementById('usageNumber').textContent = row.total_prompts || 0;
         document.getElementById('optNumber').textContent = row.total_optimizations || 0;
 
-        // mostrar y actualizar barra de perfil
-        const profileBox = document.getElementById('profileBox');
-        if (profileBox) profileBox.style.display = 'flex';
-        const profileEmailEl = document.getElementById('profileEmail');
-        if (profileEmailEl) profileEmailEl.textContent = session.user.email || '';
-        const profileDropdown = document.getElementById('profileDropdown');
-        if (profileDropdown) profileDropdown.style.display = 'none';
-        // cargar nombre/avatar desde la tabla profiles
-        loadProfile().catch(() => {});
-
-        if (plan === 'free' && row.total_optimizations >= 5) {
-          optBtn.textContent = "Disponible en PRO";
-          optBtn.style.opacity = "0.6";
-        }
-
         generarBtn.disabled = false;
         optBtn.disabled = false;
         upgradeBtn.textContent = 'Cerrar sesión';
       }
-
-      loadProfile();
 
 
     // inicializar UI al cargar
@@ -1487,60 +1365,6 @@ Extra importante:
       formato.value = "Pasos";
     }
 
-
-    async function optimizarPrompt() {
-
-  const resultadoEl = document.getElementById('resultado');
-
-  if (!resultadoEl.value.trim()) {
-    alert("Primero genera un prompt antes de optimizar.");
-    return;
-  }
-
-  await initSupabase();
-
-  const { data: { session } } = await supabase.auth.getSession();
-
-  if (!session || !session.user) {
-    showAuthModal();
-    return;
-  }
-
-  const userId = session.user.id;
-
-  // Obtener datos del usuario
-  let row = await fetchUserData(userId) || await ensureUserData(userId);
-
-  const plan = row.plan || 'free';
-
-  // 🔒 Límite freemium
-  if (plan === 'free' && row.total_optimizations >= 5) {
-    showUpgradeModal();
-    return;
-  }
-
-  // Aquí hacemos la "optimización"
-  const promptOriginal = resultadoEl.value;
-
-  const promptOptimizado = `
-Mejora el siguiente prompt para que sea más claro, específico y profesional.
-Hazlo más estructurado y efectivo:
-
-${promptOriginal}
-`.trim();
-
-  resultadoEl.value = promptOptimizado;
-
-  // Incrementar contador en DB
-  await updateUserData(userId, {
-    total_optimizations: (row.total_optimizations || 0) + 1
-  });
-
-  await updateUI();
-
-  alert("Prompt optimizado correctamente");
-}
-
     function plantillaProductividad() {
       rol.value = "consultor experto en productividad y automatización";
       objetivo.value = "crear un sistema eficiente para organizar mi trabajo";
@@ -1551,130 +1375,7 @@ ${promptOriginal}
       extension.value = "Corto";
       formato.value = "Lista";
     }
-
-
-    function toggleProfileMenu() {
-  const menu = document.getElementById('profileDropdown');
-  menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-}
-
-document.addEventListener('click', function(e){
-  if(!e.target.closest('.profile-box')){
-    document.getElementById('profileDropdown').style.display = 'none';
-  }
-});
-
-
-async function openProfileModal(){
-  // cargar valores actuales antes de mostrar
-  await populateProfileForm();
-  document.getElementById('profileModal').style.display = 'flex';
-}
-
-async function populateProfileForm(){
-  await initSupabase();
-  const { data:{session} } = await supabase.auth.getSession();
-  if(!session) return;
-  const { data } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', session.user.id)
-    .single();
-  if(data){
-    document.getElementById('profileFullName').value = data.full_name || '';
-    document.getElementById('profileUsername').value = data.username || '';
-    document.getElementById('profileBio').value = data.bio || '';
-  }
-}
-
-function closeProfileModal(){
-  document.getElementById('profileModal').style.display = 'none';
-}
-
-async function saveProfile(){
-
-  await initSupabase();
-
-  const { data:{session} } = await supabase.auth.getSession();
-  if(!session) return;
-
-  const userId = session.user.id;
-
-  const full_name = document.getElementById('profileFullName').value;
-  const username = document.getElementById('profileUsername').value;
-  const bio = document.getElementById('profileBio').value;
-
-  // obtener fila existente para preservar avatar si no se sube uno nuevo
-  let existingAvatar = null;
-  const { data: existing } = await supabase
-    .from('profiles')
-    .select('avatar_url')
-    .eq('id', userId)
-    .single();
-  if (existing && existing.avatar_url) {
-    existingAvatar = existing.avatar_url;
-  }
-
-  let avatar_url = existingAvatar || DEFAULT_AVATAR;
-
-  const fileInput = document.getElementById('profileAvatarFile');
-  const file = fileInput.files[0];
-
-  if(file){
-    const filePath = `${userId}-${Date.now()}`;
-
-    const { error: upErr } = await supabase.storage
-      .from('avatars')
-      .upload(filePath, file, { upsert: true });
-    if(upErr) console.error('upload avatar', upErr);
-
-    const { data } = supabase
-      .storage
-      .from('avatars')
-      .getPublicUrl(filePath);
-
-    avatar_url = data.publicUrl;
-  }
-
-  await supabase
-    .from('profiles')
-    .upsert({
-      id:userId,
-      full_name,
-      username,
-      bio,
-      avatar_url,
-      updated_at:new Date()
-    });
-
-  closeProfileModal();
-  loadProfile();
-}
-
-async function loadProfile(){
-
-  const { data:{session} } = await supabase.auth.getSession();
-  if(!session) return;
-
-  const { data } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', session.user.id)
-    .single();
-
-  if(data){
-    document.getElementById('profileName').textContent = data.full_name || 'Usuario';
-    document.getElementById('profileEmail').textContent = session.user.email;
-
-    // muestra avatar, usando el por defecto si la fila está vacía
-    const avatar = data.avatar_url || DEFAULT_AVATAR;
-    document.getElementById('avatarImg').src = avatar;
-    document.getElementById('avatarMini').src = avatar;
-  }
-}
   </script>
-
-  
 
 </body>
 

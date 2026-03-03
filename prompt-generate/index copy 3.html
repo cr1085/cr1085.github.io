@@ -400,105 +400,6 @@
       transform: translateY(-2px);
       box-shadow: 0 8px 20px rgba(2, 8, 40, 0.6)
     }
-
-    .app-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-      padding: 10px 16px;
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: var(--shadow);
-    }
-
-    .tools {
-      display: flex;
-      gap: 10px;
-    }
-
-    .tool {
-      border: none;
-      padding: 8px 14px;
-      border-radius: 8px;
-      background: #f1f5f9;
-      cursor: pointer;
-      font-weight: 600;
-    }
-
-    .tool.active {
-      background: var(--accent);
-      color: white;
-    }
-
-    .profile-box {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      font-weight: 600;
-    }
-
-    .usage-box {
-      display: flex;
-      gap: 30px;
-      margin: 15px 0;
-      padding: 15px;
-      background: #f8fafc;
-      border-radius: 12px;
-    }
-
-    .usage-box strong {
-      font-size: 20px;
-    }
-
-    .profile-avatar {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  overflow: hidden;
-  cursor: pointer;
-  border: 2px solid var(--accent);
-}
-
-.profile-avatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.profile-dropdown {
-  position: absolute;
-  top: 70px;
-  right: 40px;
-  background: white;
-  width: 240px;
-  border-radius: 12px;
-  box-shadow: var(--shadow);
-  padding: 12px;
-  display: none;
-  z-index: 1500;
-}
-
-.profile-dropdown button {
-  width: 100%;
-  border: none;
-  padding: 8px;
-  text-align: left;
-  background: transparent;
-  cursor: pointer;
-}
-
-.profile-info {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-.profile-info img {
-  width: 45px;
-  height: 45px;
-  border-radius: 50%;
-}
   </style>
 </head>
 
@@ -516,59 +417,18 @@
 
       <div class="top-actions">
         <button class="btn btn-ghost" onclick="modoOscuro()">🌙 Tema</button>
-        <button id="upgradeBtn" class="btn btn-ghost" onclick="authButtonAction()">Acceder</button>
+        <button id="upgradeBtn" class="btn btn-ghost" onclick="togglePro()">Mejorar a Pro</button>
         <a class="btn btn-cta" href="https://buymeacoffee.com/cristiancua" target="_blank"
           rel="noopener noreferrer">Apóyame</a>
-        <!--
         <div id="proBadge"
           style="display:none;background:#ffedd5;color:#7a2e00;padding:6px 10px;border-radius:999px;font-weight:700">PRO
         </div>
-        -->
       </div>
     </header>
 
-    <div class="app-bar">
-      <div class="tools">
-        <button class="tool active">Generador</button>
-        <button class="tool">Optimizador</button>
-        <button class="tool">Plantillas</button>
-        <button class="tool">Biblioteca</button>
-      </div>
-
-      <!-- <div class="profile-box">
-        <span id="planBadge">Plan Free</span>
-        <span id="userEmailMini"></span>
-        <button class="btn btn-cta" style="padding:6px 12px;" onclick="showUpgradeModal()">Mejorar</button>
-
-      </div> -->
-
-      <div id="profileBox" class="profile-box">
-  <span id="planBadge">Plan Free</span>
-
-  <div class="profile-avatar" onclick="toggleProfileMenu()">
-    <img id="avatarImg" src="https://i.pravatar.cc/100" alt="Avatar del usuario" />
-  </div>
-
-  <div id="profileDropdown" class="profile-dropdown">
-    <div class="profile-info">
-      <img id="avatarMini" src="https://i.pravatar.cc/100" alt="Avatar del usuario en menú" />
-      <div>
-        <strong id="profileName">Usuario</strong>
-        <div class="muted" id="profileEmail"></div>
-      </div>
-    </div>
-    <hr>
-    <button onclick="openProfileModal()">Editar perfil</button>
-    <button onclick="authButtonAction()">Cerrar sesión</button>
-  </div>
-</div>
-    </div>
-
     <!-- Modal de autenticación (login / register) -->
-    <div id="authModal"
-      style="display:none;position:fixed;inset:0;background:rgba(2,6,23,0.6);align-items:center;justify-content:center;padding:20px;z-index:1200">
-      <div
-        style="max-width:420px;width:100%;background:var(--card);padding:18px;border-radius:12px;box-shadow:var(--shadow)">
+    <div id="authModal" style="display:none;position:fixed;inset:0;background:rgba(2,6,23,0.6);align-items:center;justify-content:center;padding:20px;z-index:1200">
+      <div style="max-width:420px;width:100%;background:var(--card);padding:18px;border-radius:12px;box-shadow:var(--shadow)">
         <h3 style="margin:0 0 8px">Acceder / Registrarse</h3>
         <div style="display:flex;gap:8px;margin-bottom:8px">
           <input id="authEmail" type="email" placeholder="Email" style="flex:1" />
@@ -583,27 +443,7 @@
       </div>
     </div>
 
-    <div id="upgradeModal"
-      style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);align-items:center;justify-content:center;z-index:1300;">
-      <div style="background:white;padding:30px;border-radius:16px;max-width:420px;width:100%;text-align:center;">
-        <h2>Desbloquea todo el potencial 🚀</h2>
-        <p class="muted">Obtén optimizaciones ilimitadas y herramientas avanzadas por solo $5.000 COP al mes.</p>
-
-        <ul style="text-align:left;margin-top:15px;">
-          <li>✔ Optimización ilimitada</li>
-          <li>✔ 5 variaciones automáticas</li>
-          <li>✔ Plantillas premium</li>
-          <li>✔ Biblioteca privada</li>
-        </ul>
-
-        <div style="margin-top:20px;">
-          <button class="btn btn-ghost" onclick="hideUpgradeModal()">Ahora no</button>
-          <button class="btn btn-cta" onclick="openWompi()">Activar PRO</button>
-        </div>
-      </div>
-    </div>
-    <!--
-    Propuesta de valor destacada (PRO oculto temporalmente)
+    <!-- Propuesta de valor destacada -->
     <section style="max-width:1100px;margin:12px auto 18px;">
       <div class="card" style="display:flex;align-items:center;gap:18px;justify-content:space-between;">
         <div style="flex:1">
@@ -626,7 +466,6 @@
         </div>
       </div>
     </section>
-    -->
 
     <main>
       <section class="card" aria-labelledby="form-title">
@@ -646,17 +485,6 @@
           <li><button class="tpl" onclick="plantillaMonetizacion()">Monetización</button></li>
           <li><button class="tpl" onclick="plantillaProductividad()">Productividad</button></li>
         </ul>
-
-        <div class="usage-box">
-          <div>
-            <strong id="usageNumber">0</strong>
-            <div class="muted">Prompts generados</div>
-          </div>
-          <div>
-            <strong id="optNumber">0</strong>
-            <div class="muted">Optimizaciones</div>
-          </div>
-        </div>
 
         <form aria-describedby="form-desc" onsubmit="return false;">
           <div id="form-desc" class="muted">Los campos clave se usan para componer el prompt final. Puedes dejar
@@ -795,7 +623,6 @@
           </div>
         </div>
 
-        <!--
         <div class="card" style="margin-top:16px">
           <h2>Planes</h2>
           <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:10px">
@@ -835,7 +662,6 @@
           <div style="margin-top:12px;color:var(--muted);font-size:13px">Modelos soportados: ChatGPT, Claude, Gemini,
             DeepSeek, Z.ai, Midjourney (imágenes), Runway/Pika (video)</div>
         </div>
-        -->
       </aside>
     </main>
 
@@ -847,33 +673,8 @@
 
   </div>
 
-
-  <div id="profileModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);align-items:center;justify-content:center;z-index:2000;">
-  <div style="background:white;padding:30px;border-radius:16px;max-width:480px;width:100%;">
-    <h2>Editar perfil</h2>
-
-    <input type="text" id="profileFullName" placeholder="Nombre completo" />
-    <input type="text" id="profileUsername" placeholder="Username" />
-    <textarea id="profileBio" placeholder="Biografía"></textarea>
-
-    <input type="file" id="profileAvatarFile" accept="image/*" />
-
-    <div style="margin-top:15px;text-align:right">
-      <button onclick="closeProfileModal()">Cancelar</button>
-      <button class="btn btn-cta" onclick="saveProfile()">Guardar</button>
-    </div>
-  </div>
-</div>
-
   <script>
-    function showUpgradeModal() {
-      document.getElementById('upgradeModal').style.display = 'flex';
-    }
-
-    function hideUpgradeModal() {
-      document.getElementById('upgradeModal').style.display = 'none';
-    }
-    async function generarPrompt() {
+    function generarPrompt() {
       // Validación de campos obligatorios
       const required = [{
           el: document.getElementById('rol'),
@@ -904,16 +705,12 @@
         errorEl.style.display = 'none';
       }
 
-      // Comprobar sesión: se requiere iniciar sesión para generar
-      await initSupabase();
-      //const session = supabase.auth.session();
-      const {
-        data: {
-          session
-        }
-      } = await supabase.auth.getSession();
-      if (!session || !session.user) {
-        showAuthModal();
+      // Límite freemium: checkear antes de generar
+      const isPro = getIsPro();
+      const usage = getUsage();
+      if (!isPro && usage.count >= 5) {
+        alert('Has alcanzado el límite diario de 5 prompts. Mejora a Pro para generación ilimitada.');
+        updateUI();
         return;
       }
       const prompt = `
@@ -941,17 +738,9 @@ Extra importante:
       resultado.value = prompt;
       guardarHistorial(prompt);
       calcularEficiencia();
-      // incrementar contador tras generar (DB)
-      try {
-        await incrementUsage();
-      } catch (e) {
-        console.warn('incrementUsage', e);
-      }
-      try {
-        await updateUI();
-      } catch (e) {
-        /* ignore */
-      }
+      // incrementar contador tras generar
+      incrementUsage();
+      updateUI();
     }
 
     function copiarPrompt() {
@@ -1010,354 +799,211 @@ Extra importante:
     function modoOscuro() {
       document.body.classList.toggle("dark");
     }
-    /* ---------- Supabase integration (Free plan): auth + per-user counters ---------- */
-    const SUPABASE_URL = 'https://rvgaozmexpocgxtlomkh.supabase.co';
-    const SUPABASE_ANON_KEY =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ2Z2Fvem1leHBvY2d4dGxvbWtoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwNzMzOTIsImV4cCI6MjA4NzY0OTM5Mn0.SPssPQGYL541QpD7GZv6WHzCSMzmXAFGYHJRsfjfWmQ';
-    // avatar base URL + default image (using provided bucket path)
-    const DEFAULT_AVATAR = 'https://rvgaozmexpocgxtlomkh.supabase.co/storage/v1/object/public/avatars/5372211.png';
 
-    let supabase = null;
+    /* ---------- Freemium: localStorage usage and pro simulation ---------- */
+    const USAGE_KEY = 'pl_prompts_usage_v1';
+    const PRO_KEY = 'pl_is_pro_v1';
+    const OPT_KEY = 'pl_opt_usage_v1';
+    const MAX_OPT_FREE = 5; // optimizaciones gratuitas para usuarios gratis
+    // Configurable Wompi link (simulación)
+    const WOMPI_LINK = 'https://checkout.wompi.co/p/your_payment_link_here';
 
-    async function initSupabase() {
-      if (window.supabaseClient) {
-        supabase = window.supabaseClient;
+    function getUsage() {
+      try {
+        const raw = localStorage.getItem(USAGE_KEY);
+        if (!raw) return {
+          count: 0,
+          lastReset: Date.now()
+        };
+        const obj = JSON.parse(raw);
+        // reset if older than 24h
+        if (Date.now() - (obj.lastReset || 0) > 24 * 60 * 60 * 1000) {
+          return {
+            count: 0,
+            lastReset: Date.now()
+          };
+        }
+        return obj;
+      } catch (e) {
+        return {
+          count: 0,
+          lastReset: Date.now()
+        }
+      };
+    }
+
+    function saveUsage(obj) {
+      localStorage.setItem(USAGE_KEY, JSON.stringify(obj));
+    }
+
+    function incrementUsage() {
+      const isPro = getIsPro();
+      if (isPro) return; // no contar para Pro
+      const u = getUsage();
+      // if lastReset older than 24h, reset
+      if (Date.now() - (u.lastReset || 0) > 24 * 60 * 60 * 1000) {
+        u.count = 0;
+        u.lastReset = Date.now();
+      }
+      u.count = (u.count || 0) + 1;
+      saveUsage(u);
+    }
+
+    function resetUsageIfNeeded() {
+      const u = getUsage();
+      if (Date.now() - (u.lastReset || 0) > 24 * 60 * 60 * 1000) {
+        const next = {
+          count: 0,
+          lastReset: Date.now()
+        };
+        saveUsage(next);
+      }
+    }
+
+    function getIsPro() {
+      return localStorage.getItem(PRO_KEY) === '1';
+    }
+
+    function setIsPro(val) {
+      localStorage.setItem(PRO_KEY, val ? '1' : '0');
+    }
+
+    function togglePro() {
+      const current = getIsPro();
+      setIsPro(!current);
+      alert(!current ? 'Ahora eres usuario PRO (modo simulado).' : 'Has regresado al plan Gratis.');
+      updateUI();
+    }
+
+    function openWompi() {
+      // Simulación básica: abrir checkout y marcar PRO en localStorage
+      try {
+        window.open(WOMPI_LINK, '_blank');
+      } catch (e) {
+        /* ignore */ }
+      // Marcar como PRO (simulación) y actualizar UI
+      setIsPro(true);
+      alert('Redirigido al pago (simulado). Tu cuenta ahora está en modo PRO.');
+      updateUI();
+    }
+
+    function updateUI() {
+      // counter
+      resetUsageIfNeeded();
+      const u = getUsage();
+      const isPro = getIsPro();
+      const counterEl = document.getElementById('counter');
+      const generarBtn = document.getElementById('generarBtn');
+      const proBadge = document.getElementById('proBadge');
+      const upgradeBtn = document.getElementById('upgradeBtn');
+      const optBtn = document.getElementById('optBtn');
+      // optimizer counter
+      const opt = getOptUsage();
+      const optCounterEl = document.getElementById('optCounter');
+      if (optCounterEl) {
+        optCounterEl.textContent =
+          `Optimización gratuita restante: ${Math.max(0, MAX_OPT_FREE - (opt.count||0))} / ${MAX_OPT_FREE}`;
+      }
+
+      if (isPro) {
+        counterEl.textContent = 'Prompts usados hoy: — / ∞';
+        generarBtn.disabled = false;
+        proBadge.style.display = 'inline-block';
+        upgradeBtn.textContent = 'Cancelar Pro';
+        optBtn.style.display = 'inline-block';
+        if (optCounterEl) optCounterEl.style.opacity = '0.8';
+      } else {
+        counterEl.textContent = `Prompts usados hoy: ${u.count||0} / 5`;
+        generarBtn.disabled = (u.count || 0) >= 5;
+        proBadge.style.display = 'none';
+        upgradeBtn.textContent = 'Mejorar a Pro';
+        optBtn.style.display = 'none';
+        if (optCounterEl) optCounterEl.style.opacity = '1';
+      }
+
+      // small visual disabled state
+      if (generarBtn.disabled) {
+        generarBtn.style.opacity = '0.5';
+        generarBtn.style.cursor = 'not-allowed';
+      } else {
+        generarBtn.style.opacity = '1';
+        generarBtn.style.cursor = 'pointer';
+      }
+    }
+
+    // Optimizer usage helpers
+    function getOptUsage() {
+      try {
+        const raw = localStorage.getItem(OPT_KEY);
+        if (!raw) return {
+          count: 0
+        };
+        return JSON.parse(raw);
+      } catch (e) {
+        return {
+          count: 0
+        }
+      };
+    }
+
+    function saveOptUsage(obj) {
+      localStorage.setItem(OPT_KEY, JSON.stringify(obj));
+    }
+
+    function incrementOptUsage() {
+      if (getIsPro()) return; // Pro unlimited
+      const o = getOptUsage();
+      o.count = (o.count || 0) + 1;
+      saveOptUsage(o);
+    }
+
+    // Optimizar Prompt (free limitada / PRO ilimitado)
+    function optimizarPrompt() {
+      const resultadoEl = document.getElementById('resultado');
+      const base = (resultadoEl.value || '').trim();
+      if (!base) {
+        alert('Genera un prompt antes de optimizarlo.');
         return;
       }
-      const module = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm');
-      supabase = module.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-      window.supabaseClient = supabase;
-      supabase.auth.onAuthStateChange((event, session) => {
-        updateAuthState(session && session.user ? session.user : null);
-      });
-    }
 
-    // Auth modal helpers
-    function showAuthModal() {
-      document.getElementById('authModal').style.display = 'flex';
-    }
+      if (getIsPro()) {
+        // Versión avanzada para PRO
+        const mejoras = [];
+        mejoras.push('\n---\n[OPTIMIZACIÓN PRO] Versión mejorada por Prompt Lab PRO');
+        if (rol.value) mejoras.push(`Identidad recomendada: ${rol.value}.`);
+        if (objetivo.value) mejoras.push(
+          `Objetivo (más claro): ${objetivo.value}. Añade métricas o formato esperado si aplica.`);
+        if (publico.value) mejoras.push(`Público: ${publico.value}. Especifica tono y nivel esperado.`);
+        if (contexto.value) mejoras.push(
+          `Contexto adicional: ${contexto.value}. Restringe formato si necesitas menos palabras.`);
+        mejoras.push(
+          'Instrucciones: Responde con pasos numerados, breve introducción, 2 ejemplos de salida y una CTA al final.');
+        mejoras.push('Sugerencia de temperatura y longitud: temperatura 0.7, max_tokens 400.');
 
-    function hideAuthModal() {
-      document.getElementById('authModal').style.display = 'none';
-    }
-
-    async function handleRegister() {
-      const email = document.getElementById('authEmail').value;
-      const password = document.getElementById('authPassword').value;
-      const msgEl = document.getElementById('authMessage');
-      msgEl.textContent = '';
-      try {
-        await initSupabase();
-        const {
-          user,
-          error
-        } = await supabase.auth.signUp({
-          email,
-          password
-        });
-        if (error) throw error;
-        // cuando se crea el usuario, también insertamos una fila de perfil
-        await supabase.from('profiles').upsert({
-          id: user.id,
-          full_name: null,
-          username: null,
-          bio: null,
-          avatar_url: DEFAULT_AVATAR,
-          updated_at: new Date()
-        });
-        msgEl.textContent = 'Revisa tu email para confirmar el registro.';
-      } catch (e) {
-        msgEl.textContent = e.message || String(e);
-      }
-    }
-
-    async function handleLogin() {
-      const email = document.getElementById('authEmail').value;
-      const password = document.getElementById('authPassword').value;
-      const msgEl = document.getElementById('authMessage');
-      msgEl.textContent = '';
-      try {
-        await initSupabase();
-        //const { session, error } = await supabase.auth.signIn({ email, password });
-        const {
-
-          error
-        } = await supabase.auth.signInWithPassword({
-          email,
-          password
-        });
-        if (error) throw error;
-        hideAuthModal();
-      } catch (e) {
-        msgEl.textContent = e.message || String(e);
-      }
-    }
-
-    async function handleLogout() {
-      await initSupabase();
-      await supabase.auth.signOut();
-      updateAuthState(null);
-    }
-
-    async function updateAuthState(user) {
-      if (user) {
-        await ensureUserData(user.id).catch(() => {});
-        hideAuthModal();
-      }
-      await updateUI();
-    }
-
-    // DB helpers: table users_data with fields total_prompts, total_optimizations
-    async function ensureUserData(userId) {
-      const {
-        data,
-        error
-      } = await supabase
-        .from('users_data')
-        .select('*')
-        .eq('id', userId)
-        .single();
-
-      if (data) return data;
-
-      if (error && error.code !== 'PGRST116') {
-        // error diferente a "no rows"
-        console.error(error);
-        return null;
+        const nuevo = base + '\n\n' + mejoras.join('\n');
+        resultadoEl.value = nuevo;
+        alert('✅ Prompt optimizado (PRO) aplicado.');
+        return;
       }
 
-      const row = {
-        id: userId,
-        total_prompts: 0,
-        total_optimizations: 0,
-        created_at: new Date().toISOString()
-      };
-
-      const {
-        error: insertError
-      } = await supabase
-        .from('users_data')
-        .insert(row);
-
-      if (insertError) {
-        console.error(insertError);
-        return null;
-      }
-
-      return row;
-    }
-
-    async function fetchUserData(userId) {
-      const {
-        data,
-        error
-      } = await supabase.from('users_data').select('*').eq('id', userId).limit(1).single();
-      if (error) return null;
-      return data;
-    }
-
-    async function updateUserData(userId, changes) {
-      const {
-        data,
-        error
-      } = await supabase.from('users_data').update(changes).eq('id', userId);
-      if (error) throw error;
-      return data;
-    }
-
-    async function incrementUsage() {
-      await initSupabase();
-
-      const {
-        data: {
-          session
+      // Usuario gratis: límite de optimizaciones
+      const o = getOptUsage();
+      if ((o.count || 0) >= MAX_OPT_FREE) {
+        if (confirm(
+          'Has agotado tus optimizaciones gratuitas.\n¿Quieres mejorar a PRO para optimizaciones ilimitadas?')) {
+          openWompi();
         }
-      } = await supabase.auth.getSession();
-
-      if (!session || !session.user) {
-        showAuthModal();
-        throw new Error('Inicia sesión para usar Prompt Lab');
+        return;
       }
 
-      const userId = session.user.id;
-
-      // Asegurarse que existe el registro
-      await ensureUserData(userId);
-
-      // Obtener datos actuales
-      const row = await fetchUserData(userId);
-
-      // Actualizar contador
-      await updateUserData(userId, {
-        total_prompts: (row?.total_prompts || 0) + 1
-      });
+      // Aplicar optimización gratuita
+      const freeOpt = base +
+        "\n\n[OPTIMIZACIÓN GRATUITA] Clarifica el objetivo, sugiere tono y un formato de salida breve.\n- Tono sugerido: claro y directo\n- Longitud sugerida: 1-2 párrafos\n\nEjemplo de salida: \n- Resultado breve con pasos o lista.";
+      resultadoEl.value = freeOpt;
+      incrementOptUsage();
+      updateUI();
+      alert('Optimización gratuita aplicada.');
     }
-
-    async function getUsage() {
-      await initSupabase();
-      //const session = supabase.auth.session();
-      const {
-        data: {
-          session
-        }
-      } = await supabase.auth.getSession();
-      if (!session || !session.user) return {
-        count: 0
-      };
-      const row = await fetchUserData(session.user.id) || await ensureUserData(session.user.id);
-      return {
-        count: row.total_prompts || 0
-      };
-    }
-
-//    async function incrementOptUsage() {
-//
-//      if (row.plan === 'free' && row.total_optimizations >= 5) {
-//        showUpgradeModal();
-//        return;
-//      }
-//
-//      await initSupabase();
-//
-//      const {
-//        data: {
-//          session
-//        }
-//      } = await supabase.auth.getSession();
-//
-//      if (!session || !session.user) {
-//        showAuthModal();
-//        throw new Error('Inicia sesión para usar Prompt Lab');
-//      }
-//
-//      const userId = session.user.id;
-//
-//      await ensureUserData(userId);
-//
-//      const row = await fetchUserData(userId);
-//
-//      await updateUserData(userId, {
-//        total_optimizations: ((row?.total_optimizations) || 0) + 1
-//      });
-//    } // fin de la funcion
-
-    async function getOptUsage() {
-      await initSupabase();
-      //const session = supabase.auth.session();
-      const {
-        data: {
-          session
-        }
-      } = await supabase.auth.getSession();
-      if (!session || !session.user) return {
-        count: 0
-      };
-      const row = await fetchUserData(session.user.id) || await ensureUserData(session.user.id);
-      return {
-        count: row.total_optimizations || 0
-      };
-    }
-
-    // Auth button behavior (login/logout)
-    async function authButtonAction() {
-      await initSupabase();
-      const {
-        data: {
-          session
-        }
-      } = await supabase.auth.getSession();
-
-      if (!session || !session.user) {
-        showAuthModal();
-      } else {
-        await handleLogout();
-      }
-    }
-
-    async function updateUI() {
-
-        await initSupabase();
-
-        const {
-          data: {
-            session
-          }
-        } = await supabase.auth.getSession();
-
-        const planBadge = document.getElementById('planBadge');
-        const counterEl = document.getElementById('counter');
-        const generarBtn = document.getElementById('generarBtn');
-        const upgradeBtn = document.getElementById('upgradeBtn');
-        const optBtn = document.getElementById('optBtn');
-        const optCounterEl = document.getElementById('optCounter');
-
-        if (!session || !session.user) {
-
-          planBadge.textContent = 'Plan Free';
-          planBadge.style.background = '#e2e8f0';
-          planBadge.style.color = '#334155';
-
-          counterEl.textContent = 'Inicia sesión para usar Prompt Lab';
-          generarBtn.disabled = true;
-          optBtn.disabled = true;
-          upgradeBtn.textContent = 'Acceder';
-
-          document.getElementById('usageNumber').textContent = 0;
-          document.getElementById('optNumber').textContent = 0;
-
-          // ocultar barra de perfil y dropdown cuando no hay sesión
-          const profileBox = document.getElementById('profileBox');
-          if (profileBox) profileBox.style.display = 'none';
-          const profileDropdown = document.getElementById('profileDropdown');
-          if (profileDropdown) profileDropdown.style.display = 'none';
-
-          return;
-        }
-
-        // 👇 AHORA SÍ obtenemos row
-        const row = await fetchUserData(session.user.id) ||
-          await ensureUserData(session.user.id);
-
-        const plan = row.plan || 'free';
-
-        if (plan === 'pro') {
-          planBadge.textContent = 'PRO';
-          planBadge.style.background = '#ffedd5';
-          planBadge.style.color = '#7a2e00';
-        } else {
-          planBadge.textContent = 'Plan Free';
-          planBadge.style.background = '#e2e8f0';
-          planBadge.style.color = '#334155';
-        }
-
-        counterEl.textContent = `Prompts totales: ${row.total_prompts || 0}`;
-        optCounterEl.textContent = `Optimizaciones totales: ${row.total_optimizations || 0}`;
-
-        document.getElementById('usageNumber').textContent = row.total_prompts || 0;
-        document.getElementById('optNumber').textContent = row.total_optimizations || 0;
-
-        // mostrar y actualizar barra de perfil
-        const profileBox = document.getElementById('profileBox');
-        if (profileBox) profileBox.style.display = 'flex';
-        const profileEmailEl = document.getElementById('profileEmail');
-        if (profileEmailEl) profileEmailEl.textContent = session.user.email || '';
-        const profileDropdown = document.getElementById('profileDropdown');
-        if (profileDropdown) profileDropdown.style.display = 'none';
-        // cargar nombre/avatar desde la tabla profiles
-        loadProfile().catch(() => {});
-
-        if (plan === 'free' && row.total_optimizations >= 5) {
-          optBtn.textContent = "Disponible en PRO";
-          optBtn.style.opacity = "0.6";
-        }
-
-        generarBtn.disabled = false;
-        optBtn.disabled = false;
-        upgradeBtn.textContent = 'Cerrar sesión';
-      }
-
-      loadProfile();
-
 
     // inicializar UI al cargar
     window.addEventListener('load', function () {
@@ -1487,60 +1133,6 @@ Extra importante:
       formato.value = "Pasos";
     }
 
-
-    async function optimizarPrompt() {
-
-  const resultadoEl = document.getElementById('resultado');
-
-  if (!resultadoEl.value.trim()) {
-    alert("Primero genera un prompt antes de optimizar.");
-    return;
-  }
-
-  await initSupabase();
-
-  const { data: { session } } = await supabase.auth.getSession();
-
-  if (!session || !session.user) {
-    showAuthModal();
-    return;
-  }
-
-  const userId = session.user.id;
-
-  // Obtener datos del usuario
-  let row = await fetchUserData(userId) || await ensureUserData(userId);
-
-  const plan = row.plan || 'free';
-
-  // 🔒 Límite freemium
-  if (plan === 'free' && row.total_optimizations >= 5) {
-    showUpgradeModal();
-    return;
-  }
-
-  // Aquí hacemos la "optimización"
-  const promptOriginal = resultadoEl.value;
-
-  const promptOptimizado = `
-Mejora el siguiente prompt para que sea más claro, específico y profesional.
-Hazlo más estructurado y efectivo:
-
-${promptOriginal}
-`.trim();
-
-  resultadoEl.value = promptOptimizado;
-
-  // Incrementar contador en DB
-  await updateUserData(userId, {
-    total_optimizations: (row.total_optimizations || 0) + 1
-  });
-
-  await updateUI();
-
-  alert("Prompt optimizado correctamente");
-}
-
     function plantillaProductividad() {
       rol.value = "consultor experto en productividad y automatización";
       objetivo.value = "crear un sistema eficiente para organizar mi trabajo";
@@ -1551,130 +1143,7 @@ ${promptOriginal}
       extension.value = "Corto";
       formato.value = "Lista";
     }
-
-
-    function toggleProfileMenu() {
-  const menu = document.getElementById('profileDropdown');
-  menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-}
-
-document.addEventListener('click', function(e){
-  if(!e.target.closest('.profile-box')){
-    document.getElementById('profileDropdown').style.display = 'none';
-  }
-});
-
-
-async function openProfileModal(){
-  // cargar valores actuales antes de mostrar
-  await populateProfileForm();
-  document.getElementById('profileModal').style.display = 'flex';
-}
-
-async function populateProfileForm(){
-  await initSupabase();
-  const { data:{session} } = await supabase.auth.getSession();
-  if(!session) return;
-  const { data } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', session.user.id)
-    .single();
-  if(data){
-    document.getElementById('profileFullName').value = data.full_name || '';
-    document.getElementById('profileUsername').value = data.username || '';
-    document.getElementById('profileBio').value = data.bio || '';
-  }
-}
-
-function closeProfileModal(){
-  document.getElementById('profileModal').style.display = 'none';
-}
-
-async function saveProfile(){
-
-  await initSupabase();
-
-  const { data:{session} } = await supabase.auth.getSession();
-  if(!session) return;
-
-  const userId = session.user.id;
-
-  const full_name = document.getElementById('profileFullName').value;
-  const username = document.getElementById('profileUsername').value;
-  const bio = document.getElementById('profileBio').value;
-
-  // obtener fila existente para preservar avatar si no se sube uno nuevo
-  let existingAvatar = null;
-  const { data: existing } = await supabase
-    .from('profiles')
-    .select('avatar_url')
-    .eq('id', userId)
-    .single();
-  if (existing && existing.avatar_url) {
-    existingAvatar = existing.avatar_url;
-  }
-
-  let avatar_url = existingAvatar || DEFAULT_AVATAR;
-
-  const fileInput = document.getElementById('profileAvatarFile');
-  const file = fileInput.files[0];
-
-  if(file){
-    const filePath = `${userId}-${Date.now()}`;
-
-    const { error: upErr } = await supabase.storage
-      .from('avatars')
-      .upload(filePath, file, { upsert: true });
-    if(upErr) console.error('upload avatar', upErr);
-
-    const { data } = supabase
-      .storage
-      .from('avatars')
-      .getPublicUrl(filePath);
-
-    avatar_url = data.publicUrl;
-  }
-
-  await supabase
-    .from('profiles')
-    .upsert({
-      id:userId,
-      full_name,
-      username,
-      bio,
-      avatar_url,
-      updated_at:new Date()
-    });
-
-  closeProfileModal();
-  loadProfile();
-}
-
-async function loadProfile(){
-
-  const { data:{session} } = await supabase.auth.getSession();
-  if(!session) return;
-
-  const { data } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', session.user.id)
-    .single();
-
-  if(data){
-    document.getElementById('profileName').textContent = data.full_name || 'Usuario';
-    document.getElementById('profileEmail').textContent = session.user.email;
-
-    // muestra avatar, usando el por defecto si la fila está vacía
-    const avatar = data.avatar_url || DEFAULT_AVATAR;
-    document.getElementById('avatarImg').src = avatar;
-    document.getElementById('avatarMini').src = avatar;
-  }
-}
   </script>
-
-  
 
 </body>
 
