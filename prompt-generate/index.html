@@ -457,10 +457,15 @@ backdrop-filter: blur(8px);
         </div>
 
         <div class="d-flex align-items-center gap-2 flex-wrap header-actions">
+          <button onclick="sendFeedback()" class="btn btn-ghost-custom btn-sm px-3">
+💬 <span class="btn-label">Feedback</span>
+</button>
           <button class="btn btn-ghost-custom btn-sm px-3" onclick="modoOscuro()">🌙 <span class="btn-label">Tema</span></button>
           <button id="upgradeBtn" class="btn btn-ghost-custom btn-sm px-3" onclick="authButtonAction()">Crear cuenta</button>
           <a class="btn btn-cta-custom btn-sm px-3" href="https://buymeacoffee.com/cristiancua" target="_blank" rel="noopener noreferrer">☕ Apóyame</a>
-          <button onclick="compartirPrompt()" class="btn btn-ghost-custom btn-sm px-3">📤 <span class="btn-label">Share</span></button>
+          <button onclick="shareApp()" class="btn btn-ghost-custom btn-sm px-3">
+📤 <span class="btn-label">Compartir</span>
+</button>
         </div>
 
       </div>
@@ -479,6 +484,7 @@ backdrop-filter: blur(8px);
           <button class="tool" onclick="changeTab('biblioteca', this)">Biblioteca</button>
           <button class="tool btn btn-accent" onclick="improveIdea()">✨ Mejorar idea automáticamente</button>
           <button class="tool" onclick="">Convertir idea en negocio</button>
+          
         </div>
         <div></div>
 
@@ -707,9 +713,16 @@ backdrop-filter: blur(8px);
                   <button class="btn btn-outline-custom btn-sm px-3 py-1" type="button" onclick="copiarPrompt()">📋 Copiar</button>
                   <button class="btn btn-soft btn-sm px-3 py-1" type="button" onclick="descargarPrompt()">⬇ Descargar</button>
                   <button id="optBtn" class="btn btn-accent btn-sm px-3 py-1" type="button" onclick="optimizarPrompt()">✨ Optimizar</button>
+                  <button onclick="compartirPrompt()" type="button" class="btn btn-accent btn-sm px-3 py-1">📤 Compartir</button>
+
                 </div>
               </div>
               <textarea id="resultado" class="pg-textarea output" style="resize:none;" placeholder="Aquí aparecerá el prompt generado..."></textarea>
+            <div class="mt-2">
+<button class="btn btn-cta-custom w-100 py-2" onclick="copiarPrompt()">
+📋 Copiar Prompt
+</button>
+</div>
             </div>
 
           </form>
@@ -1023,18 +1036,36 @@ Extra importante:
   }
 
   function copiarPrompt() {
-    navigator.clipboard.writeText(resultado.value);
-    alert("✅ Prompt copiado al portapapeles");
+
+  const text = document.getElementById("resultado").value.trim();
+
+  if(!text){
+    alert("Primero genera un prompt.");
+    return;
   }
 
-  function descargarPrompt() {
-    const blob = new Blob([resultado.value], { type: "text/plain" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = "prompt.txt";
-    link.click();
+  navigator.clipboard.writeText(text);
+  alert("Prompt copiado al portapapeles");
+
+}
+
+ function descargarPrompt() {
+
+  const text = document.getElementById("resultado").value.trim();
+
+  if(!text){
+    alert("No hay ningún prompt para descargar.");
+    return;
   }
 
+  const blob = new Blob([text], { type: "text/plain" });
+
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "prompt.txt";
+  link.click();
+
+}
   function calcularEficiencia() {
     let score = 0;
     if (rol.value.length > 10)         score += 15;
@@ -1293,11 +1324,21 @@ Extra importante:
 
   /* ── OPTIMIZE ── */
   async function optimizarPrompt() {
-    const resultadoEl = document.getElementById('resultado');
-    if (!resultadoEl.value.trim()) { alert("Primero genera un prompt antes de optimizar."); return; }
-    await initSupabase();
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session || !session.user) { showAuthModal(); return; }
+    const resultadoEl = document.getElementById("resultado");
+
+  if(!resultadoEl.value.trim()){
+    alert("Primero genera un prompt antes de optimizar.");
+    return;
+  }
+
+  await initSupabase();
+  const { data:{session} } = await supabase.auth.getSession();
+
+  if(!session){
+    showAuthModal();
+    return;
+  }
+   // if (!session || !session.user) { showAuthModal(); return; }
     const userId = session.user.id;
     let row = await fetchUserData(userId) || await ensureUserData(userId);
     const plan = row.plan || 'free';
@@ -1518,12 +1559,34 @@ El prompt debe incluir:
 }
 
   /* ── SHARE ── */
+  //function compartirPrompt() {
+  //  const text = document.getElementById("resultado").value;
+  //  const shareText = `Acabo de crear este prompt con PromptGenerate:\n\n${text}\n\nPrueba la herramienta aquí:\nhttps://cr1085.github.io/prompt-generate/`;
+  //  navigator.clipboard.writeText(shareText);
+  //  alert("Prompt copiado para compartir 🚀");
+  //}
+
   function compartirPrompt() {
-    const text = document.getElementById("resultado").value;
-    const shareText = `Acabo de crear este prompt con PromptGenerate:\n\n${text}\n\nPrueba la herramienta aquí:\nhttps://cr1085.github.io/prompt-generate/`;
-    navigator.clipboard.writeText(shareText);
-    alert("Prompt copiado para compartir 🚀");
+
+  const text = document.getElementById("resultado").value.trim();
+
+  if(!text){
+    alert("Primero genera un prompt para compartir.");
+    return;
   }
+
+  const shareText = `Acabo de crear este prompt con PromptGenerate:
+
+${text}
+
+Prueba la herramienta aquí:
+https://cr1085.github.io/prompt-generate/`;
+
+  navigator.clipboard.writeText(shareText);
+
+  alert("Prompt copiado para compartir ");
+
+}
 
   function bloquearHerramientas(logueado){
 
@@ -1619,6 +1682,85 @@ targetArea.value = improvedPrompt;
 
 document.getElementById("aiHint").textContent =
 "🧠 Prompt mejorado automáticamente";
+
+}
+
+function sendFeedback(){
+
+const message = encodeURIComponent(
+"Hola Cristian, estuve probando PromptLab y tengo este feedback:"
+);
+
+window.open(
+"https://wa.me/573170582873?text=" + message,
+"_blank"
+);
+
+}
+
+function checkPromptButtons(){
+
+const text = document.getElementById("resultado").value.trim();
+
+const copyButtons = document.querySelectorAll("[onclick='copiarPrompt()']");
+const optBtn = document.getElementById("optBtn");
+
+copyButtons.forEach(btn=>{
+  btn.disabled = !text;
+});
+
+if(optBtn){
+  optBtn.disabled = !text;
+}
+
+}
+
+document.getElementById("resultado").addEventListener("input",checkPromptButtons);
+
+
+function shareApp(){
+
+const url = "https://cr1085.github.io/prompt-generate/";
+const text = "Mira esta herramienta para crear prompts profesionales para IA: PromptLab";
+
+if(navigator.share){
+
+navigator.share({
+title: "PromptLab – Generador de Prompts IA",
+text: text,
+url: url
+});
+
+}else{
+
+showShareMenu(url,text);
+
+}
+
+}
+
+function showShareMenu(url,text){
+
+const shareText = encodeURIComponent(text + " " + url);
+
+const menu = `
+Compartir en:
+
+1️⃣ WhatsApp  
+https://wa.me/?text=${shareText}
+
+2️⃣ Twitter / X  
+https://twitter.com/intent/tweet?text=${shareText}
+
+3️⃣ Facebook  
+https://www.facebook.com/sharer/sharer.php?u=${url}
+
+4️⃣ LinkedIn  
+https://www.linkedin.com/sharing/share-offsite/?url=${url}
+
+`;
+
+alert(menu);
 
 }
   </script>
