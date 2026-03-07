@@ -477,6 +477,8 @@ backdrop-filter: blur(8px);
           <button class="tool" onclick="changeTab('optimizador', this)">Optimizador</button>
           <button class="tool" onclick="changeTab('plantillas', this)">Plantillas</button>
           <button class="tool" onclick="changeTab('biblioteca', this)">Biblioteca</button>
+          <button class="tool btn btn-accent" onclick="improveIdea()">✨ Mejorar idea automáticamente</button>
+          <button class="tool" onclick="">Convertir idea en negocio</button>
         </div>
         <div></div>
 
@@ -887,6 +889,76 @@ Crea un prompt estructurado incluyendo:
 Optimizado para Runway o Pika.
 `.trim()
   };
+
+
+  const promptEngine = {
+  ebook: (idea) => `
+Actúa como experto en productividad y desarrollo personal.
+
+Crea un ebook profesional titulado:
+"${idea}"
+
+Incluye:
+
+- Introducción clara al problema
+- 5 capítulos con estrategias prácticas
+- Ejemplos aplicables
+- Consejos accionables
+- Conclusión con plan de acción
+
+El contenido debe ser claro, útil y aplicable.
+`.trim(),
+
+  negocio: (idea) => `
+Actúa como consultor experto en negocios digitales.
+
+Diseña un modelo de negocio basado en:
+
+"${idea}"
+
+Incluye:
+
+- Nicho rentable
+- Propuesta de valor
+- Producto o servicio digital
+- Estrategia de marketing
+- Embudo de ventas
+- Proyección inicial de ingresos
+`.trim(),
+
+  curso: (idea) => `
+Actúa como experto en educación digital.
+
+Diseña un curso completo basado en:
+
+"${idea}"
+
+Incluye:
+
+- Objetivo del curso
+- Perfil del estudiante
+- Módulos estructurados
+- Lecciones clave
+- Ejercicios prácticos
+- Proyecto final
+`.trim(),
+
+  contenido: (idea) => `
+Actúa como estratega de contenido digital.
+
+Crea una estrategia de contenido basada en:
+
+"${idea}"
+
+Incluye:
+
+- Ideas de publicaciones
+- Guiones para video
+- Hooks virales
+- CTA efectivos
+- Calendario de contenido
+`.trim()
+};
 
   window.addEventListener("load", () => {
     document.getElementById("quickInput").value = "Crear un curso online para aprender a usar inteligencia artificial";
@@ -1466,6 +1538,87 @@ El prompt debe incluir:
     biblioteca.style.display = "none";
 
   }
+
+}
+
+
+function detectIdeaType(text){
+
+text = text.toLowerCase();
+
+if(text.includes("ebook") || text.includes("libro"))
+return "ebook";
+
+if(text.includes("negocio") || text.includes("ganar dinero") || text.includes("monetizar"))
+return "negocio";
+
+if(text.includes("curso") || text.includes("enseñar"))
+return "curso";
+
+return "contenido";
+
+}
+
+async function improveIdea(){
+
+await initSupabase();
+const { data:{session} } = await supabase.auth.getSession();
+
+if(!session){
+  showAuthModal();
+  return;
+}
+
+// detectar qué prompt existe
+const quickPrompt = document.getElementById("quickOutput").value.trim();
+const mainPrompt  = document.getElementById("resultado").value.trim();
+
+let basePrompt = "";
+let targetArea = null;
+
+// prioridad: si existe el principal usar ese
+if(mainPrompt){
+  basePrompt = mainPrompt;
+  targetArea = document.getElementById("resultado");
+}
+else if(quickPrompt){
+  basePrompt = quickPrompt;
+  targetArea = document.getElementById("quickOutput");
+}
+else{
+  alert("Primero genera un prompt.");
+  return;
+}
+
+// motor de mejora automática
+const improvedPrompt = `
+Actúa como experto en ingeniería de prompts para inteligencia artificial.
+
+Reescribe y mejora el siguiente prompt para que sea:
+
+- Más claro
+- Más específico
+- Más estructurado
+- Más efectivo para IA
+
+Prompt original:
+${basePrompt}
+
+El nuevo prompt debe incluir:
+
+1. Rol claro para la IA
+2. Contexto detallado
+3. Objetivo específico
+4. Instrucciones paso a paso
+5. Formato de salida claro
+
+Entrega solo el prompt mejorado.
+`.trim();
+
+targetArea.value = improvedPrompt;
+
+document.getElementById("aiHint").textContent =
+"🧠 Prompt mejorado automáticamente";
 
 }
   </script>
