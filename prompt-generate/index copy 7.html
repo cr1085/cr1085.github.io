@@ -1409,25 +1409,10 @@ ${input}
   }
 
   /* ── QUICK DEMO ── */
-  async function quickDemo() {
-
-  const idea = document.getElementById("quickInput").value.trim();
-
-  if (!idea) {
-    alert("Escribe una idea primero.");
-    return;
-  }
-
-  await initSupabase();
-  const { data: { session } } = await supabase.auth.getSession();
-
-  // 🚫 si no está logueado
-  if (!session || !session.user) {
-    showAuthModal();
-    return;
-  }
-
-  const prompt = `
+  function quickDemo() {
+    const idea = document.getElementById("quickInput").value.trim();
+    if (!idea) { alert("Escribe una idea primero."); return; }
+    const prompt = `
 Actúa como un experto en IA y generación de prompts.
 
 Convierte la siguiente idea en un prompt profesional claro y estructurado.
@@ -1441,9 +1426,8 @@ El prompt debe incluir:
 - instrucciones específicas
 - formato de respuesta
 `.trim();
-
-  document.getElementById("quickOutput").value = prompt;
-}
+    document.getElementById("quickOutput").value = prompt;
+  }
 
   /* ── SHARE ── */
   function compartirPrompt() {
