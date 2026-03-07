@@ -438,6 +438,43 @@ backdrop-filter: blur(8px);
       .header-actions .btn-ghost-custom .btn-label { display: none; }
       .result-actions-wrap { flex-direction: column; align-items: stretch; }
     }
+
+    /* botón crear cuenta destacado */
+.create-account-btn{
+background:#ff6b35;
+border:none;
+font-weight:700;
+box-shadow:0 6px 18px rgba(0,0,0,0.25);
+}
+
+/* modo PC */
+@media (min-width:992px){
+
+.create-account-btn{
+position:absolute;
+right:20px;
+top:20px;
+}
+
+.site-header .container{
+position:relative;
+}
+
+}
+
+/* modo móvil */
+@media (max-width:991px){
+
+.create-account-btn{
+position:static;
+}
+
+}
+
+.create-account-btn:hover{
+transform:translateY(-2px);
+background:#ff7d4f;
+}
   </style>
 </head>
 
@@ -460,12 +497,12 @@ backdrop-filter: blur(8px);
           <button onclick="sendFeedback()" class="btn btn-ghost-custom btn-sm px-3">
 💬 <span class="btn-label">Feedback</span>
 </button>
-          <button class="btn btn-ghost-custom btn-sm px-3" onclick="modoOscuro()">🌙 <span class="btn-label">Tema</span></button>
-          <button id="upgradeBtn" class="btn btn-ghost-custom btn-sm px-3" onclick="authButtonAction()">Crear cuenta</button>
+          <button class="btn btn-ghost-custom btn-sm px-3" onclick="modoOscuro()">🌙 <span class="btn-label">Tema</span></button>         
           <a class="btn btn-cta-custom btn-sm px-3" href="https://buymeacoffee.com/cristiancua" target="_blank" rel="noopener noreferrer">☕ Apóyame</a>
           <button onclick="shareApp()" class="btn btn-ghost-custom btn-sm px-3">
 📤 <span class="btn-label">Compartir</span>
 </button>
+ <button id="upgradeBtn" class="btn btn-ghost-custom btn-sm px-3 create-account-btn" onclick="authButtonAction()">Crear cuenta</button>
         </div>
 
       </div>
