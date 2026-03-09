@@ -1,0 +1,33 @@
+# Dependencias (si en algún momento se agrega un bundler)
+node_modules/
+.npm
+
+# Variables de entorno — NUNCA subir al repositorio
+.env
+.env.local
+.env.production
+*.env
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Editor
+.vscode/settings.json
+.idea/
+*.code-workspace
+
+# Build outputs (si se agrega un bundler en el futuro)
+dist/
+build/
+.cache/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Supabase CLI (si se usa en el futuro)
+.supabase/
