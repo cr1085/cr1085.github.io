@@ -3,10 +3,8 @@
 > Chatbot inteligente para freelancers · Gestiona clientes, proyectos y tareas con IA
 
 ![Estado](https://img.shields.io/badge/estado-en%20desarrollo-yellow)
-![Licencia](https://img.shields.io/badge/licencia-Apache%202.0-green)
+![Licencia](https://img.shields.io/badge/licencia-MIT-green)
 ![Versión](https://img.shields.io/badge/versión-0.1.0-blue)
-![Discord](https://img.shields.io/discord/1234567890?logo=discord)
-![Sponsors](https://img.shields.io/github/sponsors/cr1085?logo=github)
 
 ---
 
@@ -21,8 +19,7 @@
 - Guardar el historial completo de conversaciones
 - Ejecutar acciones automáticamente (crear una tarea solo diciéndoselo)
 
-**Sin servicios de pago obligatorios.**
-**Demo live**: [cr1085.github.io/asistente-freelance](https://cr1085.github.io/asistente-freelance)
+**Completamente open source. Sin suscripciones. Sin servicios de pago obligatorios.**
 
 ---
 
@@ -238,6 +235,55 @@ serve(async (req) => {
 
 ---
 
+## 🔌 Agregar un nuevo proveedor de IA
+
+El sistema usa el patrón **AIProvider**. Para agregar, por ejemplo, Google Gemini:
+
+```javascript
+// En aiService.js, agrega esta clase:
+
+class GeminiProvider extends AIProvider {
+  constructor(apiKey, options = {}) {
+    super(apiKey, options);
+    this.model = 'gemini-1.5-flash';
+    this.endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${this.model}:generateContent`;
+  }
+
+  async sendMessage(messages, systemPrompt) {
+    if (!this.isConfigured()) throw new Error('API key de Gemini no configurada.');
+
+    const response = await fetch(`${this.endpoint}?key=${this.apiKey}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: messages.map(m => ({
+          role: m.role === 'assistant' ? 'model' : 'user',
+          parts: [{ text: m.content }]
+        })),
+        systemInstruction: { parts: [{ text: systemPrompt }] }
+      }),
+    });
+
+    const data = await response.json();
+    return data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  }
+}
+
+// Luego registra el proveedor:
+const AI_PROVIDERS = {
+  claude: ClaudeProvider,
+  openai: OpenAIProvider,
+  gemini: GeminiProvider,   // ← Agrega aquí
+  mock:   MockProvider,
+};
+```
+
+También actualiza el `<select>` en `index.html`:
+```html
+<option value="gemini">Google Gemini</option>
+```
+
+---
 
 ## 🛡️ Seguridad
 
