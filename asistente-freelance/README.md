@@ -23,6 +23,7 @@
 
 **Sin servicios de pago obligatorios.**
 **Demo live**: [cr1085.github.io/asistente-freelance](https://cr1085.github.io/asistente-freelance)
+
 ---
 
 ## 🏗️ Arquitectura
@@ -236,6 +237,7 @@ serve(async (req) => {
 ```
 
 ---
+
 
 ## 🛡️ Seguridad
 
