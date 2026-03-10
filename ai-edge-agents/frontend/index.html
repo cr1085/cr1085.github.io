@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Autonomous Task Agent</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+</head>
+<body>
+
+<!-- ░░░ AUTH OVERLAY ░░░ -->
+<div id="auth-overlay" class="overlay">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <span class="logo-icon">⬡</span>
+      <span class="logo-text">ATA</span>
+    </div>
+    <h1>Autonomous Task Agent</h1>
+    <p class="auth-sub">Sign in to start your agent.</p>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="signin">Sign In</button>
+      <button class="tab" data-tab="signup">Sign Up</button>
+    </div>
+
+    <div id="tab-signin" class="tab-content active">
+      <input type="email"    id="signin-email"    placeholder="Email" autocomplete="email" />
+      <input type="password" id="signin-password" placeholder="Password" />
+      <button id="btn-signin" class="btn-primary">Sign In</button>
+    </div>
+
+    <div id="tab-signup" class="tab-content">
+      <input type="email"    id="signup-email"    placeholder="Email" autocomplete="email" />
+      <input type="password" id="signup-password" placeholder="Password (min 6 chars)" />
+      <button id="btn-signup" class="btn-primary">Create Account</button>
+    </div>
+
+    <p id="auth-error" class="error-msg hidden"></p>
+  </div>
+</div>
+
+<!-- ░░░ APP SHELL ░░░ -->
+<div id="app" class="hidden">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <span class="logo-icon">⬡</span>
+      <span class="logo-text">ATA</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <button class="nav-item active" data-view="dashboard">
+        <span class="nav-icon">◈</span> Dashboard
+      </button>
+      <button class="nav-item" data-view="tasks">
+        <span class="nav-icon">◫</span> Tasks
+      </button>
+      <button class="nav-item" data-view="worker">
+        <span class="nav-icon">◎</span> Worker
+      </button>
+      <button class="nav-item" data-view="memory">
+        <span class="nav-icon">◉</span> Memory
+      </button>
+      <button class="nav-item" data-view="logs">
+        <span class="nav-icon">◌</span> Logs
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-chip">
+        <span class="user-dot"></span>
+        <span id="user-email-short">user</span>
+      </div>
+      <button id="btn-signout" class="btn-ghost">Sign out</button>
+    </div>
+  </aside>
+
+  <!-- MAIN AREA -->
+  <main class="main">
+
+    <!-- ── VIEW: Dashboard ── -->
+    <section id="view-dashboard" class="view active">
+      <header class="view-header">
+        <h2>Dashboard</h2>
+        <button id="btn-new-task-dash" class="btn-primary">+ New Task</button>
+      </header>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-label">Total</span>
+          <span class="stat-value" id="stat-total">—</span>
+        </div>
+        <div class="stat-card accent-yellow">
+          <span class="stat-label">Pending</span>
+          <span class="stat-value" id="stat-pending">—</span>
+        </div>
+        <div class="stat-card accent-blue">
+          <span class="stat-label">Running</span>
+          <span class="stat-value" id="stat-running">—</span>
+        </div>
+        <div class="stat-card accent-green">
+          <span class="stat-label">Completed</span>
+          <span class="stat-value" id="stat-completed">—</span>
+        </div>
+        <div class="stat-card accent-red">
+          <span class="stat-label">Failed</span>
+          <span class="stat-value" id="stat-failed">—</span>
+        </div>
+      </div>
+
+      <h3 class="section-title">Recent Tasks</h3>
+      <div id="recent-tasks" class="task-list">
+        <div class="empty-state">No tasks yet. Create your first task →</div>
+      </div>
+    </section>
+
+    <!-- ── VIEW: Tasks ── -->
+    <section id="view-tasks" class="view">
+      <header class="view-header">
+        <h2>Tasks</h2>
+        <div class="header-actions">
+          <select id="filter-status" class="select-sm">
+            <option value="">All Statuses</option>
+            <option value="pending">Pending</option>
+            <option value="running">Running</option>
+            <option value="completed">Completed</option>
+            <option value="failed">Failed</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+          <button id="btn-new-task" class="btn-primary">+ New Task</button>
+        </div>
+      </header>
+      <div id="tasks-list" class="task-list">
+        <div class="empty-state">Loading…</div>
+      </div>
+    </section>
+
+    <!-- ── VIEW: Worker ── -->
+    <section id="view-worker" class="view">
+      <header class="view-header">
+        <h2>Agent Worker</h2>
+        <div class="header-actions">
+          <button id="btn-worker-start" class="btn-primary">▶ Start Worker</button>
+          <button id="btn-worker-stop"  class="btn-danger hidden">■ Stop Worker</button>
+        </div>
+      </header>
+
+      <div class="worker-status-card">
+        <div class="worker-indicator" id="worker-indicator"></div>
+        <div class="worker-info">
+          <p><strong>Status:</strong> <span id="worker-status-text">Stopped</span></p>
+          <p><strong>Uptime:</strong> <span id="worker-uptime">—</span></p>
+          <p><strong>Current Job:</strong> <span id="worker-current-job">None</span></p>
+        </div>
+        <div class="worker-stats">
+          <div class="mini-stat"><span id="ws-processed">0</span><label>Processed</label></div>
+          <div class="mini-stat"><span id="ws-succeeded">0</span><label>Succeeded</label></div>
+          <div class="mini-stat"><span id="ws-failed">0</span><label>Failed</label></div>
+        </div>
+      </div>
+
+      <h3 class="section-title">Live Activity Log</h3>
+      <div id="worker-log" class="log-terminal">
+        <span class="log-placeholder">Worker not running. Press ▶ Start to begin processing tasks.</span>
+      </div>
+    </section>
+
+    <!-- ── VIEW: Memory ── -->
+    <section id="view-memory" class="view">
+      <header class="view-header">
+        <h2>Agent Memory</h2>
+        <input type="text" id="memory-search" class="search-input" placeholder="Search memories…" />
+      </header>
+      <div id="memory-list" class="memory-grid">
+        <div class="empty-state">Loading memory store…</div>
+      </div>
+    </section>
+
+    <!-- ── VIEW: Logs ── -->
+    <section id="view-logs" class="view">
+      <header class="view-header">
+        <h2>Execution Logs</h2>
+        <select id="log-task-filter" class="select-sm">
+          <option value="">All Tasks</option>
+        </select>
+      </header>
+      <div id="logs-container" class="log-terminal large">
+        <span class="log-placeholder">Select a task to view its logs…</span>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ░░░ TASK MODAL ░░░ -->
+<div id="task-modal" class="modal hidden">
+  <div class="modal-backdrop"></div>
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3>New Task</h3>
+      <button class="modal-close">✕</button>
+    </div>
+    <div class="modal-body">
+      <label>Title <span class="req">*</span>
+        <input type="text" id="task-title" placeholder="e.g. Research competitors" />
+      </label>
+      <label>Goal / Instructions
+        <textarea id="task-goal" rows="3" placeholder="Describe what the agent must accomplish…"></textarea>
+      </label>
+      <label>Description (optional)
+        <textarea id="task-description" rows="2" placeholder="Extra context…"></textarea>
+      </label>
+      <div class="form-row">
+        <label class="flex-1">Priority (1=high, 10=low)
+          <input type="number" id="task-priority" min="1" max="10" value="5" />
+        </label>
+        <label class="flex-1">Max Iterations
+          <input type="number" id="task-max-iter" min="1" max="20" value="5" />
+        </label>
+      </div>
+      <label>Initial Context (JSON)
+        <textarea id="task-context" rows="2" placeholder='{"key": "value"}'></textarea>
+      </label>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost modal-close-btn">Cancel</button>
+      <button id="btn-create-task" class="btn-primary">Create Task</button>
+    </div>
+  </div>
+</div>
+
+<!-- ░░░ TASK DETAIL MODAL ░░░ -->
+<div id="detail-modal" class="modal hidden">
+  <div class="modal-backdrop"></div>
+  <div class="modal-card wide">
+    <div class="modal-header">
+      <h3 id="detail-title">Task Detail</h3>
+      <button class="modal-close detail-close">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="detail-meta" id="detail-meta"></div>
+      <h4>Execution Logs</h4>
+      <div id="detail-logs" class="log-terminal medium"></div>
+      <h4>Result</h4>
+      <pre id="detail-result" class="result-pre"></pre>
+    </div>
+  </div>
+</div>
+
+<!-- ░░░ SCRIPTS ░░░ -->
+<script src="js/config.js"></script>
+<script type="module">
+  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+  import { worker } from "../workers/worker.js";
+  import * as DB   from "./js/supabase-client.js";
+
+  // ── Init Supabase ──────────────────────────────────────────
+  const sb = createClient(ATA_CONFIG.supabase.url, ATA_CONFIG.supabase.anonKey);
+
+  // ── Helpers ────────────────────────────────────────────────
+  const $  = id => document.getElementById(id);
+  const el = (tag, cls, html) => {
+    const e = document.createElement(tag);
+    if (cls)  e.className   = cls;
+    if (html) e.innerHTML   = html;
+    return e;
+  };
+
+  const STATUS_CLASS = {
+    pending:   "badge-yellow",
+    running:   "badge-blue pulse",
+    completed: "badge-green",
+    failed:    "badge-red",
+    cancelled: "badge-gray",
+  };
+
+  function badge(status) {
+    return `<span class="badge ${STATUS_CLASS[status] || ''}">${status}</span>`;
+  }
+
+  function timeAgo(iso) {
+    if (!iso) return "—";
+    const diff = Date.now() - new Date(iso);
+    const s = Math.floor(diff / 1000);
+    if (s < 60)   return `${s}s ago`;
+    if (s < 3600) return `${Math.floor(s/60)}m ago`;
+    return `${Math.floor(s/3600)}h ago`;
+  }
+
+  // ── Auth ───────────────────────────────────────────────────
+  sb.auth.onAuthStateChange((_e, session) => {
+    if (session) {
+      $("auth-overlay").classList.add("hidden");
+      $("app").classList.remove("hidden");
+      const short = session.user.email.split("@")[0];
+      $("user-email-short").textContent = short;
+      loadDashboard();
+    } else {
+      $("auth-overlay").classList.remove("hidden");
+      $("app").classList.add("hidden");
+    }
+  });
+
+  // Tabs
+  document.querySelectorAll(".tab").forEach(t => {
+    t.addEventListener("click", () => {
+      document.querySelectorAll(".tab,.tab-content").forEach(x => x.classList.remove("active"));
+      t.classList.add("active");
+      $("tab-" + t.dataset.tab).classList.add("active");
+    });
+  });
+
+  $("btn-signin").addEventListener("click", async () => {
+    try {
+      await DB.signIn($("signin-email").value, $("signin-password").value);
+    } catch (e) { showAuthError(e.message); }
+  });
+
+  $("btn-signup").addEventListener("click", async () => {
+    try {
+      await DB.signUp($("signup-email").value, $("signup-password").value);
+      showAuthError("Check your email to confirm your account.", false);
+    } catch (e) { showAuthError(e.message); }
+  });
+
+  $("btn-signout").addEventListener("click", () => DB.signOut());
+
+  function showAuthError(msg, isError = true) {
+    const el = $("auth-error");
+    el.textContent = msg;
+    el.className = isError ? "error-msg" : "success-msg";
+  }
+
+  // ── Navigation ─────────────────────────────────────────────
+  document.querySelectorAll(".nav-item").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".nav-item").forEach(b => b.classList.remove("active"));
+      document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+      btn.classList.add("active");
+      $("view-" + btn.dataset.view).classList.add("active");
+      if (btn.dataset.view === "tasks")   loadTasks();
+      if (btn.dataset.view === "memory")  loadMemory();
+      if (btn.dataset.view === "logs")    loadLogsView();
+    });
+  });
+
+  // ── Dashboard ──────────────────────────────────────────────
+  async function loadDashboard() {
+    const tasks = await DB.getTasks();
+    const counts = { total: tasks.length, pending: 0, running: 0, completed: 0, failed: 0 };
+    tasks.forEach(t => { if (counts[t.status] !== undefined) counts[t.status]++; });
+
+    $("stat-total").textContent     = counts.total;
+    $("stat-pending").textContent   = counts.pending;
+    $("stat-running").textContent   = counts.running;
+    $("stat-completed").textContent = counts.completed;
+    $("stat-failed").textContent    = counts.failed;
+
+    renderTaskList($("recent-tasks"), tasks.slice(0, 5));
+  }
+
+  // ── Tasks view ─────────────────────────────────────────────
+  async function loadTasks() {
+    const status = $("filter-status").value;
+    const tasks  = await DB.getTasks(status ? { status } : {});
+    renderTaskList($("tasks-list"), tasks);
+  }
+
+  $("filter-status").addEventListener("change", loadTasks);
+
+  function renderTaskList(container, tasks) {
+    if (!tasks.length) {
+      container.innerHTML = '<div class="empty-state">No tasks found.</div>';
+      return;
+    }
+    container.innerHTML = "";
+    tasks.forEach(t => {
+      const row = el("div", "task-row");
+      row.innerHTML = `
+        <div class="task-row-left">
+          <span class="task-priority">P${t.priority}</span>
+          <div>
+            <span class="task-title">${t.title}</span>
+            <span class="task-meta">${timeAgo(t.created_at)}</span>
+          </div>
+        </div>
+        <div class="task-row-right">
+          ${badge(t.status)}
+          <button class="btn-ghost btn-sm view-task" data-id="${t.id}">View</button>
+          ${t.status === "pending" ? `<button class="btn-ghost btn-sm cancel-task" data-id="${t.id}">Cancel</button>` : ""}
+        </div>`;
+      container.appendChild(row);
+    });
+
+    container.querySelectorAll(".view-task").forEach(b =>
+      b.addEventListener("click", () => openTaskDetail(b.dataset.id)));
+    container.querySelectorAll(".cancel-task").forEach(b =>
+      b.addEventListener("click", async () => { await DB.cancelTask(b.dataset.id); loadTasks(); loadDashboard(); }));
+  }
+
+  // ── Task Detail Modal ──────────────────────────────────────
+  async function openTaskDetail(taskId) {
+    const task = await DB.getTask(taskId);
+    const logs = await DB.getTaskLogs(taskId);
+
+    $("detail-title").textContent = task.title;
+    $("detail-meta").innerHTML = `
+      <span>Status: ${badge(task.status)}</span>
+      <span>Priority: <strong>P${task.priority}</strong></span>
+      <span>Created: <strong>${timeAgo(task.created_at)}</strong></span>
+      ${task.completed_at ? `<span>Completed: <strong>${timeAgo(task.completed_at)}</strong></span>` : ""}
+    `;
+
+    const logHtml = logs.map(l =>
+      `<div class="log-line log-${l.level}"><span class="log-ts">${new Date(l.created_at).toLocaleTimeString()}</span><span class="log-lvl">${l.level.toUpperCase()}</span><span>${l.message}</span></div>`
+    ).join("") || '<span class="log-placeholder">No logs yet.</span>';
+
+    $("detail-logs").innerHTML = logHtml;
+    $("detail-result").textContent = task.result ? JSON.stringify(task.result, null, 2) : "No result yet.";
+
+    $("detail-modal").classList.remove("hidden");
+
+    // Subscribe to live logs
+    DB.subscribeToLogs(taskId, payload => {
+      const l = payload.new;
+      const line = document.createElement("div");
+      line.className = `log-line log-${l.level}`;
+      line.innerHTML = `<span class="log-ts">${new Date(l.created_at).toLocaleTimeString()}</span><span class="log-lvl">${l.level.toUpperCase()}</span><span>${l.message}</span>`;
+      $("detail-logs").appendChild(line);
+      $("detail-logs").scrollTop = 999999;
+    });
+  }
+
+  document.querySelectorAll(".detail-close, #detail-modal .modal-backdrop").forEach(el =>
+    el.addEventListener("click", () => $("detail-modal").classList.add("hidden")));
+
+  // ── Create Task Modal ──────────────────────────────────────
+  function openTaskModal() { $("task-modal").classList.remove("hidden"); }
+  function closeTaskModal() { $("task-modal").classList.add("hidden"); }
+
+  $("btn-new-task").addEventListener("click", openTaskModal);
+  $("btn-new-task-dash").addEventListener("click", openTaskModal);
+  document.querySelectorAll(".modal-close, .modal-close-btn, #task-modal .modal-backdrop")
+    .forEach(e => e.addEventListener("click", closeTaskModal));
+
+  $("btn-create-task").addEventListener("click", async () => {
+    const title = $("task-title").value.trim();
+    if (!title) { alert("Title is required"); return; }
+
+    let context = {};
+    try {
+      const raw = $("task-context").value.trim();
+      if (raw) context = JSON.parse(raw);
+    } catch { alert("Context must be valid JSON"); return; }
+
+    await DB.createTask({
+      title,
+      goal:           $("task-goal").value.trim(),
+      description:    $("task-description").value.trim(),
+      priority:       parseInt($("task-priority").value) || 5,
+      max_iterations: parseInt($("task-max-iter").value) || 5,
+      context,
+    });
+
+    closeTaskModal();
+    loadDashboard();
+    loadTasks();
+
+    // Clear form
+    ["task-title","task-goal","task-description","task-context"].forEach(id => $(id).value = "");
+    $("task-priority").value = "5";
+    $("task-max-iter").value = "5";
+  });
+
+  // ── Worker view ────────────────────────────────────────────
+  let workerLogInterval = null;
+
+  $("btn-worker-start").addEventListener("click", () => {
+    worker.start();
+    $("btn-worker-start").classList.add("hidden");
+    $("btn-worker-stop").classList.remove("hidden");
+    $("worker-log").innerHTML = "";
+    workerLogInterval = setInterval(refreshWorkerStatus, 2000);
+    appendWorkerLog("info", "Worker started — polling for tasks…");
+  });
+
+  $("btn-worker-stop").addEventListener("click", () => {
+    worker.stop();
+    $("btn-worker-start").classList.remove("hidden");
+    $("btn-worker-stop").classList.add("hidden");
+    clearInterval(workerLogInterval);
+    appendWorkerLog("warn", "Worker stopped.");
+    $("worker-indicator").className = "worker-indicator";
+    $("worker-status-text").textContent = "Stopped";
+  });
+
+  function refreshWorkerStatus() {
+    const s = worker.getStatus();
+    $("worker-status-text").textContent = s.running ? (s.currentJob ? "Processing…" : "Idle") : "Stopped";
+    $("worker-uptime").textContent = s.uptime || "—";
+    $("worker-current-job").textContent = s.currentJob ? s.currentJob.title : "None";
+    $("ws-processed").textContent = s.stats.processed;
+    $("ws-succeeded").textContent = s.stats.succeeded;
+    $("ws-failed").textContent    = s.stats.failed;
+
+    $("worker-indicator").className = "worker-indicator" + (s.running ? " active" : "");
+    if (s.running) loadDashboard();
+  }
+
+  function appendWorkerLog(level, msg) {
+    const container = $("worker-log");
+    const placeholder = container.querySelector(".log-placeholder");
+    if (placeholder) placeholder.remove();
+    const line = document.createElement("div");
+    line.className = `log-line log-${level}`;
+    line.innerHTML = `<span class="log-ts">${new Date().toLocaleTimeString()}</span><span class="log-lvl">${level.toUpperCase()}</span><span>${msg}</span>`;
+    container.appendChild(line);
+    container.scrollTop = 999999;
+  }
+
+  // ── Memory view ────────────────────────────────────────────
+  async function loadMemory(keyword = "") {
+    const items = await DB.recallMemory(keyword || "", 50);
+    const container = $("memory-list");
+    if (!items.length) { container.innerHTML = '<div class="empty-state">No memories stored yet.</div>'; return; }
+    container.innerHTML = "";
+    items.forEach(m => {
+      const card = el("div", "memory-card");
+      card.innerHTML = `
+        <div class="mem-key">${m.key}</div>
+        <div class="mem-type badge badge-gray">${m.memory_type}</div>
+        <div class="mem-value">${JSON.stringify(m.value, null, 2)}</div>
+        <div class="mem-ts">${timeAgo(m.created_at)}</div>`;
+      container.appendChild(card);
+    });
+  }
+
+  let memSearchTimer;
+  $("memory-search").addEventListener("input", e => {
+    clearTimeout(memSearchTimer);
+    memSearchTimer = setTimeout(() => loadMemory(e.target.value), 400);
+  });
+
+  // ── Logs view ──────────────────────────────────────────────
+  async function loadLogsView() {
+    const tasks = await DB.getTasks({ limit: 50 });
+    const sel   = $("log-task-filter");
+    sel.innerHTML = '<option value="">All Tasks</option>';
+    tasks.forEach(t => {
+      const opt = document.createElement("option");
+      opt.value = t.id;
+      opt.textContent = `${t.title} (${t.status})`;
+      sel.appendChild(opt);
+    });
+  }
+
+  $("log-task-filter").addEventListener("change", async e => {
+    const taskId = e.target.value;
+    if (!taskId) { $("logs-container").innerHTML = '<span class="log-placeholder">Select a task…</span>'; return; }
+    const logs = await DB.getTaskLogs(taskId, 200);
+    $("logs-container").innerHTML = logs.map(l =>
+      `<div class="log-line log-${l.level}"><span class="log-ts">${new Date(l.created_at).toLocaleTimeString()}</span><span class="log-lvl">${l.level.toUpperCase()}</span><span>${l.message}</span>${l.payload ? `<pre class="log-payload">${JSON.stringify(l.payload,null,2)}</pre>` : ""}</div>`
+    ).join("") || '<span class="log-placeholder">No logs for this task.</span>';
+    $("logs-container").scrollTop = 999999;
+  });
+
+  // ── Real-time: refresh on task changes ────────────────────
+  DB.subscribeToTasks(() => {
+    const activeView = document.querySelector(".view.active")?.id;
+    if (activeView === "view-dashboard") loadDashboard();
+    if (activeView === "view-tasks")     loadTasks();
+  });
+
+</script>
+</body>
+</html>
