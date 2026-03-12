@@ -523,19 +523,6 @@ color:var(--muted);
 .step-guide:nth-child(8) .step-number{background:#ffd8c2;}
 .step-guide:nth-child(9) .step-number{background:#f1dfff;}
 .step-guide:nth-child(10) .step-number{background:#ffeaa7;}
-
-#promptActions{
-display:none;
-}
-
-.result-actions-wrap:empty{
-display:none;
-}
-
-#quickModule{
-display:none;
-}
-
   </style>
 </head>
 
@@ -808,21 +795,20 @@ display:none;
                   <label class="pg-label mb-0" for="resultado">Prompt generado</label>
                   <div style="font-size:0.75rem;color:var(--muted);">Listo para usar — copia o descarga rápido</div>
                 </div>
-                <!-- <div class="d-flex gap-2 flex-wrap"> -->
-                  <div id="promptActions" class="d-flex gap-2 flex-wrap">
-                  <button id="copBtn" class="btn btn-outline-custom btn-sm px-3 py-1" onclick="copiarPrompt()">📋 Copiar</button>
-                  <button id="dscBtn" class="btn btn-soft btn-sm px-3 py-1" onclick="descargarPrompt()">⬇ Descargar</button>
-                  <button id="optBtn" class="btn btn-accent btn-sm px-3 py-1"  onclick="optimizarPrompt()">✨ Optimizar</button>
-                  <button id="comBtn"  onclick="compartirPrompt()" class="btn btn-accent btn-sm px-3 py-1">📤 Compartir</button>
+                <div class="d-flex gap-2 flex-wrap">
+                  <button class="btn btn-outline-custom btn-sm px-3 py-1" type="button" onclick="copiarPrompt()">📋 Copiar</button>
+                  <button class="btn btn-soft btn-sm px-3 py-1" type="button" onclick="descargarPrompt()">⬇ Descargar</button>
+                  <button id="optBtn" class="btn btn-accent btn-sm px-3 py-1" type="button" onclick="optimizarPrompt()">✨ Optimizar</button>
+                  <button onclick="compartirPrompt()" type="button" class="btn btn-accent btn-sm px-3 py-1">📤 Compartir</button>
 
                 </div>
               </div>
               <textarea id="resultado" class="pg-textarea output" style="resize:none;" placeholder="Aquí aparecerá el prompt generado..."></textarea>
-            <!-- <div class="mt-2">
+            <div class="mt-2">
 <button class="btn btn-cta-custom w-100 py-2" onclick="copiarPrompt()">
 📋 Copiar Prompt
 </button>
-</div> -->
+</div>
             </div>
 
           </form>
@@ -1023,7 +1009,7 @@ Añade ejemplos o llamada a la acción.
       <div class="col-lg-4 d-flex flex-column gap-4">
 
         <!-- Quick Prompt -->
-        <div id="quickModule" class="quick-card">
+        <div class="quick-card">
           <h2>⚡ Genera Prompt PRO en 1 clic</h2>
           <p style="color:var(--muted);font-size:0.83rem;margin:0 0 14px;">Escribe una idea y obtén estructura profesional al instante.</p>
           <label class="pg-label" for="quickInput">Describe tu idea</label>
@@ -1079,9 +1065,6 @@ Añade ejemplos o llamada a la acción.
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
   <script>
-
-   // let freeTrialUsed = false;
-   let freeTrialUsed = localStorage.getItem("promptTrialUsed") === "true";
   /* ── TEMPLATES ── */
   const templates = {
     youtube: `... plantilla pro youtube ...`,
@@ -1237,25 +1220,8 @@ Incluye:
     } else { errorEl.style.display = 'none'; }
 
     await initSupabase();
-    //const { data: { session } } = await supabase.auth.getSession();
-
-   const { data: { session } } = await supabase.auth.getSession();
-
-// usuario no logueado
-if(!session || !session.user){
-
-if(freeTrialUsed){
-showAuthModal();
-return;
-}
-
-// permitir 1 prompt gratis
-//freeTrialUsed = true;
-
-freeTrialUsed = true;
-localStorage.setItem("promptTrialUsed","true");
-
-}
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session || !session.user) { showAuthModal(); return; }
 
     const prompt = `
 Actúa como ${rol.value}.
@@ -1280,12 +1246,6 @@ Extra importante:
 `.trim();
 
     resultado.value = prompt;
-
-    if(!session || !session.user){
-document.getElementById("resultado").value +=
-"\n\n🔓 Regístrate gratis para copiar, optimizar y descargar este prompt.";
-}
-
     guardarHistorial(prompt);
     calcularEficiencia();
     try { await incrementUsage(); } catch (e) { console.warn('incrementUsage', e); }
@@ -1482,20 +1442,16 @@ document.getElementById("resultado").value +=
     const optCounterEl = document.getElementById('optCounter');
 
     if (!session || !session.user) {
-      updatePromptButtons(false);
       bloquearHerramientas(false);
       planBadge.textContent = 'Plan Free';
       planBadge.style.background = '#e2e8f0'; planBadge.style.color = '#334155';
       counterEl.textContent = 'Inicia sesión para usar Prompt Lab';
-      //generarBtn.disabled = true; 
-      generarBtn.disabled = false;
-      optBtn.disabled = true;
+      generarBtn.disabled = true; optBtn.disabled = true;
       upgradeBtn.textContent = 'Regístrate gratis y desbloquea todas las herramientas';
       document.getElementById('usageNumber').textContent = 0;
       document.getElementById('optNumber').textContent = 0;
       document.getElementById('toolsBar').style.display = 'none';
       const profileBox = document.getElementById('profileBox');
-      document.getElementById("quickModule").style.display = "none";
       if (profileBox) profileBox.style.display = 'none';
       const profileDropdown = document.getElementById('profileDropdown');
       if (profileDropdown) profileDropdown.style.display = 'none';
@@ -1503,8 +1459,6 @@ document.getElementById("resultado").value +=
     }
 
     bloquearHerramientas(true);
-    updatePromptButtons(true);
-    document.getElementById("quickModule").style.display = "block";
 
     const row  = await fetchUserData(session.user.id) || await ensureUserData(session.user.id);
     const plan = row.plan || 'free';
@@ -2025,38 +1979,6 @@ https://www.linkedin.com/sharing/share-offsite/?url=${url}
 `;
 
 alert(menu);
-
-}
-
-
-function updatePromptButtons(logged){
-
-const actions = document.getElementById("promptActions");
-
-const copBtn = document.getElementById("copBtn");
-const dscBtn = document.getElementById("dscBtn");
-const comBtn = document.getElementById("comBtn");
-const optBtn = document.getElementById("optBtn");
-
-if(!logged){
-
-actions.style.display = "none";
-
-copBtn.style.display = "none";
-dscBtn.style.display = "none";
-comBtn.style.display = "none";
-optBtn.style.display = "none";
-
-}else{
-
-actions.style.display = "flex";
-
-copBtn.style.display = "inline-block";
-dscBtn.style.display = "inline-block";
-comBtn.style.display = "inline-block";
-optBtn.style.display = "inline-block";
-
-}
 
 }
   </script>
