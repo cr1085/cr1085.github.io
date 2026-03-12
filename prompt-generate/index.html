@@ -475,6 +475,54 @@ position:static;
 transform:translateY(-2px);
 background:#ff7d4f;
 }
+
+
+.step-guide{
+display:flex;
+align-items:flex-start;
+gap:12px;
+margin-bottom:14px;
+}
+
+.step-number{
+width:34px;
+height:34px;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:800;
+font-family:'Syne', sans-serif;
+font-size:16px;
+color:#000;
+background:#ffe8b6;
+border:2px solid #000;
+transform:rotate(-6deg);
+box-shadow:2px 3px 0px #000;
+flex-shrink:0;
+}
+
+.step-text strong{
+font-size:0.95rem;
+display:block;
+}
+
+.step-text{
+font-size:0.85rem;
+color:var(--muted);
+}
+
+
+.step-guide:nth-child(1) .step-number{background:#d8f5a2;}
+.step-guide:nth-child(2) .step-number{background:#c6e2ff;}
+.step-guide:nth-child(3) .step-number{background:#ffe0e0;}
+.step-guide:nth-child(4) .step-number{background:#ffd6ff;}
+.step-guide:nth-child(5) .step-number{background:#ffe8b6;}
+.step-guide:nth-child(6) .step-number{background:#d7f9ff;}
+.step-guide:nth-child(7) .step-number{background:#e9ffc7;}
+.step-guide:nth-child(8) .step-number{background:#ffd8c2;}
+.step-guide:nth-child(9) .step-number{background:#f1dfff;}
+.step-guide:nth-child(10) .step-number{background:#ffeaa7;}
   </style>
 </head>
 
@@ -520,6 +568,7 @@ background:#ff7d4f;
           <button class="tool" onclick="changeTab('plantillas', this)">Plantillas</button>
           <button class="tool" onclick="changeTab('biblioteca', this)">Biblioteca</button>
           <button class="tool btn btn-accent" onclick="improveIdea()">✨ Mejorar idea automáticamente</button>
+          <button class="tool" onclick="changeTab('manual', this)">Guía rápida</button>
           <button class="tool" onclick="">Convertir idea en negocio</button>
           
         </div>
@@ -822,6 +871,137 @@ background:#ff7d4f;
           <p style="color:var(--muted);font-size:0.875rem;">Tus prompts guardados listos para reutilizar.</p>
           <div class="library-shelf" id="libraryList"></div>
         </section>
+
+        <!-- SECTION MANUAL -->
+<section id="section-manual" class="pg-card" style="display:none;">
+
+<h2>Guía rápida: Cómo crear un buen prompt</h2>
+<p style="color:var(--muted);font-size:0.875rem;">
+Aprende en menos de 1 minuto cómo usar PromptLab para obtener mejores resultados con IA.
+</p>
+
+<div style="text-align:center;margin-top:20px;">
+<img src="manual-ejemplo.png" 
+alt="Guía visual para crear prompts en PromptLab"
+style="max-width:100%;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.1);">
+</div>
+
+<div style="margin-top:20px;font-size:0.9rem;color:var(--muted);">
+
+<!-- <p><strong>1️⃣ Rol que asumirá la IA</strong><br>
+Define qué tipo de experto quieres que sea la IA.</p>
+
+<p><strong>2️⃣ Objetivo principal</strong><br>
+Describe claramente qué quieres que la IA haga.</p>
+
+<p><strong>3️⃣ Público objetivo</strong><br>
+Indica para quién es el contenido o resultado.</p>
+
+<p><strong>4️⃣ Contexto o problema</strong><br>
+Explica la situación para que la IA entienda mejor el escenario.</p>
+
+<p><strong>5️⃣ Tono</strong><br>
+Define el estilo de comunicación (profesional, cercano, creativo).</p>
+
+<p><strong>6️⃣ Lenguaje</strong><br>
+Elige si quieres algo simple o más técnico.</p>
+
+<p><strong>7️⃣ Extensión</strong><br>
+Selecciona si deseas una respuesta corta o detallada.</p>
+
+<p><strong>8️⃣ Formato de salida</strong><br>
+Indica cómo quieres recibir la respuesta: lista, guion, tabla, etc.</p>
+
+<p><strong>9️⃣ Qué evitar</strong><br>
+Define elementos que no quieres en la respuesta.</p>
+
+<p><strong>🔟 Qué incluir</strong><br>
+Añade elementos importantes como ejemplos o llamadas a la acción.</p> -->
+
+
+<div class="step-guide">
+<div class="step-number">1</div>
+<div class="step-text">
+<strong>Rol que asumirá la IA</strong>
+Define qué tipo de experto quieres que sea la IA.
+</div>
+</div>
+
+<div class="step-guide">
+<div class="step-number">2</div>
+<div class="step-text">
+<strong>Objetivo principal</strong>
+Describe claramente qué quieres que la IA haga.
+</div>
+</div>
+
+<div class="step-guide">
+<div class="step-number">3</div>
+<div class="step-text">
+<strong>Público objetivo</strong>
+Indica para quién es el contenido o resultado.
+</div>
+</div>
+
+<div class="step-guide">
+<div class="step-number">4</div>
+<div class="step-text">
+<strong>Contexto o problema</strong>
+Explica la situación para que la IA entienda mejor el escenario.
+</div>
+</div>
+
+<div class="step-guide">
+<div class="step-number">5</div>
+<div class="step-text">
+<strong>Tono</strong>
+Define el estilo de comunicación.
+</div>
+</div>
+
+<div class="step-guide">
+<div class="step-number">6</div>
+<div class="step-text">
+<strong>Lenguaje</strong>
+Elige si quieres algo simple o más técnico.
+</div>
+</div>
+
+<div class="step-guide">
+<div class="step-number">7</div>
+<div class="step-text">
+<strong>Extensión</strong>
+Selecciona si deseas una respuesta corta o detallada.
+</div>
+</div>
+
+<div class="step-guide">
+<div class="step-number">8</div>
+<div class="step-text">
+<strong>Formato de salida</strong>
+Indica cómo quieres recibir la respuesta.
+</div>
+</div>
+
+<div class="step-guide">
+<div class="step-number">9</div>
+<div class="step-text">
+<strong>Qué evitar</strong>
+Define elementos que no quieres en la respuesta.
+</div>
+</div>
+
+<div class="step-guide">
+<div class="step-number">10</div>
+<div class="step-text">
+<strong>Qué incluir</strong>
+Añade ejemplos o llamada a la acción.
+</div>
+</div>
+
+</div>
+
+</section>
 
       </div><!-- /col-lg-8 -->
 
@@ -1630,12 +1810,13 @@ https://cr1085.github.io/prompt-generate/`;
   const optimizador = document.getElementById("section-optimizador");
   const plantillas = document.getElementById("section-plantillas");
   const biblioteca = document.getElementById("section-biblioteca");
-
+const manual = document.getElementById("section-manual");
   if(!logueado){
 
     optimizador.style.display = "none";
     plantillas.style.display = "none";
     biblioteca.style.display = "none";
+    manual.style.display = "none";
 
   }
 
