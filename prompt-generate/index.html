@@ -1033,11 +1033,13 @@ Añade ejemplos o llamada a la acción.
 Aprende Prompt Engineering jugando.
 </p>
 
-<iframe 
+<!-- <iframe 
 id="gameFrame"
 src="prompt-quest.html"
 style="width:100%;height:600px;border:none;border-radius:12px;">
-</iframe>
+</iframe> -->
+
+<div id="gameContainer"></div>
 
 </section>
 
@@ -1434,6 +1436,13 @@ document.getElementById("resultado").value +=
     await initSupabase();
     await supabase.auth.signOut();
     updateAuthState(null);
+
+    // volver al generador
+document.querySelectorAll('[id^="section-"]').forEach(sec => sec.style.display = 'none');
+document.getElementById("section-generador").style.display = "block";
+
+// desactivar botones
+document.querySelectorAll('.tool').forEach(btn => btn.classList.remove('active'));
   }
 
   async function updateAuthState(user) {
@@ -1720,15 +1729,36 @@ ${promptOriginal}
     return;
   }
 
-  // apagar juego si sales del tab juego
-const gameFrame = document.getElementById("gameFrame");
 
-if(tabName !== "juego" && gameFrame){
+  document.querySelectorAll('.tool').forEach(btn => btn.classList.remove('active'));
+button.classList.add('active');
 
-// recargar iframe para parar audio
-gameFrame.src = gameFrame.src;
+document.querySelectorAll('[id^="section-"]').forEach(sec => sec.style.display = 'none');
+
+document.getElementById('section-' + tabName).style.display = 'block';
+
+const gameContainer = document.getElementById("gameContainer");
+
+// si salimos del juego → destruir iframe
+if(tabName !== "juego"){
+gameContainer.innerHTML = "";
+}
+
+// si entramos al juego → crear iframe nuevo
+if(tabName === "juego"){
+
+gameContainer.innerHTML = `
+<iframe
+src="prompt-quest.html"
+style="width:100%;height:600px;border:none;border-radius:12px;">
+</iframe>
+`;
 
 }
+
+if (tabName === 'biblioteca') loadLibrary();
+
+ 
     document.querySelectorAll('.tool').forEach(btn => btn.classList.remove('active'));
     button.classList.add('active');
     document.querySelectorAll('[id^="section-"]').forEach(sec => sec.style.display = 'none');

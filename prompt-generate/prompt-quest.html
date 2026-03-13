@@ -1498,6 +1498,20 @@ music.volume = 0.3;
 document.addEventListener("click", () => {
   music.play();
 });
+
+
+document.addEventListener("visibilitychange", () => {
+
+const music = document.getElementById("bgMusic");
+
+if(document.hidden){
+music.pause();
+}else{
+music.play();
+}
+
+});
+
 // ============================================================
 // DATOS DEL JUEGO
 // ============================================================
