@@ -536,6 +536,12 @@ display:none;
 display:none;
 }
 
+.tool.game{
+background:linear-gradient(135deg,#7c3aed,#0b5cff);
+color:white;
+font-weight:700;
+}
+
   </style>
 </head>
 
@@ -580,6 +586,7 @@ display:none;
           <button class="tool" onclick="changeTab('optimizador', this)">Optimizador</button>
           <button class="tool" onclick="changeTab('plantillas', this)">Plantillas</button>
           <button class="tool" onclick="changeTab('biblioteca', this)">Biblioteca</button>
+          <button class="tool game" onclick="changeTab('juego', this)"> Prompt Quest</button>
           <button class="tool btn btn-accent" onclick="improveIdea()">✨ Mejorar idea automáticamente</button>
           <button class="tool" onclick="changeTab('manual', this)">Guía rápida</button>
           <button class="tool" onclick="">Convertir idea en negocio</button>
@@ -1014,6 +1021,23 @@ Añade ejemplos o llamada a la acción.
 </div>
 
 </div>
+
+</section>
+
+
+<section id="section-juego" class="pg-card" style="display:none;">
+
+<h2>🎮 Prompt Quest</h2>
+
+<p style="color:var(--muted);font-size:0.9rem;">
+Aprende Prompt Engineering jugando.
+</p>
+
+<iframe 
+id="gameFrame"
+src="prompt-quest.html"
+style="width:100%;height:600px;border:none;border-radius:12px;">
+</iframe>
 
 </section>
 
@@ -1695,6 +1719,16 @@ ${promptOriginal}
     showAuthModal();
     return;
   }
+
+  // apagar juego si sales del tab juego
+const gameFrame = document.getElementById("gameFrame");
+
+if(tabName !== "juego" && gameFrame){
+
+// recargar iframe para parar audio
+gameFrame.src = gameFrame.src;
+
+}
     document.querySelectorAll('.tool').forEach(btn => btn.classList.remove('active'));
     button.classList.add('active');
     document.querySelectorAll('[id^="section-"]').forEach(sec => sec.style.display = 'none');
