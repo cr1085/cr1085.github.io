@@ -383,7 +383,7 @@
   <div id="hud">
     <div class="hud-block">
       <div class="hud-label">Prompt Trainer</div>
-      <div class="hud-name">⚔️ HERO</div>
+      <div class="hud-name"><img src="hero-icon.png" height="14"> HERO</div>
       <div class="hp-bar-wrap">
         <div class="hp-bar-fill hp-fill-player" id="player-hp-bar" style="width:100%"></div>
       </div>
@@ -398,7 +398,7 @@
 
     <div class="hud-block" style="align-items:flex-end">
       <div class="hud-label" style="text-align:right">Enemigo</div>
-      <div class="hud-enemy-name" id="enemy-name">👹 GOBLIN</div>
+      <div class="hud-enemy-name" id="enemy-name"><img src="goblin.png" height="14"> GOBLIN</div>
       <div class="hp-bar-wrap">
         <div class="hp-bar-fill hp-fill-enemy" id="enemy-hp-bar" style="width:100%"></div>
       </div>
@@ -1835,10 +1835,22 @@ function drawTitleScreen() {
   // Decoración: espada ⚔️ y emoji
   ctx.font = '36px serif';
   ctx.textAlign = 'left';
-  ctx.fillText('⚔️', 30, 120);
+  //ctx.fillText('⚔️', 30, 120);
   ctx.textAlign = 'right';
-  ctx.fillText('🤖', W - 30, 120);
+  //ctx.fillText('🤖', W - 30, 120);
   ctx.textAlign = 'left';
+
+  const sword = new Image()
+sword.src = "sword.png"
+sword.onload = () => {
+  ctx.drawImage(sword, 20, 90, 80, 60)
+}
+
+const robot = new Image()
+robot.src = "robot.png"
+robot.onload = () => {
+  ctx.drawImage(robot, W - 60, 90, 80, 60)
+}
 
   // Línea decorativa inferior
   ctx.strokeStyle = '#00ffcc44';
@@ -1849,12 +1861,30 @@ function drawTitleScreen() {
   ctx.stroke();
 
   // Enemigos en miniatura
-  const ems = ['👹', '💪', '🐉', '🤖'];
-  ems.forEach((e, i) => {
-    ctx.font = '22px serif';
-    ctx.textAlign = 'center';
-    ctx.fillText(e, 150 + i * 135, 195);
-  });
+  //const ems = ['👹', '💪', '🐉', '🤖'];
+  const ems = [
+"goblin.png",
+"orc.png",
+"dragon.png",
+"titan.png"
+]
+
+ems.forEach((src,i)=>{
+ const img = new Image()
+ img.src = src
+ img.onload = ()=>{
+
+  ctx.drawImage(img,130+i*135,175,40,30)
+
+ }
+})
+
+
+  //ems.forEach((e, i) => {
+  //  ctx.font = '22px serif';
+  //  ctx.textAlign = 'center';
+  //  ctx.fillText(e, 150 + i * 135, 195);
+  //});
 }
 
 // ─────────────────────────────────────────────────────────
