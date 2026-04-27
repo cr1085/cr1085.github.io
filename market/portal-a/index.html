@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Sym Foto Digital | Agencia Creativa</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Fuente -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --vinotinto: #6b0f3f;
+            --naranja: #f59e0b;
+            --gris: #444;
+            --bg: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--gris);
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 60px;
+            border-bottom: 1px solid #eee;
+        }
+
+        header img {
+            height: 55px;
+        }
+
+        nav a {
+            margin-left: 30px;
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background: var(--vinotinto);
+            color: white;
+            padding: 12px 28px;
+            border-radius: 30px;
+            font-weight: 600;
+        }
+
+        .hero {
+            padding: 100px 60px;
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .hero h1 {
+            font-size: 42px;
+            color: var(--vinotinto);
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 18px;
+            margin-bottom: 30px;
+            max-width: 500px;
+        }
+
+        .hero .actions a {
+            margin-right: 15px;
+        }
+
+        .hero img {
+            width: 100%;
+            border-radius: 20px;
+        }
+
+        .section {
+            padding: 80px 60px;
+        }
+
+        .section h2 {
+            text-align: center;
+            font-size: 32px;
+            margin-bottom: 50px;
+            color: var(--vinotinto);
+        }
+
+        .services {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+        }
+
+        .card {
+            padding: 40px 30px;
+            border-radius: 20px;
+            background: #fafafa;
+            text-align: center;
+        }
+
+        .card h3 {
+            margin-bottom: 15px;
+            color: var(--vinotinto);
+        }
+
+        .card p {
+            font-size: 15px;
+        }
+
+        .cta {
+            background: var(--vinotinto);
+            color: white;
+            text-align: center;
+            padding: 80px 40px;
+            border-radius: 30px;
+            margin: 0 60px 80px;
+        }
+
+        .cta h2 {
+            margin-bottom: 20px;
+            font-size: 30px;
+        }
+
+        footer {
+            padding: 40px 60px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        footer p {
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <!-- Cambia la ruta del logo -->
+    <img src="assets/images/logo.jpeg" alt="Sym Foto Digital">
+
+    <nav>
+         <a href="index.html">Inicio</a>
+        <a href="#">Servicios</a>
+        <a href="#">Reservas</a>
+        <a href="#">Contacto</a>
+        <a href="#" class="btn">Reservar</a>
+    </nav>
+</header>
+
+<section class="hero">
+    <div>
+        <h1>Creamos experiencias visuales<br>que conectan marcas y emociones</h1>
+        <p>
+            Fotografía profesional, marketing visual y producción de eventos.
+            En Sym Foto Digital transformamos ideas en imágenes que impactan.
+        </p>
+
+        <div class="actions">
+            <a href="reservas.html" class="btn-primary">Agendar sesión</a>
+            <a href="servicios.html">Ver servicios</a>
+        </div>
+    </div>
+
+    <!-- Imagen de impacto -->
+    <img src="assets/images/hero.png" alt="Sym Foto Digital">
+</section>
+
+<section class="section">
+    <h2>¿Qué hacemos?</h2>
+
+    <div class="services">
+        <div class="card">
+            <h3>Fotografía Profesional</h3>
+            <p>
+                Estudio, bebés, familiar y eventos.
+                Capturamos momentos con calidad y sensibilidad.
+            </p>
+        </div>
+
+        <div class="card">
+            <h3>Marketing Visual</h3>
+            <p>
+                Contenido creativo para marcas que buscan diferenciarse
+                y conectar con su audiencia.
+            </p>
+        </div>
+
+        <div class="card">
+            <h3>Eventos & Producción</h3>
+            <p>
+                Cubrimos eventos sociales y corporativos con un enfoque
+                profesional y estratégico.
+            </p>
+        </div>
+    </div>
+</section>
+
+<section class="cta">
+    <h2>Agenda tu sesión en pocos pasos</h2>
+    <p>Consulta disponibilidad y reserva tu fecha fácilmente.</p>
+    <br>
+    <a href="reservas.html" class="btn-primary">Ir a reservas</a>
+</section>
+
+<footer>
+    <p>© 2026 Sym Foto Digital</p>
+    <p>Agencia creativa · Fotografía · Marketing visual</p>
+</footer>
+
+</body>
+</html>

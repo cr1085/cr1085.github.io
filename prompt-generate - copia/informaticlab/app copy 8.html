@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>InfoMática — Dashboard</title>
+  <link rel="icon" type="image/svg+xml" href="assets/icons/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="main.css">
+  <link rel="stylesheet" href="components.css">
+  <link rel="stylesheet" href="layout.css">
+  <link rel="stylesheet" href="assistant.css">
+</head>
+<body class="app-page">
+
+  <!-- SIDEBAR NAV -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <img class="logo-full" src="assets/icons/logo-full.svg" alt="InfoMáticLab">
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="#" class="nav-item active" data-section="dashboard">
+        <img class="nav-icon" src="assets/icons/home.png" alt="Inicio">
+        <span class="nav-label">Inicio</span>
+      </a>
+      <a href="#" class="nav-item" data-section="modules">
+        <img class="nav-icon" src="assets/icons/modules.png" alt="Módulos">
+        <span class="nav-label">Módulos</span>
+      </a>
+      <a href="#" class="nav-item" data-section="exercises">
+        <img class="nav-icon" src="assets/icons/exercises.png" alt="Ejercicios">
+        <span class="nav-label">Ejercicios</span>
+      </a>
+      <a href="mecalab.html" class="nav-item">
+        <img class="nav-icon" src="assets/icons/keyboard.svg" alt="Teclado">
+        <span class="nav-label">Teclado</span>
+      </a>
+      <a href="#" class="nav-item" data-section="simulator">
+        <img class="nav-icon" src="assets/icons/simulator.png" alt="Simulador">
+        <span class="nav-label">Simulador</span>
+      </a>
+      <a href="../index.html" class="nav-item">
+        <img class="nav-icon" src="assets/icons/promptlab.svg" alt="PromptLab">
+        <span class="nav-label">PromptLab</span>
+      </a>
+      <a href="desktop-sim.html" class="nav-item">
+        <img class="nav-icon" src="assets/icons/desktop.svg" alt="Escritorio">
+        <span class="nav-label">Escritorio</span>
+      </a>
+      <a href="#" class="nav-item" data-section="achievements">
+        <img class="nav-icon" src="assets/icons/achievements.png" alt="Logros">
+        <span class="nav-label">Logros</span>
+      </a>
+      <a href="#" class="nav-item" data-section="roadmap">
+        <img class="nav-icon" src="assets/icons/roadmap.svg" alt="Mi Ruta">
+        <span class="nav-label">Mi Ruta</span>
+      </a>
+      <a href="#" class="nav-item" data-section="profile">
+        <img class="nav-icon" src="assets/icons/profile.png" alt="Perfil">
+        <span class="nav-label">Perfil</span>
+      </a>
+    </nav>
+
+    <!-- User XP Card -->
+    <div class="sidebar-xp">
+      <div class="xp-avatar" id="sidebarAvatar">🧑</div>
+      <div class="xp-info">
+        <span class="xp-name" id="sidebarName">Cargando...</span>
+        <div class="xp-bar-mini">
+          <div class="xp-fill-mini" id="sidebarXpBar" style="width:0%"></div>
+        </div>
+        <span class="xp-label" id="sidebarXp">0 XP</span>
+      </div>
+    </div>
+
+    <button class="btn btn-ghost btn-sm sidebar-logout" id="btnLogout">
+      ← Salir
+    </button>
+  </aside>
+
+  <!-- MOBILE HEADER -->
+  <header class="mobile-header">
+    <button class="menu-toggle" id="menuToggle">☰</button>
+    <img class="logo-full" src="assets/icons/logo-full.svg" alt="InfoMáticLab" style="height:28px">
+    <div class="mobile-xp" id="mobileXp">0 XP</div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="app-main" id="appMain">
+
+    <!-- ============ SECCIÓN: DASHBOARD ============ -->
+    <section class="app-section active" id="section-dashboard">
+
+      <!-- Saludo -->
+      <div class="section-header">
+        <div>
+          <h1 class="section-title">¡Hola, <span id="userName">Estudiante</span>! 👋</h1>
+          <p class="section-sub">Continúa donde lo dejaste</p>
+        </div>
+        <div class="streak-badge">
+          🔥 <span id="streakCount">0</span> días seguidos
+        </div>
+      </div>
+
+      <!-- XP Card grande -->
+      <div class="xp-card">
+        <div class="xp-card-left">
+          <div class="level-badge" id="levelBadge">Nv. 1</div>
+          <div class="xp-card-info">
+            <span class="xp-card-label">Nivel <span id="levelName">Principiante</span></span>
+            <div class="xp-bar-wrap">
+              <div class="xp-bar">
+                <div class="xp-fill" id="xpFill" style="width:0%"></div>
+              </div>
+              <span class="xp-nums"><span id="currentXp">0</span> / <span id="nextXp">100</span> XP</span>
+            </div>
+          </div>
+        </div>
+        <div class="xp-card-right">
+          <div class="xp-stat">
+            <strong id="totalLessons">0</strong>
+            <span>Lecciones</span>
+          </div>
+          <div class="xp-stat">
+            <strong id="totalAchievements">0</strong>
+            <span>Logros</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Continuar aprendiendo -->
+      <div class="dash-block">
+        <h2 class="block-title">Continuar aprendiendo</h2>
+        <div class="continue-card" id="continueCard">
+          <div class="continue-icon"><img class="emoji-icon" src="assets/icons/lessons/word.svg" alt="Word" onerror="this.onerror=null;this.src='assets/icons/lessons/_placeholder.svg'" style="width:32px;height:32px"></div>
+          <div class="continue-info">
+            <span class="continue-module">Word Básico</span>
+            <span class="continue-lesson" id="continueLesson">Lección 1: Conociendo Word</span>
+            <div class="progress-mini">
+              <div class="progress-fill" id="continueProg" style="width: 0%"></div>
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="openSection('modules');loadLessonsPath('word')">Continuar →</button>
+        </div>
+      </div>
+
+      <!-- Grid de módulos -->
+      <div class="dash-block">
+        <h2 class="block-title">Todos los módulos</h2>
+        <div class="modules-grid" id="modulesGrid">
+
+          <div class="mod-card" data-module="word" style="--c:#4F8EF7">
+            <div class="mod-card-top">
+              <span class="mod-icon"><img class="mod-icon-img" src="assets/icons/lessons/word.svg" alt="Word" onerror="this.onerror=null;this.src='assets/icons/lessons/_placeholder.svg'" width="36" height="36"></span>
+              <span class="mod-badge new">Popular</span>
+            </div>
+            <h3>Microsoft Word</h3>
+            <p>Crea documentos profesionales desde cero</p>
+            <div class="mod-progress">
+              <div class="mod-progress-bar"><div class="mod-progress-fill" style="width:0%"></div></div>
+              <span>0% completado</span>
+            </div>
+            <button class="btn btn-mod" onclick="openSection('modules')">Empezar</button>
+          </div>
+
+          <div class="mod-card locked" data-module="excel" style="--c:#22C55E">
+            <div class="mod-card-top">
+              <span class="mod-icon"><img class="mod-icon-img" src="assets/icons/lessons/excel.svg" alt="Excel" onerror="this.onerror=null;this.src='assets/icons/lessons/_placeholder.svg'" width="36" height="36"></span>
+              <span class="mod-badge">🔒 Nivel 3</span>
+            </div>
+            <h3>Microsoft Excel</h3>
+            <p>Fórmulas, tablas y análisis de datos</p>
+            <div class="mod-progress">
+              <div class="mod-progress-bar"><div class="mod-progress-fill" style="width:0%"></div></div>
+              <span>Bloqueado</span>
+            </div>
+            <button class="btn btn-mod" disabled>Desbloquear en Nv. 3</button>
+          </div>
+
+          <div class="mod-card locked" data-module="internet" style="--c:#F59E0B">
+            <div class="mod-card-top">
+              <span class="mod-icon"><img class="mod-icon-img" src="assets/icons/lessons/internet.svg" alt="Internet" onerror="this.onerror=null;this.src='assets/icons/lessons/_placeholder.svg'" width="36" height="36"></span>
+              <span class="mod-badge">🔒 Nivel 2</span>
+            </div>
+            <h3>Internet seguro</h3>
+            <p>Navega con confianza y seguridad</p>
+            <div class="mod-progress">
+              <div class="mod-progress-bar"><div class="mod-progress-fill" style="width:0%"></div></div>
+              <span>Bloqueado</span>
+            </div>
+            <button class="btn btn-mod" disabled>Desbloquear en Nv. 2</button>
+          </div>
+
+          <div class="mod-card locked" data-module="email" style="--c:#EC4899">
+            <div class="mod-card-top">
+              <span class="mod-icon"><img class="mod-icon-img" src="assets/icons/lessons/email.svg" alt="Email" onerror="this.onerror=null;this.src='assets/icons/lessons/_placeholder.svg'" width="36" height="36"></span>
+              <span class="mod-badge">🔒 Nivel 4</span>
+            </div>
+            <h3>Correo electrónico</h3>
+            <p>Gmail, Outlook y comunicación profesional</p>
+            <div class="mod-progress">
+              <div class="mod-progress-bar"><div class="mod-progress-fill" style="width:0%"></div></div>
+              <span>Bloqueado</span>
+            </div>
+            <button class="btn btn-mod" disabled>Desbloquear en Nv. 4</button>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SECCIÓN: MÓDULOS / LECCIONES ============ -->
+    <section class="app-section hidden" id="section-modules">
+      <div class="section-header">
+        <div>
+          <h1 class="section-title" id="moduleSectionTitle"><img class="emoji-icon" src="assets/icons/lessons/word.svg" alt="Word" onerror="this.onerror=null;this.src='assets/icons/lessons/_placeholder.svg'" style="width:28px;height:28px;vertical-align:middle;display:inline-block"> Word Básico</h1>
+          <p class="section-sub" id="moduleSectionSub">Cargando lecciones...</p>
+        </div>
+      </div>
+
+      <div class="lessons-path" id="lessonsPath">
+        <div class="path-loading">Cargando lecciones...</div>
+      </div>
+    </section>
+
+    <!-- ============ SECCIÓN: EJERCICIOS ============ -->
+    <section class="app-section hidden" id="section-exercises">
+      <div class="section-header">
+        <h1 class="section-title">🎯 Ejercicios</h1>
+        <p class="section-sub">Practica y gana XP</p>
+      </div>
+
+      <!-- Ejercicios (renderizado por exercises.js) -->
+      <div class="exercise-container" id="exerciseContainer"></div>
+    </section>
+
+    <!-- ============ SECCIÓN: SIMULADOR ============ -->
+    <section class="app-section hidden" id="section-simulator">
+      <div class="section-header">
+        <h1 class="section-title">🖥️ Simulador</h1>
+        <p class="section-sub">Practica en un entorno real</p>
+      </div>
+
+      <div class="sim-selector">
+        <button class="sim-btn active" data-sim="word">📄 Word</button>
+        <button class="sim-btn" data-sim="excel">📊 Excel (próx.)</button>
+      </div>
+
+      <!-- Simulador Word -->
+      <div class="word-sim" id="wordSim">
+        <div class="word-ribbon">
+          <div class="ribbon-group">
+            <button onclick="simFormat('bold')" title="Negrita"><strong>N</strong></button>
+            <button onclick="simFormat('italic')" title="Cursiva"><em>I</em></button>
+            <button onclick="simFormat('underline')" title="Subrayado"><u>S</u></button>
+          </div>
+          <div class="ribbon-group">
+            <select onchange="simFontSize(this.value)" class="ribbon-select" title="Tamaño de fuente">
+              <option value="14px">14</option>
+              <option value="16px">16</option>
+              <option value="18px">18</option>
+              <option value="24px">24</option>
+              <option value="32px">32</option>
+            </select>
+          </div>
+          <div class="ribbon-group">
+            <button onclick="simAlign('left')" title="Izquierda">⬅</button>
+            <button onclick="simAlign('center')" title="Centro">↔</button>
+            <button onclick="simAlign('right')" title="Derecha">➡</button>
+          </div>
+          <div class="ribbon-group">
+            <input type="color" id="simColor" onchange="simFontColor(this.value)" title="Color" value="#000000"/>
+          </div>
+          <div class="ribbon-group">
+            <button onclick="checkSimTask()" class="btn btn-primary btn-sm">✅ Verificar tarea</button>
+          </div>
+        </div>
+
+        <!-- Tarea activa -->
+        <div class="sim-task-bar" id="simTaskBar">
+          <span>📋 <strong>Tarea:</strong> Escribe tu nombre completo, ponlo en <strong>negrita</strong> y céntralo.</span>
+          <span class="sim-xp-reward">+30 XP</span>
+        </div>
+
+        <!-- Área de edición -->
+        <div class="word-page">
+          <div
+            class="word-editor"
+            id="wordEditor"
+            contenteditable="true"
+            spellcheck="false"
+            data-placeholder="Haz clic aquí y comienza a escribir..."
+          ></div>
+        </div>
+
+        <!-- Feedback -->
+        <div class="sim-feedback hidden" id="simFeedback"></div>
+      </div>
+    </section>
+
+    <!-- ============ SECCIÓN: MECANOGRAFÍA ============ -->
+    <section class="app-section hidden" id="section-typing">
+      <div class="section-header">
+        <div>
+          <h1 class="section-title">⌨️ Mecanografía</h1>
+          <p class="section-sub">Mejora tu velocidad y precisión al escribir</p>
+        </div>
+        <div id="soundToggleWrap"></div>
+      </div>
+      <div id="typingGame"></div>
+    </section>
+
+    <!-- ============ SECCIÓN: ESCRITORIO ============ -->
+    <section class="app-section hidden" id="section-desktop">
+      <div class="section-header">
+        <h1 class="section-title">🗂️ Escritorio PC</h1>
+        <p class="section-sub">Aprende a organizar archivos y carpetas</p>
+      </div>
+      <div id="desktopSim"></div>
+    </section>
+
+    <!-- ============ SECCIÓN: MI RUTA / ROADMAP ============ -->
+    <section class="app-section hidden" id="section-roadmap">
+      <div class="section-header">
+        <div>
+          <h1 class="section-title">🗺️ Mi Ruta de Aprendizaje</h1>
+          <p class="section-sub">Plan intensivo de 4 semanas · 40 horas · Nivel profesional</p>
+        </div>
+        <div class="streak-badge" id="roadmapProgress">📅 Semana 1 de 4</div>
+      </div>
+
+      <!-- Progreso general del plan -->
+      <div class="roadmap-app-header" id="roadmapAppHeader">
+        <div class="rap-week active" data-week="1" onclick="showRoadmapWeek(1)">
+          <div class="rap-week-num" style="background:var(--week1,#06B6D4)">S1</div>
+          <div class="rap-week-label">Fundamentos</div>
+          <div class="rap-week-prog" id="rapProg1"><div class="rap-week-fill" style="width:0%;background:var(--week1,#06B6D4)"></div></div>
+        </div>
+        <div class="rap-connector"></div>
+        <div class="rap-week" data-week="2" onclick="showRoadmapWeek(2)">
+          <div class="rap-week-num" style="background:var(--week2,#4F8EF7)">S2</div>
+          <div class="rap-week-label">Word</div>
+          <div class="rap-week-prog" id="rapProg2"><div class="rap-week-fill" style="width:0%;background:var(--week2,#4F8EF7)"></div></div>
+        </div>
+        <div class="rap-connector"></div>
+        <div class="rap-week" data-week="3" onclick="showRoadmapWeek(3)">
+          <div class="rap-week-num" style="background:var(--week3,#22C55E)">S3</div>
+          <div class="rap-week-label">Excel</div>
+          <div class="rap-week-prog" id="rapProg3"><div class="rap-week-fill" style="width:0%;background:var(--week3,#22C55E)"></div></div>
+        </div>
+        <div class="rap-connector"></div>
+        <div class="rap-week" data-week="4" onclick="showRoadmapWeek(4)">
+          <div class="rap-week-num" style="background:linear-gradient(135deg,#F59E0B,#EC4899)">S4</div>
+          <div class="rap-week-label">Avanzado</div>
+          <div class="rap-week-prog" id="rapProg4"><div class="rap-week-fill" style="width:0%;background:#F59E0B"></div></div>
+        </div>
+      </div>
+
+      <!-- Detalle de cada semana -->
+      <div id="roadmapWeekDetail"><!-- Renderizado por JS --></div>
+    </section>
+
+    <!-- ============ SECCIÓN: LOGROS ============ -->
+    <section class="app-section hidden" id="section-achievements">
+      <div class="section-header">
+        <h1 class="section-title">🏆 Mis Logros</h1>
+        <p class="section-sub">Colecciona insignias y demuestra tu progreso</p>
+      </div>
+
+      <div class="achievements-grid" id="achievementsGrid">
+        <!-- Generado por JS -->
+      </div>
+    </section>
+
+    <!-- ============ SECCIÓN: PERFIL ============ -->
+    <section class="app-section hidden" id="section-profile">
+      <div class="section-header">
+        <h1 class="section-title">👤 Mi Perfil</h1>
+      </div>
+
+      <div class="profile-layout">
+        <div class="profile-card">
+          <div class="profile-avatar" id="profileAvatar">🧑</div>
+          <h2 id="profileName">—</h2>
+          <p id="profileEmail" class="profile-email">—</p>
+          <div class="profile-level-tag" id="profileLevelTag">Principiante</div>
+        </div>
+
+        <div class="profile-stats">
+          <div class="pstat">
+            <span class="pstat-val" id="pXp">0</span>
+            <span class="pstat-label">XP Total</span>
+          </div>
+          <div class="pstat">
+            <span class="pstat-val" id="pLevel">1</span>
+            <span class="pstat-label">Nivel</span>
+          </div>
+          <div class="pstat">
+            <span class="pstat-val" id="pLessons">0</span>
+            <span class="pstat-label">Lecciones</span>
+          </div>
+          <div class="pstat">
+            <span class="pstat-val" id="pStreak">0</span>
+            <span class="pstat-label">Racha días</span>
+          </div>
+        </div>
+
+        <!-- Historial de XP -->
+        <div class="profile-history">
+          <h3>Historial de actividad</h3>
+          <div class="history-list" id="historyList">
+            <p class="empty-state">Aún no hay actividad registrada.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Toast notifications -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Level up modal -->
+  <div class="modal-overlay hidden" id="levelUpModal">
+    <div class="modal levelup-modal">
+      <div class="levelup-stars">⭐⭐⭐</div>
+      <h2>¡Subiste de nivel!</h2>
+      <div class="levelup-badge" id="levelUpBadge">Nv. 2</div>
+      <p id="levelUpName">¡Ahora eres <strong>Explorador</strong>!</p>
+      <p id="levelUpUnlock" class="levelup-unlock"></p>
+      <button class="btn btn-primary" onclick="closeLevelUp()">¡Genial! 🎉</button>
+    </div>
+  </div>
+
+  <!-- SCRIPTS -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-client.js"></script>
+  <script src="store.js"></script>
+  <script src="modules.js"></script>
+  <script src="progress.js"></script>
+  <script src="achievements.js"></script>
+  <script src="auth.js"></script>
+  <script src="ui.js"></script>
+  <script src="user.js"></script>
+  <script src="lessons.js"></script>
+  <script src="exercises.js"></script>
+  <script src="keyboard.js"></script>
+  <script src="desktop-sim.js"></script>
+  <script src="roadmap.js"></script>
+
+  <!-- Asistente Inteligente -->
+  <script src="assistant-knowledge.js"></script>
+  <script src="assistant-brain.js"></script>
+  <script src="assistant-chat.js"></script>
+
+  <script>
+    // Definir startExercise INMEDIATAMENTE
+    window.startExercise = function(type) {
+      if (typeof Exercises !== 'undefined' && Exercises.start) {
+        Exercises.start(type);
+      }
+    };
+
+    // ---- VARIABLES GLOBALES ----
+    let activeModuleId = 'pc_basico';
+
+    // ---- FUNCIONES WRAPPER ----
+    function initTypingGame() {
+      if (typeof TypingGame !== 'undefined') {
+        TypingGame.start('typingGame', 'beginner');
+      }
+    }
+
+    function initDesktop() {
+      if (typeof DesktopSim !== 'undefined') {
+        DesktopSim.init('desktopSim');
+      }
+    }
+
+    function renderModulesGrid() {
+      if (typeof Modules === 'undefined') return;
+      const grid = document.getElementById('modulesGrid');
+      if (!grid) return;
+
+      const state = typeof Store !== 'undefined' ? Store.getState() : {};
+      const level = state.level || 1;
+      const completedLessons = state.completedLessons || [];
+      const allModules = Modules.getAllModules();
+
+      grid.innerHTML = allModules.map(mod => {
+        const isUnlocked = mod.levelRequired <= level;
+        const completedCount = mod.lessons.filter(l => completedLessons.includes(l.id)).length;
+        const totalLessons = mod.lessons.length;
+        const progressPct = totalLessons > 0 ? Math.round((completedCount / totalLessons) * 100) : 0;
+
+        return `
+          <div class="mod-card ${isUnlocked ? '' : 'locked'}" style="--c:${mod.color}" onclick="${isUnlocked ? `selectModule('${mod.id}')` : ''}">
+            <div class="mod-card-top">
+              <span class="mod-icon">${mod.icon}</span>
+              <span class="mod-badge ${!isUnlocked ? '' : progressPct === 100 ? '' : 'new'}">
+                ${!isUnlocked ? '🔒 Nv.' + mod.levelRequired : progressPct === 100 ? '✅' : 'Nv.' + mod.levelRequired}
+              </span>
+            </div>
+            <h3>${mod.name}</h3>
+            <p>${mod.description}</p>
+            <div class="mod-progress">
+              <div class="mod-progress-bar">
+                <div class="mod-progress-fill" style="width:${progressPct}%"></div>
+              </div>
+              <span>${completedCount}/${totalLessons} lecciones</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function selectModule(moduleId) {
+      activeModuleId = moduleId;
+      openSection('modules');
+    }
+
+    function renderSoundToggle(containerId) {
+      const wrap = document.getElementById(containerId);
+      if (!wrap) return;
+      const isMuted = localStorage.getItem('soundMuted') === 'true';
+      wrap.innerHTML = `
+        <button class="btn btn-ghost btn-sm" onclick="toggleSound(this)" title="${isMuted ? 'Activar sonido' : 'Silenciar sonido'}">
+          ${isMuted ? '🔇' : '🔊'}
+        </button>
+      `;
+    }
+
+    function toggleSound(btn) {
+      const isMuted = localStorage.getItem('soundMuted') === 'true';
+      localStorage.setItem('soundMuted', !isMuted);
+      btn.textContent = !isMuted ? '🔇' : '🔊';
+      btn.title = !isMuted ? 'Activar sonido' : 'Silenciar sonido';
+    }
+
+    // ---- NAVEGACIÓN ----
+    function openSection(name) {
+      document.querySelectorAll('.app-section').forEach(s => {
+        s.classList.remove('active');
+        s.classList.add('hidden');
+      });
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+      const sec = document.getElementById(`section-${name}`);
+      if (sec) { sec.classList.remove('hidden'); sec.classList.add('active'); }
+
+      const nav = document.querySelector(`.nav-item[data-section="${name}"]`);
+      if (nav) nav.classList.add('active');
+
+      document.getElementById('sidebar').classList.remove('open');
+
+      // Actualizar sección en el store
+      if (typeof Store !== 'undefined') {
+        Store.setState({ currentSection: name }, false);
+      }
+
+      // Inicializar módulos al abrir
+      if (name === 'typing')    { initTypingGame(); renderSoundToggle('soundToggleWrap'); }
+      if (name === 'desktop')   { initDesktop(); }
+      if (name === 'profile')   { if (typeof Progress !== 'undefined') Progress.loadHistory(); }
+      if (name === 'dashboard') { renderModulesGrid(); }
+      if (name === 'roadmap')   { if (typeof initRoadmap === 'function') initRoadmap(); }
+      if (name === 'modules')   { if (typeof Lessons !== 'undefined') Lessons.loadLessonsPath(activeModuleId || 'pc_basico'); }
+      if (name === 'exercises') { if (typeof Exercises !== 'undefined') Exercises.renderWelcome(); }
+    }
+
+    document.querySelectorAll('.nav-item[data-section]').forEach(item => {
+      item.addEventListener('click', e => {
+        e.preventDefault();
+        openSection(item.dataset.section);
+      });
+    });
+
+    // Mobile menu
+    document.getElementById('menuToggle').onclick = () => {
+      document.getElementById('sidebar').classList.toggle('open');
+    };
+
+    // Logout
+    document.getElementById('btnLogout').onclick = async () => { await logoutUser(); };
+
+    // Simulator buttons
+    document.querySelectorAll('.sim-btn').forEach(btn => {
+      btn.onclick = function() {
+        document.querySelectorAll('.sim-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+      };
+    });
+
+    // Level up modal
+    function closeLevelUp() { document.getElementById('levelUpModal').classList.add('hidden'); }
+
+    // App init
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (typeof supabase !== 'undefined') {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) { window.location.href = 'index.html'; return; }
+        await loadUserData(session.user);
+        if (typeof Progress !== 'undefined') await Progress.updateStreak(session.user.id);
+        loadAchievements();
+        if (typeof Lessons !== 'undefined') Lessons.loadLessonsPath('pc_basico');
+        renderModulesGrid();
+      }
+
+      // Inicializar Asistente Inteligente
+      if (typeof AssistantKnowledge !== 'undefined') {
+        await AssistantKnowledge.init();
+      }
+      if (typeof AssistantBrain !== 'undefined') {
+        AssistantBrain.init();
+      }
+      if (typeof AssistantChat !== 'undefined') {
+        AssistantChat.init();
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,2397 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>PROMPT ADVENTURE</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Exo+2:wght@400;700;900&display=swap');
+
+  :root {
+    --gold: #FFD700;
+    --cyan: #00FFFF;
+    --magenta: #FF00FF;
+    --green: #00FF88;
+    --red: #FF4444;
+    --purple: #8B44FF;
+    --bg: #0a0a1a;
+    --panel: rgba(10,10,40,0.92);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  body {
+    background: var(--bg);
+    margin: 0;
+    overflow: hidden;
+    font-family: 'Exo 2', sans-serif;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none;
+    overscroll-behavior: none;
+  }
+
+  #gameWrapper {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: #000;
+  }
+
+  #gameCanvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  /* HUD Overlay */
+  #hud {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  #topBar {
+    position: absolute;
+    top: 8px; left: 8px; right: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    pointer-events: none;
+  }
+
+  .hud-panel {
+    background: var(--panel);
+    border: 1px solid rgba(139,68,255,0.5);
+    border-radius: 4px;
+    padding: 6px 10px;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+
+  .hud-label {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 6px;
+    color: var(--purple);
+    text-transform: uppercase;
+    margin-bottom: 3px;
+  }
+
+  .bar-container {
+    width: 120px;
+    height: 8px;
+    background: rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  #playerHpBar {
+    height: 100%;
+    background: linear-gradient(90deg, #00cc44, #00ff88);
+    transition: width 0.3s;
+    border-radius: 2px;
+    box-shadow: 0 0 6px #00ff88;
+  }
+
+  #enemyHpBar {
+    height: 100%;
+    background: linear-gradient(90deg, #cc2200, #ff4444);
+    transition: width 0.3s;
+    border-radius: 2px;
+    box-shadow: 0 0 6px #ff4444;
+  }
+
+  #zoneLabel {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 7px;
+    color: var(--gold);
+    text-align: center;
+  }
+
+  #scoreDisplay {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    color: var(--cyan);
+  }
+
+  /* Mission Panel */
+  #missionPanel {
+    position: absolute;
+    bottom: 70px;
+    left: 8px;
+    background: var(--panel);
+    border: 1px solid rgba(0,255,136,0.4);
+    border-radius: 4px;
+    padding: 6px 10px;
+    max-width: 220px;
+    pointer-events: none;
+  }
+
+  #missionTitle {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 6px;
+    color: var(--green);
+    margin-bottom: 4px;
+  }
+
+  #missionText {
+    font-size: 10px;
+    color: rgba(255,255,255,0.8);
+    line-height: 1.4;
+  }
+
+  /* Battle UI */
+  #battleUI {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 10px;
+    background: var(--panel);
+    border-top: 2px solid var(--purple);
+    display: none;
+    pointer-events: all;
+    z-index: 20;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    max-height: 30%;
+    box-sizing: border-box;
+  }
+
+  #battleUI.active { display: block; }
+
+  /* Central safe zone - leaves space for controls */
+  #battleCenter {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    /* SPACE FOR CONTROLS */
+    margin-left: 110px;
+    margin-right: 110px;
+    align-items: center;
+  }
+
+  #battleCenter #promptInput {
+    flex: 1;
+    min-width: 0;
+  }
+
+  #battleUI.focus-mode {
+    transform: translateY(-60px);
+    box-shadow: 0 -10px 40px rgba(0,0,0,0.8);
+    background: rgba(10,10,40,0.98);
+  }
+
+  /* AI Loading Overlay */
+  #aiLoading {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.9);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    font-family: 'Press Start 2P', monospace;
+    color: #00ffff;
+    font-size: 10px;
+    z-index: 200;
+    gap: 20px;
+  }
+
+  #aiLoading.active {
+    display: flex;
+    animation: aiLoadingFade 0.3s ease;
+  }
+
+  @keyframes aiLoadingFade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .aiLoading-dots::after {
+    content: '';
+    animation: aiDots 1.5s steps(4,end) infinite;
+  }
+
+  @keyframes aiDots {
+    0% { content: '.'; }
+    25% { content: '..'; }
+    50% { content: '...'; }
+    75% { content: '....'; }
+  }
+
+  .aiLoading-bar {
+    width: 200px;
+    height: 4px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .aiLoading-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #00ffff, #ff00ff);
+    width: 0%;
+    animation: aiBarFill 0.5s ease forwards;
+  }
+
+  @keyframes aiBarFill {
+    to { width: 100%; }
+  }
+
+  #promptInput {
+    flex: 1;
+    background: rgba(0,0,0,0.6);
+    border: 1px solid var(--purple);
+    border-radius: 4px;
+    color: white;
+    font-family: 'Exo 2', sans-serif;
+    font-size: 14px;
+    padding: 6px 10px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    min-width: 0;
+  }
+
+  #promptInput:focus {
+    border-color: var(--cyan);
+    box-shadow: 0 0 12px rgba(0,255,255,0.3);
+  }
+
+  #promptInput::placeholder { color: rgba(255,255,255,0.3); }
+
+  #attackBtn {
+    background: linear-gradient(135deg, var(--purple), #5500cc);
+    border: 1px solid var(--magenta);
+    color: white;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    padding: 10px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  #attackBtn:hover {
+    background: linear-gradient(135deg, var(--magenta), var(--purple));
+    box-shadow: 0 0 16px rgba(255,0,255,0.5);
+    transform: scale(1.05);
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+      MOBILE CONTROLS - PROFESSIONAL
+   ═══════════════════════════════════════════════════════════ */
+   #mobileControls {
+     position: absolute;
+     bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+     left: calc(20px + env(safe-area-inset-left, 0px));
+     display: none;
+     gap: 12px;
+     z-index: 100;
+   }
+
+   #mobileControls.visible {
+     display: flex;
+   }
+
+   #mobileControls button {
+     width: 70px;
+     height: 70px;
+     border-radius: 50%;
+     border: 2px solid rgba(139,68,255,0.8);
+     font-size: 24px;
+     background: rgba(10,10,40,0.85);
+     color: white;
+     backdrop-filter: blur(10px);
+     -webkit-backdrop-filter: blur(10px);
+     cursor: pointer;
+     transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+     user-select: none;
+     -webkit-user-select: none;
+     -webkit-tap-highlight-color: transparent;
+     box-shadow: 0 4px 20px rgba(139,68,255,0.3), inset 0 0 20px rgba(139,68,255,0.1);
+   }
+
+   #mobileControls button:active,
+   #mobileControls button.active {
+     background: rgba(139,68,255,0.7);
+     border-color: var(--cyan);
+     transform: scale(0.92);
+     box-shadow: 0 0 25px rgba(0,255,255,0.6), inset 0 0 30px rgba(0,255,255,0.2);
+   }
+
+   #mobileControls button#btn-action {
+     background: rgba(255,0,255,0.4);
+     border-color: var(--magenta);
+     box-shadow: 0 4px 20px rgba(255,0,255,0.4), inset 0 0 20px rgba(255,0,255,0.1);
+   }
+
+   #mobileControls button#btn-action:active,
+   #mobileControls button#btn-action.active {
+     background: rgba(255,0,255,0.8);
+     border-color: #ff66ff;
+     box-shadow: 0 0 30px rgba(255,0,255,0.8), inset 0 0 30px rgba(255,0,255,0.3);
+   }
+
+   /* Mobile attack button */
+   #mobileAttackBtn {
+     position: absolute;
+     bottom: 20px;
+     right: 20px;
+     display: none;
+     width: 70px;
+     height: 70px;
+     border-radius: 50%;
+     border: 2px solid var(--magenta);
+     font-size: 24px;
+     background: linear-gradient(135deg, rgba(255,0,255,0.6), rgba(139,68,255,0.6));
+     color: white;
+     cursor: pointer;
+     z-index: 100;
+     box-shadow: 0 4px 20px rgba(255,0,255,0.5), inset 0 0 15px rgba(255,255,255,0.1);
+     transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+   }
+
+   #mobileAttackBtn.visible {
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     animation: attackBtnPulse 2s infinite;
+   }
+
+   @keyframes attackBtnPulse {
+     0%, 100% { box-shadow: 0 6px 30px rgba(255,0,255,0.5); }
+     50% { box-shadow: 0 6px 40px rgba(255,0,255,0.8); }
+   }
+
+   #mobileAttackBtn:active {
+     transform: scale(0.88);
+     box-shadow: 0 0 40px rgba(255,0,255,0.9), inset 0 0 35px rgba(255,255,255,0.2);
+   }
+
+   /* Mobile input focus adjustment */
+   #gameWrapper.mobile-focus {
+     transition: transform 0.3s ease;
+   }
+
+   /* JOYSTICK ANALOGICO */
+   #joystickContainer {
+     position: absolute;
+     bottom: 20px;
+     left: 20px;
+     width: 90px;
+     height: 90px;
+     display: none;
+     z-index: 100;
+   }
+
+   #joystickContainer.visible {
+     display: block;
+   }
+
+   #joystickBase {
+     position: absolute;
+     width: 90px;
+     height: 90px;
+     border-radius: 50%;
+     background: rgba(10,10,40,0.85);
+     border: 2px solid rgba(139,68,255,0.6);
+     box-shadow: 0 0 15px rgba(139,68,255,0.3), inset 0 0 20px rgba(0,0,0,0.5);
+     backdrop-filter: blur(8px);
+     -webkit-backdrop-filter: blur(8px);
+   }
+
+   #joystickStick {
+     position: absolute;
+     width: 40px;
+     height: 40px;
+     border-radius: 50%;
+     background: linear-gradient(135deg, rgba(139,68,255,0.9), rgba(0,255,255,0.7));
+     border: 2px solid rgba(0,255,255,0.9);
+     box-shadow: 0 0 12px rgba(0,255,255,0.5), inset 0 0 10px rgba(255,255,255,0.2);
+     top: 50%;
+     left: 50%;
+     transform: translate(-50%, -50%);
+     transition: transform 0.05s linear;
+   }
+
+   #joystickStick.active {
+     background: linear-gradient(135deg, rgba(0,255,255,0.9), rgba(255,0,255,0.7));
+     box-shadow: 0 0 25px rgba(0,255,255,0.8), inset 0 0 20px rgba(255,255,255,0.3);
+   }
+
+   /* Responsive scaling */
+   @media (max-width: 850px) {
+     #gameWrapper {
+       transform-origin: top center;
+     }
+   }
+
+   /* PORTRAIT MODE */
+   @media (orientation: portrait) {
+     #mobileControls {
+       bottom: calc(15px + env(safe-area-inset-bottom, 0px));
+       left: calc(15px + env(safe-area-inset-left, 0px));
+     }
+
+     #mobileControls button {
+       width: 65px;
+       height: 65px;
+     }
+
+     #mobileAttackBtn {
+       bottom: calc(15px + env(safe-area-inset-bottom, 0px));
+       right: calc(15px + env(safe-area-inset-right, 0px));
+       width: 75px;
+       height: 75px;
+     }
+
+     #joystickContainer {
+       bottom: calc(25px + env(safe-area-inset-bottom, 0px));
+       left: calc(25px + env(safe-area-inset-left, 0px));
+       width: 100px;
+       height: 100px;
+     }
+
+     #joystickBase {
+       width: 100px;
+       height: 100px;
+     }
+
+     #joystickStick {
+       width: 45px;
+       height: 45px;
+     }
+
+     #topBar {
+       flex-wrap: wrap;
+       gap: 5px;
+     }
+
+     .hud-panel {
+       padding: 4px 8px;
+     }
+
+     .bar-container {
+       width: 80px;
+       height: 6px;
+     }
+
+     #missionPanel {
+       bottom: 60px;
+       max-width: 160px;
+     }
+   }
+
+  #promptFeedback {
+    position: absolute;
+    bottom: 65px; left: 12px; right: 12px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 7px;
+    color: var(--gold);
+    pointer-events: none;
+    transition: opacity 0.5s;
+  }
+
+  /* Enemy HP overlay */
+  #enemyHudPanel {
+    display: none;
+  }
+  #enemyHudPanel.visible {
+    display: block;
+  }
+
+  /* Title Screen */
+  #titleScreen {
+    position: absolute;
+    inset: 0;
+    background: rgba(5,5,20,0.96);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    pointer-events: all;
+  }
+
+  #titleScreen h1 {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 28px;
+    color: var(--gold);
+    text-shadow: 0 0 20px var(--gold), 0 0 40px rgba(255,215,0,0.4);
+    margin-bottom: 8px;
+    text-align: center;
+    letter-spacing: 2px;
+  }
+
+  #titleScreen .subtitle {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 9px;
+    color: var(--cyan);
+    margin-bottom: 32px;
+    text-align: center;
+    opacity: 0.8;
+  }
+
+  #startBtn {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 12px;
+    color: var(--bg);
+    background: linear-gradient(135deg, var(--gold), #ffaa00);
+    border: none;
+    padding: 14px 32px;
+    border-radius: 4px;
+    cursor: pointer;
+    animation: pulse 1.5s infinite;
+    box-shadow: 0 0 24px rgba(255,215,0,0.5);
+  }
+
+  @keyframes pulse {
+    0%,100% { transform: scale(1); box-shadow: 0 0 24px rgba(255,215,0,0.5); }
+    50% { transform: scale(1.05); box-shadow: 0 0 36px rgba(255,215,0,0.8); }
+  }
+
+  .title-tips {
+    margin-top: 28px;
+    text-align: center;
+    font-size: 11px;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.8;
+  }
+
+  .title-tips span { color: var(--green); }
+
+  /* Zone clear screen */
+  #zoneClearScreen {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,20,5,0.95);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 90;
+    pointer-events: all;
+  }
+  #zoneClearScreen.active { display: flex; }
+
+  #zoneClearScreen h2 {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 18px;
+    color: var(--gold);
+    margin-bottom: 12px;
+    text-shadow: 0 0 20px var(--gold);
+  }
+
+  #zoneClearScreen p {
+    font-size: 14px;
+    color: var(--green);
+    margin-bottom: 24px;
+    text-align: center;
+    max-width: 400px;
+    line-height: 1.6;
+  }
+
+  #nextZoneBtn {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 10px;
+    color: var(--bg);
+    background: linear-gradient(135deg, var(--green), #00cc66);
+    border: none;
+    padding: 12px 24px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  /* Controls hint */
+  #controlsHint {
+    position: absolute;
+    bottom: 70px;
+    right: 8px;
+    background: var(--panel);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 4px;
+    padding: 5px 8px;
+    font-size: 9px;
+    color: rgba(255,255,255,0.4);
+    pointer-events: none;
+  }
+
+  #gameTitle {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 9px;
+    color: var(--gold);
+    text-align: center;
+    margin-bottom: 4px;
+    text-shadow: 0 0 10px rgba(255,215,0,0.5);
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+     ADVANCED UI ANIMATIONS
+  ═══════════════════════════════════════════════════════════ */
+  
+  /* Button hover glow */
+  #attackBtn {
+    animation: attackBtnGlow 2s ease-in-out infinite;
+  }
+
+  @keyframes attackBtnGlow {
+    0%, 100% { box-shadow: 0 0 10px rgba(139,68,255,0.4); }
+    50% { box-shadow: 0 0 20px rgba(255,0,255,0.6); }
+  }
+
+  /* HUD panel animations */
+  .hud-panel {
+    animation: hudPanelFadeIn 0.5s ease-out;
+  }
+
+  @keyframes hudPanelFadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Score update animation */
+  #scoreDisplay {
+    transition: transform 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+
+  #scoreDisplay.pulse {
+    animation: scorePulse 0.3s ease-out;
+  }
+
+  @keyframes scorePulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); color: #fff; }
+    100% { transform: scale(1); }
+  }
+
+  /* HP bar smooth transition */
+  #playerHpBar, #enemyHpBar {
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s;
+  }
+
+  /* Zone label animation */
+  #zoneLabel {
+    animation: zoneLabelGlow 3s ease-in-out infinite;
+  }
+
+  @keyframes zoneLabelGlow {
+    0%, 100% { text-shadow: 0 0 5px rgba(255,215,0,0.5); }
+    50% { text-shadow: 0 0 15px rgba(255,215,0,0.8); }
+  }
+
+  /* Mission panel slide in */
+  #missionPanel {
+    animation: missionSlideIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  @keyframes missionSlideIn {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  /* Input focus glow */
+  #promptInput {
+    animation: inputGlow 2s ease-in-out infinite;
+  }
+
+  @keyframes inputGlow {
+    0%, 100% { box-shadow: 0 0 5px rgba(139,68,255,0.3); }
+    50% { box-shadow: 0 0 15px rgba(0,255,255,0.5); }
+  }
+
+  /* Battle UI slide */
+  #battleUI {
+    animation: battleUISlide 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  @keyframes battleUISlide {
+    from { transform: translateY(100%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  /* Title screen fade */
+  #titleScreen {
+    animation: titleFadeIn 0.8s ease-out;
+  }
+
+  @keyframes titleFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* Button press feedback */
+  #startBtn, #nextZoneBtn {
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  #startBtn:active, #nextZoneBtn:active {
+    transform: scale(0.95) !important;
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+     PARTICLE EFFECTS ENHANCEMENTS
+  ═══════════════════════════════════════════════════════════ */
+  
+  /* Ambient particle glow */
+  .particle-glow {
+    filter: drop-shadow(0 0 4px currentColor);
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+     LANDSCAPE OPTIMIZATIONS
+  ═══════════════════════════════════════════════════════════ */
+  @media (orientation: landscape) and (max-height: 500px) {
+    #topBar {
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .hud-panel {
+      padding: 4px 8px;
+    }
+
+    .bar-container {
+      width: 100px;
+      height: 6px;
+    }
+
+    #missionPanel {
+      bottom: 55px;
+    }
+
+    #mobileControls button {
+      width: 55px;
+      height: 55px;
+    }
+
+    #mobileAttackBtn {
+      width: 65px;
+      height: 65px;
+    }
+
+    #joystickContainer {
+      width: 100px;
+      height: 100px;
+    }
+
+    #joystickBase {
+      width: 100px;
+      height: 100px;
+    }
+
+    #joystickStick {
+      width: 40px;
+      height: 40px;
+    }
+  }
+
+  /* Safe area for notched devices */
+  @supports (padding: max(0px)) {
+    #mobileControls {
+      padding-left: max(0px, env(safe-area-inset-left));
+      padding-bottom: max(0px, env(safe-area-inset-bottom));
+    }
+
+    #mobileAttackBtn {
+      padding-right: max(0px, env(safe-area-inset-right));
+      padding-bottom: max(0px, env(safe-area-inset-bottom));
+    }
+
+    #joystickContainer {
+      padding-left: max(0px, env(safe-area-inset-left));
+      padding-bottom: max(0px, env(safe-area-inset-bottom));
+    }
+  }
+
+  /* Mobile responsive */
+  @media (max-width: 900px) {
+    #battleUI {
+      bottom: 0;
+      padding: 6px 8px;
+    }
+
+    #battleCenter {
+      margin-left: 80px;
+      margin-right: 80px;
+    }
+
+    #promptInput {
+      font-size: 13px;
+      padding: 6px 8px;
+    }
+
+    #attackBtn {
+      font-size: 7px;
+      padding: 8px 10px;
+    }
+
+    #mobileControls {
+      gap: 8px;
+    }
+
+    #mobileControls button {
+      width: 50px;
+      height: 50px;
+      font-size: 18px;
+    }
+
+    #mobileAttackBtn {
+      width: 60px;
+      height: 60px;
+      font-size: 20px;
+    }
+
+    #joystickContainer {
+      width: 80px;
+      height: 80px;
+    }
+
+    #joystickBase {
+      width: 80px;
+      height: 80px;
+    }
+
+    #joystickStick {
+      width: 35px;
+      height: 35px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div id="gameWrapper">
+  <canvas id="gameCanvas" width="800" height="520"></canvas>
+<audio id="ambientSound" loop>
+  <source src="forest.mp3" type="audio/mpeg">
+</audio>
+
+<audio id="attackSound">
+  <source src="attack-adventure.mp3" type="audio/mpeg">
+</audio>
+
+<audio id="hitSound">
+  <source src="hit-adventure.mp3" type="audio/mpeg">
+</audio>
+
+<audio id="victorySound">
+  <source src="victory-adventure.mp3" type="audio/mpeg">
+</audio>
+
+<!-- Mobile Controls -->
+<div id="mobileControls">
+  <button id="btn-left">◀</button>
+  <button id="btn-right">▶</button>
+  <button id="btn-action">⚔</button>
+</div>
+<button id="mobileAttackBtn">⚡</button>
+
+<!-- Joystick Analógico -->
+<div id="joystickContainer">
+  <div id="joystickBase"></div>
+  <div id="joystickStick"></div>
+</div>
+
+<!-- AI Loading Overlay -->
+<div id="aiLoading">
+  <div>⚡ Procesando magia<span class="aiLoading-dots"></span></div>
+  <div class="aiLoading-bar">
+    <div class="aiLoading-bar-fill"></div>
+  </div>
+</div>
+
+  <!-- HUD Overlay -->
+  <div id="hud">
+    <div id="topBar">
+      <!-- Player HP -->
+      <div class="hud-panel">
+        <div class="hud-label">Prompt Explorer</div>
+        <div class="bar-container">
+          <div id="playerHpBar" style="width:100%"></div>
+        </div>
+        <div id="playerHpText" style="font-size:9px;color:#aaa;margin-top:2px;">100/100</div>
+      </div>
+
+      <!-- Zone & Score -->
+      <div class="hud-panel" style="text-align:center;">
+        <div id="gameTitle">⚔️ PROMPT ADVENTURE</div>
+        <div id="zoneLabel">Bosque del Contexto</div>
+        <div id="scoreDisplay" style="margin-top:3px;">SCORE: 0</div>
+      </div>
+
+      <!-- Enemy HP -->
+      <div class="hud-panel" id="enemyHudPanel">
+        <div class="hud-label" id="enemyName">Goblin</div>
+        <div class="bar-container">
+          <div id="enemyHpBar" style="width:100%"></div>
+        </div>
+        <div id="enemyHpText" style="font-size:9px;color:#aaa;margin-top:2px;">100/100</div>
+      </div>
+      <div class="hud-panel" id="noEnemyPanel" style="">
+        <div class="hud-label">Controles</div>
+        <div style="font-size:9px;color:#aaa;">← → Mover | E Atacar</div>
+      </div>
+    </div>
+
+    <!-- Mission -->
+    <div id="missionPanel">
+      <div id="missionTitle">📜 MISIÓN</div>
+      <div id="missionText">Explora el Bosque del Contexto y derrota al Espíritu del Contexto</div>
+    </div>
+
+    <!-- Prompt feedback -->
+    <div id="promptFeedback"></div>
+
+    <!-- Controls hint -->
+    <div id="controlsHint">← → Mover | E Interactuar</div>
+  </div>
+
+  <!-- Battle UI -->
+  <div id="battleUI">
+    <div id="battleCenter">
+      <input id="promptInput" type="text" placeholder="Escribe tu prompt mágico aquí..." maxlength="200" />
+      <button id="attackBtn">⚡ ATACAR</button>
+    </div>
+  </div>
+
+  <!-- Title Screen -->
+  <div id="titleScreen">
+    <h1>⚔️ PROMPT<br>ADVENTURE</h1>
+    <div class="subtitle">aprende prompt engineering en acción</div>
+    <button id="startBtn">▶ COMENZAR</button>
+    <div class="title-tips">
+      Escribe <span>prompts poderosos</span> para vencer enemigos<br>
+      Incluye <span>ROL · OBJETIVO · CONTEXTO · FORMATO</span><br>
+      ¡Más elementos = más poder de ataque!
+    </div>
+  </div>
+
+  <!-- Zone Clear Screen -->
+  <div id="zoneClearScreen">
+    <h2>🏆 ¡ZONA COMPLETADA!</h2>
+    <p id="zoneClearText">Has dominado el Bosque del Contexto. Recuerda siempre dar contexto claro en tus prompts.</p>
+    <button id="nextZoneBtn">▶ SIGUIENTE ZONA</button>
+  </div>
+</div>
+
+<script>
+// ============================================================
+//  PROMPT ADVENTURE — Motor completo en un solo archivo
+// ============================================================
+
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+const W = 800, H = 520;
+
+// Internal scaling for proportion preservation
+let internalScale = 1;
+let offsetX = 0;
+let offsetY = 0;
+let isPortrait = false;
+
+// Orientation detection
+function isPortraitMode() {
+  return window.innerHeight > window.innerWidth;
+}
+
+// RPG Progression Base Structure
+const RPGSystem = {
+  playerLevel: 1,
+  playerXP: 0,
+  xpToNextLevel: 100,
+  skillPoints: 0,
+  skills: {
+    powerBoost: 0,
+    defenseBoost: 0,
+    speedBoost: 0
+  },
+  
+  addXP(amount) {
+    this.playerXP += amount;
+    while (this.playerXP >= this.xpToNextLevel) {
+      this.playerXP -= this.xpToNextLevel;
+      this.playerLevel++;
+      this.skillPoints++;
+      this.xpToNextLevel = Math.floor(this.xpToNextLevel * 1.5);
+      FloatTexts.add(Player.x, Player.y - 100, `¡NIVEL ${this.playerLevel}!`, '#FFD700');
+    }
+  },
+  
+  getDamageMultiplier() {
+    return 1 + (this.skills.powerBoost * 0.1);
+  },
+  
+  getDefenseReduction() {
+    return this.skills.defenseBoost * 0.05;
+  }
+};
+
+const ambientSound = document.getElementById("ambientSound");
+const attackSound = document.getElementById("attackSound");
+const hitSound = document.getElementById("hitSound");
+const victorySound = document.getElementById("victorySound");
+
+ambientSound.volume = 0.35;
+attackSound.volume = 0.5;
+hitSound.volume = 0.5;
+victorySound.volume = 0.6;
+
+// ─── Utilidades ──────────────────────────────────────────────
+const lerp = (a, b, t) => a + (b - a) * t;
+const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+const rand = (a, b) => a + Math.random() * (b - a);
+const randInt = (a, b) => Math.floor(rand(a, b + 1));
+
+// ─── ESTADO GLOBAL ───────────────────────────────────────────
+const State = {
+  phase: 'title',   // title | explore | battle | zoneclear | gameover
+  zone: 0,
+  score: 0,
+  playerHp: 100,
+  playerMaxHp: 100,
+  enemyKilled: 0,
+  bossDefeated: false,
+};
+
+// ─── ZONAS ───────────────────────────────────────────────────
+const ZONES = [
+  {
+    name: 'Bosque del Contexto',
+    lesson: 'Siempre da CONTEXTO claro a tu IA. Sin contexto, los resultados son vagos.',
+    skyColor: ['#0a1628','#162844'],
+    groundColor: '#1a3a1a',
+    accentColor: '#00aa44',
+    enemies: [
+      { name:'Goblin de la Ambigüedad', hp:60, maxHp:60, color:'#44aa22', emoji:'👺', reward:50, isBoss:false,
+        tip:'¡Usa CONTEXTO en tu prompt para vencerlo!' },
+      { name:'Fantasma del Contexto', hp:80, maxHp:80, color:'#88aacc', emoji:'👻', reward:80, isBoss:false,
+        tip:'¡Añade OBJETIVO a tu prompt!' },
+    ],
+    boss: { name:'Espíritu del Contexto', hp:200, maxHp:200, color:'#00ffaa', emoji:'🌿', reward:300, isBoss:true,
+      tip:'Usa ROL + OBJETIVO + CONTEXTO + FORMATO para máximo daño!' },
+  },
+  {
+    name: 'Montaña del Rol',
+    lesson: 'Asignar un ROL a la IA define su perspectiva y experiencia simulada.',
+    skyColor: ['#1a0a28','#2a1040'],
+    groundColor: '#3a2a1a',
+    accentColor: '#aa6600',
+    enemies: [
+      { name:'Troll sin Identidad', hp:80, maxHp:80, color:'#886644', emoji:'🧌', reward:70, isBoss:false,
+        tip:'Usa "Actúa como..." en tu prompt' },
+      { name:'Hechicero Genérico', hp:90, maxHp:90, color:'#aa44aa', emoji:'🧙', reward:90, isBoss:false,
+        tip:'Define un ROL experto en tu prompt' },
+    ],
+    boss: { name:'Maestro de Identidades', hp:220, maxHp:220, color:'#ffaa00', emoji:'🎭', reward:350, isBoss:true,
+      tip:'Combina ROL + CONTEXTO + OBJETIVO + FORMATO para derrotarlo' },
+  },
+  {
+    name: 'Templo del Formato',
+    lesson: 'El FORMATO correcto hace que la respuesta sea usable directamente.',
+    skyColor: ['#0a0a28','#1a0a3a'],
+    groundColor: '#2a1a3a',
+    accentColor: '#aa00ff',
+    enemies: [
+      { name:'Guardián del Caos', hp:100, maxHp:100, color:'#ff44aa', emoji:'🔮', reward:100, isBoss:false,
+        tip:'Especifica el FORMATO: lista, pasos, tabla...' },
+      { name:'Demonio de la Verbosidad', hp:110, maxHp:110, color:'#aa44ff', emoji:'📜', reward:110, isBoss:false,
+        tip:'Pide un FORMATO específico y conciso' },
+    ],
+    boss: { name:'Arquitecto del Orden', hp:250, maxHp:250, color:'#00ffff', emoji:'🏛️', reward:400, isBoss:true,
+      tip:'El prompt perfecto tiene ROL + OBJETIVO + CONTEXTO + FORMATO' },
+  },
+  {
+    name: 'Castillo del Prompt Maestro',
+    lesson: '¡El Prompt Maestro combina todos los elementos para resultados perfectos!',
+    skyColor: ['#200a0a','#3a0a0a'],
+    groundColor: '#2a0a0a',
+    accentColor: '#ff2200',
+    enemies: [
+      { name:'Caballero del Prompt Roto', hp:120, maxHp:120, color:'#cc2200', emoji:'⚔️', reward:120, isBoss:false,
+        tip:'¡Demuestra tu dominio del Prompt Engineering!' },
+      { name:'Dragón de la Confusión', hp:140, maxHp:140, color:'#ff4400', emoji:'🐉', reward:140, isBoss:false,
+        tip:'Usa todos los elementos del prompt' },
+    ],
+    boss: { name:'Titán del Prompt Maestro', hp:300, maxHp:300, color:'#ffd700', emoji:'👑', reward:500, isBoss:true,
+      tip:'¡Solo el prompt perfecto puede vencerlo!' },
+  },
+];
+
+// ─── PROMPT ANALYZER ─────────────────────────────────────────
+const PromptAnalyzer = {
+  keywords: {
+    rol:      ['actúa como','eres','eres un','eres una','imagina que eres','comportate como','expert','experto','experta','especialista','profesional','como si fueras'],
+    objetivo: ['ayúdame','ayuda','necesito','quiero','dime','explica','describe','genera','crea','escribe','resume','analiza','compara','dame','proporciona'],
+    contexto: ['para','porque','ya que','dado que','en el contexto','el contexto es','situación','escenario','actualmente','estoy trabajando','mi proyecto','tengo','estamos'],
+    formato:  ['lista','pasos','tabla','paso a paso','formato','estructura','puntos','enumera','en orden','numera','markdown','json','resumen','bullet'],
+  },
+
+  analyze(text) {
+    const t = text.toLowerCase();
+    const found = { rol:false, objetivo:false, contexto:false, formato:false };
+    for (const [key, words] of Object.entries(this.keywords)) {
+      found[key] = words.some(w => t.includes(w));
+    }
+    const count = Object.values(found).filter(Boolean).length;
+    const power = count === 0 ? 5 : count === 1 ? 20 : count === 2 ? 45 : count === 3 ? 75 : 100;
+    return { found, count, power };
+  },
+
+  describe(found) {
+    const labels = { rol:'ROL', objetivo:'OBJETIVO', contexto:'CONTEXTO', formato:'FORMATO' };
+    const got = Object.entries(found).filter(([,v])=>v).map(([k])=>labels[k]);
+    const miss = Object.entries(found).filter(([,v])=>!v).map(([k])=>labels[k]);
+    return { got, miss };
+  }
+};
+
+// ─── PARTICLES ───────────────────────────────────────────────
+const Particles = {
+  list: [],
+  add(x, y, color, count=8, speed=3) {
+    for (let i=0; i<count; i++) {
+      const angle = rand(0, Math.PI*2);
+      const s = rand(1, speed);
+      this.list.push({
+        x, y,
+        vx: Math.cos(angle)*s,
+        vy: Math.sin(angle)*s - rand(1,3),
+        life: 1, decay: rand(0.015,0.04),
+        size: rand(3,8),
+        color,
+        alpha: 1,
+      });
+    }
+  },
+  update() {
+    this.list = this.list.filter(p => {
+      p.x += p.vx; p.y += p.vy;
+      p.vy += 0.1;
+      p.life -= p.decay;
+      p.alpha = p.life;
+      return p.life > 0;
+    });
+  },
+  draw() {
+    this.list.forEach(p => {
+      ctx.save();
+      ctx.globalAlpha = p.alpha;
+      ctx.fillStyle = p.color;
+      ctx.shadowBlur = 10;
+      ctx.shadowColor = p.color;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI*2);
+      ctx.fill();
+      ctx.restore();
+    });
+  }
+};
+
+// ─── FLOATING TEXTS ──────────────────────────────────────────
+const FloatTexts = {
+  list: [],
+  add(x, y, text, color='#FFD700') {
+    this.list.push({ x, y, text, color, life:1, vy:-1.5, alpha:1 });
+  },
+  update() {
+    this.list = this.list.filter(t => {
+      t.y += t.vy; t.life -= 0.02; t.alpha = t.life;
+      return t.life > 0;
+    });
+  },
+  draw() {
+    this.list.forEach(t => {
+      ctx.save();
+      ctx.globalAlpha = t.alpha;
+      ctx.font = 'bold 14px "Exo 2"';
+      ctx.fillStyle = t.color;
+      ctx.shadowBlur = 8; ctx.shadowColor = t.color;
+      ctx.textAlign = 'center';
+      ctx.fillText(t.text, t.x, t.y);
+      ctx.restore();
+    });
+  }
+};
+
+// ─── PARALLAX BACKGROUND ─────────────────────────────────────
+const Background = {
+  scrollX: 0,
+  stars: Array.from({length:80}, ()=>({ x:rand(0,W), y:rand(0,H*0.5), size:rand(0.5,2), twinkle:rand(0,Math.PI*2) })),
+  mountains: Array.from({length:12}, (_,i)=>({ x:i*(W/6), h:rand(60,140), w:rand(80,140) })),
+  trees: Array.from({length:20}, (_,i)=>({ x:i*55+rand(-20,20), h:rand(50,100), w:rand(20,35) })),
+
+  draw(zone) {
+    const zd = ZONES[zone];
+    // Sky gradient
+    const grad = ctx.createLinearGradient(0,0,0,H);
+    grad.addColorStop(0, zd.skyColor[0]);
+    grad.addColorStop(1, zd.skyColor[1]);
+    ctx.fillStyle = grad;
+    ctx.fillRect(0,0,W,H);
+
+    // Stars
+    const t = Date.now()/1000;
+    this.stars.forEach(s => {
+      const alpha = 0.5 + 0.5*Math.sin(s.twinkle + t);
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.size, 0, Math.PI*2);
+      ctx.fill();
+    });
+    ctx.globalAlpha = 1;
+
+    // Mountains (parallax layer 1)
+    const mOff = (this.scrollX * 0.15) % W;
+    ctx.fillStyle = this.blendColor(zd.skyColor[1], zd.accentColor, 0.3);
+    this.mountains.forEach(m => {
+      const mx = ((m.x - mOff) % (W+200) + W+200) % (W+200) - 100;
+      ctx.beginPath();
+      ctx.moveTo(mx, H-100);
+      ctx.lineTo(mx + m.w/2, H-100-m.h);
+      ctx.lineTo(mx + m.w, H-100);
+      ctx.closePath();
+      ctx.fill();
+    });
+
+    // Trees (parallax layer 2)
+    const tOff = (this.scrollX * 0.4) % (W+120);
+    ctx.fillStyle = zd.groundColor;
+    this.trees.forEach(tr => {
+      const tx = ((tr.x - tOff) % (W+120) + W+120) % (W+120);
+      // trunk
+      ctx.fillStyle = '#4a2a0a';
+      ctx.fillRect(tx+tr.w/2-4, H-100, 8, 40);
+      // foliage
+      ctx.fillStyle = zd.accentColor;
+      ctx.beginPath();
+      ctx.arc(tx+tr.w/2, H-100-tr.h*0.5, tr.w*0.7, 0, Math.PI*2);
+      ctx.fill();
+    });
+
+    // Ground
+    const gGrad = ctx.createLinearGradient(0, H-100, 0, H);
+    gGrad.addColorStop(0, zd.groundColor);
+    gGrad.addColorStop(1, '#050505');
+    ctx.fillStyle = gGrad;
+    ctx.fillRect(0, H-100, W, 100);
+
+    // Ground line glow
+    ctx.strokeStyle = zd.accentColor;
+    ctx.lineWidth = 2;
+    ctx.shadowBlur = 10;
+    ctx.shadowColor = zd.accentColor;
+    ctx.beginPath();
+    ctx.moveTo(0, H-100); ctx.lineTo(W, H-100);
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+  },
+
+  blendColor(c1, c2, t) {
+    // Simple blend — returns c2 tinted
+    return c2;
+  },
+
+  update() { /* scrollX driven by player */ }
+};
+
+// ─── PLAYER ──────────────────────────────────────────────────
+const Player = {
+  x: 150, y: H-100,
+  w: 40, h: 60,
+  vx: 0, vy: 0,
+  onGround: true,
+  facing: 1,
+  state: 'idle',   // idle | walk | attack | think
+  stateTimer: 0,
+  animFrame: 0,
+  animTimer: 0,
+  hp: 100, maxHp: 100,
+  color: '#4488ff',
+  glowColor: '#88aaff',
+  invincible: false,
+  invTimer: 0,
+  shakeX: 0,
+
+  reset() {
+    this.x = 150; this.y = H-100;
+    this.hp = 100; this.maxHp = 100;
+    this.state = 'idle'; this.vx = 0; this.vy = 0;
+    this.invincible = false; this.invTimer = 0;
+    State.playerHp = 100;
+  },
+
+  update(keys) {
+    if (State.phase !== 'explore') return;
+
+    // Movement
+    this.vx = 0;
+    if (keys['ArrowLeft'] || keys['a'] || keys['A']) { this.vx = -3.5; this.facing = -1; }
+    if (keys['ArrowRight'] || keys['d'] || keys['D']) { this.vx = 3.5; this.facing = 1; }
+
+    this.x = clamp(this.x + this.vx, 30, W-30);
+
+    // Scroll world
+    if (this.x > W*0.65) { Background.scrollX += 3.5; this.x = W*0.65; }
+    if (this.x < W*0.2) { Background.scrollX -= 3.5; this.x = W*0.2; }
+
+    // State
+    if (this.vx !== 0) this.state = 'walk';
+    else this.state = 'idle';
+
+    // Animation
+    this.animTimer++;
+    if (this.animTimer > 8) { this.animTimer = 0; this.animFrame = (this.animFrame+1)%4; }
+
+    // Invincibility
+    if (this.invincible) {
+      this.invTimer--;
+      if (this.invTimer <= 0) this.invincible = false;
+    }
+
+    // Shake decay
+    this.shakeX *= 0.8;
+  },
+
+  takeDamage(amount) {
+    if (this.invincible) return;
+    this.hp = Math.max(0, this.hp - amount);
+    State.playerHp = this.hp;
+    this.invincible = true;
+    this.invTimer = 60;
+    this.shakeX = 10;
+    updateHUD();
+    if (this.hp <= 0) gameOver();
+  },
+
+  draw() {
+    const t = Date.now()/1000;
+    const bobY = this.state === 'walk' ? Math.sin(t*8)*3 : Math.sin(t*2)*2;
+    const px = this.x + this.shakeX * Math.sin(t*30);
+    const py = this.y + bobY;
+
+    if (this.invincible && Math.floor(t*10)%2===0) return;
+
+    ctx.save();
+    ctx.translate(px, py);
+    ctx.scale(this.facing, 1);
+
+    // Shadow
+    ctx.fillStyle = 'rgba(0,0,0,0.3)';
+    ctx.beginPath();
+    ctx.ellipse(0, 2, 18, 6, 0, 0, Math.PI*2);
+    ctx.fill();
+
+    // Body glow
+    ctx.shadowBlur = 20;
+    ctx.shadowColor = this.glowColor;
+
+    // Cape / cloak
+    ctx.fillStyle = '#2244aa';
+    ctx.beginPath();
+    ctx.moveTo(-14,-30); ctx.lineTo(14,-30);
+    ctx.lineTo(18, 10); ctx.lineTo(-18, 10);
+    ctx.closePath();
+    ctx.fill();
+
+    // Body
+    ctx.fillStyle = this.color;
+    ctx.fillRect(-12, -38, 24, 36);
+
+    // Head
+    ctx.fillStyle = '#ffcc88';
+    ctx.beginPath();
+    ctx.arc(0, -45, 14, 0, Math.PI*2);
+    ctx.fill();
+
+    // Eyes
+    ctx.fillStyle = '#1122aa';
+    ctx.beginPath();
+    ctx.arc(-5,-46, 3, 0, Math.PI*2);
+    ctx.arc(5,-46, 3, 0, Math.PI*2);
+    ctx.fill();
+
+    // Hat
+    ctx.fillStyle = '#1a1a4a';
+    ctx.beginPath();
+    ctx.moveTo(-14,-56); ctx.lineTo(14,-56);
+    ctx.lineTo(8,-78); ctx.lineTo(-8,-78);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = '#2233cc';
+    ctx.fillRect(-16,-59, 32, 5);
+
+    // Star on hat
+    ctx.fillStyle = '#FFD700';
+    ctx.font = '10px serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('★', 0, -63);
+
+    // Legs
+    const legAnim = this.state === 'walk' ? Math.sin(t*8)*10 : 0;
+    ctx.fillStyle = '#223388';
+    ctx.fillRect(-12, -2, 10, 22 + legAnim*0.5);
+    ctx.fillRect(2, -2, 10, 22 - legAnim*0.5);
+
+    // Staff/wand
+    ctx.strokeStyle = '#8B4513';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(14, -40); ctx.lineTo(14, 15);
+    ctx.stroke();
+    ctx.fillStyle = '#FFD700';
+    ctx.shadowBlur = 15; ctx.shadowColor = '#FFD700';
+    ctx.beginPath();
+    ctx.arc(14,-42, 5, 0, Math.PI*2);
+    ctx.fill();
+
+    ctx.restore();
+  },
+
+  drawThinkBubble(promptText) {
+    const bx = this.x;
+    const by = this.y - 130;
+    const bw = 200, bh = 80;
+
+    ctx.save();
+    // Dots connecting
+    const dots = [{x:this.x, y:this.y-70}, {x:this.x+10, y:this.y-90}, {x:this.x+20, y:this.y-108}];
+    dots.forEach((d,i) => {
+      ctx.beginPath();
+      ctx.arc(d.x, d.y, 4-i, 0, Math.PI*2);
+      ctx.fillStyle = 'rgba(200,200,255,0.8)';
+      ctx.fill();
+    });
+
+    // Bubble
+    ctx.fillStyle = 'rgba(240,240,255,0.95)';
+    ctx.strokeStyle = '#8B44FF';
+    ctx.lineWidth = 2;
+    ctx.shadowBlur = 15; ctx.shadowColor = '#8B44FF';
+    roundRect(ctx, bx - bw/2, by - bh, bw, bh, 16);
+    ctx.fill(); ctx.stroke();
+    ctx.shadowBlur = 0;
+
+    // Text inside
+    ctx.fillStyle = '#220044';
+    ctx.font = '11px "Exo 2"';
+    ctx.textAlign = 'center';
+    const words = promptText.split(' ');
+    let line='', lines=[], y=by-bh+20;
+    words.forEach(w => {
+      const test = line + w + ' ';
+      if (ctx.measureText(test).width > bw-20 && line) { lines.push(line); line = w+' '; }
+      else line = test;
+    });
+    if (line) lines.push(line);
+    lines.slice(0,4).forEach((l,i)=> ctx.fillText(l.trim(), bx, y + i*16));
+    ctx.restore();
+  }
+};
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x+r, y);
+  ctx.lineTo(x+w-r, y);
+  ctx.quadraticCurveTo(x+w, y, x+w, y+r);
+  ctx.lineTo(x+w, y+h-r);
+  ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
+  ctx.lineTo(x+r, y+h);
+  ctx.quadraticCurveTo(x, y+h, x, y+h-r);
+  ctx.lineTo(x, y+r);
+  ctx.quadraticCurveTo(x, y, x+r, y);
+  ctx.closePath();
+}
+
+// ─── ENEMY ───────────────────────────────────────────────────
+const Enemy = {
+  active: false,
+  data: null,
+  x: 600, y: H-100,
+  hp: 100, maxHp: 100,
+  animTimer: 0,
+  animFrame: 0,
+  hitFlash: 0,
+  attackAnim: 0,
+  dead: false,
+
+  spawn(data) {
+    this.active = true;
+    this.data = data;
+    this.hp = data.hp;
+    this.maxHp = data.maxHp;
+    this.dead = false;
+    this.hitFlash = 0;
+    this.x = 620;
+    document.getElementById('enemyHudPanel').classList.add('visible');
+    document.getElementById('noEnemyPanel').style.display = 'none';
+    document.getElementById('enemyName').textContent = data.emoji + ' ' + data.name;
+    updateHUD();
+  },
+
+  clear() {
+    this.active = false;
+    this.data = null;
+    document.getElementById('enemyHudPanel').classList.remove('visible');
+    document.getElementById('noEnemyPanel').style.display = '';
+  },
+
+  takeDamage(amount) {
+    this.hp = Math.max(0, this.hp - amount);
+    this.hitFlash = 15;
+    updateHUD();
+    FloatTexts.add(this.x, this.y-80, `-${amount}`, '#ff4444');
+    if (this.hp <= 0) { this.dead = true; }
+    return this.hp <= 0;
+  },
+
+  attack() {
+    this.attackAnim = 20;
+    const dmg = this.data.isBoss ? randInt(20,30) : randInt(10,20);
+    Player.takeDamage(dmg);
+    FloatTexts.add(Player.x, Player.y-80, `-${dmg}`, '#ff8800');
+    Particles.add(Player.x, Player.y-40, '#ff4400', 12, 5);
+  },
+
+  update() {
+    if (!this.active) return;
+    this.animTimer++;
+    if (this.animTimer > 10) { this.animTimer = 0; this.animFrame = (this.animFrame+1)%2; }
+    if (this.hitFlash > 0) this.hitFlash--;
+    if (this.attackAnim > 0) this.attackAnim--;
+  },
+
+  draw() {
+    if (!this.active) return;
+    const t = Date.now()/1000;
+    const bobY = Math.sin(t*2)*4;
+    const ex = this.x + (this.attackAnim > 0 ? Math.sin(t*20)*8 : 0);
+    const ey = this.y + bobY;
+    const isBoss = this.data.isBoss;
+    const scale = isBoss ? 1.5 : 1;
+
+    ctx.save();
+    ctx.translate(ex, ey);
+    ctx.scale(-scale, scale);
+
+    if (this.hitFlash > 0 && Math.floor(t*15)%2===0) {
+      ctx.globalAlpha = 0.4;
+    }
+
+    const size = isBoss ? 50 : 35;
+    // Shadow
+    ctx.fillStyle = 'rgba(0,0,0,0.3)';
+    ctx.beginPath();
+    ctx.ellipse(0, 5, size*0.7, size*0.2, 0, 0, Math.PI*2);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+
+    // Enemy body — pixel art style
+    ctx.font = `${isBoss?60:42}px serif`;
+    ctx.textAlign = 'center';
+    ctx.shadowBlur = isBoss ? 30 : 15;
+    ctx.shadowColor = this.data.color;
+    ctx.fillText(this.data.emoji, 0, -10);
+
+    // HP bar above enemy
+    const bw = isBoss ? 90 : 60;
+    const bh = 6;
+    const bx = -bw/2;
+    const by = -(isBoss?110:80);
+    ctx.scale(-1,1);
+    ctx.fillStyle = 'rgba(0,0,0,0.6)';
+    ctx.fillRect(bx, by, bw, bh);
+    ctx.fillStyle = this.data.color;
+    ctx.shadowBlur = 6; ctx.shadowColor = this.data.color;
+    ctx.fillRect(bx, by, bw*(this.hp/this.maxHp), bh);
+    ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(bx, by, bw, bh);
+
+    // Name tag
+    ctx.font = '9px "Press Start 2P"';
+    ctx.fillStyle = 'white';
+    ctx.shadowBlur = 0;
+    ctx.textAlign = 'center';
+    ctx.fillText(this.data.name.substring(0,18), 0, by-6);
+
+    ctx.restore();
+  }
+};
+
+// ─── BATTLE SYSTEM ───────────────────────────────────────────
+const BattleSystem = {
+  active: false,
+  turn: 'player',
+  turnTimer: 0,
+  pendingEnemyAttack: false,
+  currentEnemyQueue: [],
+  currentBoss: null,
+  enemiesDefeated: 0,
+
+  startBattle(enemyData) {
+    this.active = true;
+    this.turn = 'player';
+    State.phase = 'battle';
+    ambientSound.volume = 0.2;
+    Enemy.spawn(enemyData);
+    document.getElementById('battleUI').classList.add('active');
+    document.getElementById('promptInput').value = '';
+    document.getElementById('promptInput').focus();
+    document.getElementById('promptFeedback').textContent = `💡 ${enemyData.tip}`;
+    document.getElementById('controlsHint').style.display = 'none';
+  },
+
+  endBattle(won) {
+    this.active = false;
+    ambientSound.volume = 0.35;
+    document.getElementById('battleUI').classList.remove('active');
+    document.getElementById('promptFeedback').textContent = '';
+    document.getElementById('controlsHint').style.display = '';
+
+    if (won) {
+      State.score += this.currentEnemyQueue.length === 0 ? Enemy.data.reward : 0;
+      updateHUD();
+      this.enemiesDefeated++;
+
+      if (Enemy.data.isBoss) {
+        // Zone complete
+        setTimeout(() => showZoneClear(), 800);
+      } else {
+        // Spawn next enemy or boss
+        setTimeout(() => {
+          Enemy.clear();
+          State.phase = 'explore';
+          this.spawnNext();
+        }, 600);
+      }
+    } else {
+      Enemy.clear();
+      State.phase = 'explore';
+    }
+  },
+
+  spawnNext() {
+    const zone = ZONES[State.zone];
+    const defeated = this.enemiesDefeated;
+    const total = zone.enemies.length;
+
+    if (defeated < total) {
+      // Regular enemy — trigger on next encounter
+    } else {
+      // All regular enemies beaten, boss spawns on next E
+    }
+  },
+
+  executePrompt(text) {
+    if (this.turn !== 'player') return;
+    const result = PromptAnalyzer.analyze(text);
+    const desc = PromptAnalyzer.describe(result.found);
+
+    // Show feedback
+    let feedback = '';
+    if (result.count === 0) feedback = '❌ Prompt muy vago. ¡Sin elementos detectados! Enemigo contraataca.';
+    else {
+      feedback = `✅ Detectado: ${desc.got.join(', ')}`;
+      if (desc.miss.length) feedback += ` | Falta: ${desc.miss.join(', ')}`;
+    }
+    document.getElementById('promptFeedback').textContent = feedback;
+
+    // Damage calculation
+    const dmg = Math.floor((result.power / 100) * (Enemy.data.isBoss ? 60 : 40) + randInt(5,15));
+
+    if (result.power >= 20) {
+      // Player attacks
+      Particles.add(Player.x + 20, Player.y-40, '#00ffff', 20, 6);
+      Particles.add(Enemy.x - 20, Enemy.y-40, Enemy.data.color, 15, 5);
+      FloatTexts.add(Player.x, Player.y-100, `+${result.power} PWR`, '#00ffff');
+
+      // Energy beam animation
+      EnergyBeam.fire(Player.x+30, Player.y-40, Enemy.x-30, Enemy.y-40, '#00ffff');
+
+      attackSound.currentTime = 0;
+attackSound.play();
+
+      setTimeout(() => {
+        const killed = Enemy.takeDamage(dmg);
+        hitSound.currentTime = 0;
+hitSound.play();
+        State.score += Math.floor(dmg * 0.5);
+        updateHUD();
+
+        if (killed) {
+          State.score += Enemy.data.reward;
+          updateHUD();
+          Particles.add(Enemy.x, Enemy.y-40, Enemy.data.color, 40, 8);
+          FloatTexts.add(Enemy.x, Enemy.y-80, '¡DERROTADO!', '#FFD700');
+          victorySound.currentTime = 0;
+victorySound.play();
+          setTimeout(() => this.endBattle(true), 800);
+        } else if (result.power < 75) {
+          // Counter attack if prompt wasn't perfect
+          setTimeout(() => {
+            Enemy.attack();
+            updateHUD();
+          }, 400);
+        }
+      }, 500);
+    } else {
+      // Enemy counter attack
+      setTimeout(() => {
+        Enemy.attack();
+        FloatTexts.add(Player.x, Player.y-80, '¡CONTRAATAQUE!', '#ff4444');
+      }, 300);
+    }
+  }
+};
+
+// ─── ENERGY BEAM ─────────────────────────────────────────────
+const EnergyBeam = {
+  active: false,
+  x1:0,y1:0,x2:0,y2:0,
+  timer: 0,
+  color: '#00ffff',
+  fire(x1,y1,x2,y2,color) {
+    this.active=true; this.x1=x1; this.y1=y1; this.x2=x2; this.y2=y2;
+    this.color=color; this.timer=20;
+  },
+  update() { if (this.active && --this.timer<=0) this.active=false; },
+  draw() {
+    if (!this.active) return;
+    const t = this.timer/20;
+    ctx.save();
+    ctx.globalAlpha = t;
+    ctx.strokeStyle = this.color;
+    ctx.lineWidth = 4*t;
+    ctx.shadowBlur = 20*t; ctx.shadowColor = this.color;
+    ctx.beginPath(); ctx.moveTo(this.x1,this.y1); ctx.lineTo(this.x2,this.y2);
+    ctx.stroke();
+    // Core
+    ctx.strokeStyle = 'white';
+    ctx.lineWidth = 1.5*t;
+    ctx.beginPath(); ctx.moveTo(this.x1,this.y1); ctx.lineTo(this.x2,this.y2);
+    ctx.stroke();
+    ctx.restore();
+  }
+};
+
+// ─── ENCOUNTER TRIGGERS ──────────────────────────────────────
+const Encounters = {
+  markers: [],
+  reset() {
+    const zone = ZONES[State.zone];
+    this.markers = [];
+    const allEnemies = [...zone.enemies, zone.boss];
+    allEnemies.forEach((e,i) => {
+      this.markers.push({ x: 300 + i*220, triggered:false, data:e });
+    });
+  },
+  check() {
+    if (State.phase !== 'explore') return;
+    const worldX = Background.scrollX + Player.x;
+    this.markers.forEach(m => {
+      if (!m.triggered && Math.abs(worldX - m.x) < 60) {
+        m.triggered = true;
+        setTimeout(() => BattleSystem.startBattle(m.data), 200);
+      }
+    });
+  },
+  draw() {
+    if (State.phase !== 'explore') return;
+    const worldX = Background.scrollX;
+    this.markers.forEach(m => {
+      if (m.triggered) return;
+      const screenX = m.x - worldX;
+      if (screenX < -50 || screenX > W+50) return;
+      const t = Date.now()/1000;
+      const pulse = 0.6 + 0.4*Math.sin(t*3);
+      ctx.save();
+      ctx.globalAlpha = pulse;
+      ctx.fillStyle = m.data.isBoss ? '#FFD700' : '#FF4444';
+      ctx.font = '20px serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(m.data.emoji, screenX, H-110 - 10*Math.abs(Math.sin(t*2)));
+      ctx.font = '8px "Press Start 2P"';
+      ctx.fillStyle = m.data.isBoss ? '#FFD700' : '#FF4444';
+      ctx.fillText(m.data.isBoss ? '⚠ JEFE' : '!', screenX, H-130 - 10*Math.abs(Math.sin(t*2)));
+      ctx.restore();
+    });
+  }
+};
+
+// ─── HUD UPDATE ──────────────────────────────────────────────
+function updateHUD() {
+  const phPct = (Player.hp / Player.maxHp) * 100;
+  document.getElementById('playerHpBar').style.width = phPct + '%';
+  document.getElementById('playerHpText').textContent = `${Player.hp}/${Player.maxHp}`;
+
+  if (Enemy.active && Enemy.data) {
+    const ehPct = (Enemy.hp / Enemy.maxHp) * 100;
+    document.getElementById('enemyHpBar').style.width = ehPct + '%';
+    document.getElementById('enemyHpText').textContent = `${Enemy.hp}/${Enemy.maxHp}`;
+  }
+
+  document.getElementById('zoneLabel').textContent = ZONES[State.zone].name;
+  document.getElementById('scoreDisplay').textContent = `SCORE: ${State.score}`;
+
+  const zone = ZONES[State.zone];
+  const allEnemies = zone.enemies.filter((_,i)=>i >= BattleSystem.enemiesDefeated);
+  const missionText = BattleSystem.enemiesDefeated >= zone.enemies.length
+    ? `Derrota al jefe: ${zone.boss.emoji} ${zone.boss.name}`
+    : `Derrota enemigos en ${zone.name}`;
+  document.getElementById('missionText').textContent = missionText;
+}
+
+// ─── ZONE CLEAR ──────────────────────────────────────────────
+function showZoneClear() {
+  Enemy.clear();
+  State.phase = 'zoneclear';
+  const zone = ZONES[State.zone];
+  document.getElementById('zoneClearText').textContent = zone.lesson;
+  document.getElementById('zoneClearScreen').classList.add('active');
+
+  // Save progress
+  const progress = JSON.parse(localStorage.getItem('promptAdventure') || '{}');
+  progress['zone'] = Math.max(progress['zone']||0, State.zone+1);
+  progress['score'] = Math.max(progress['score']||0, State.score);
+  localStorage.setItem('promptAdventure', JSON.stringify(progress));
+}
+
+function nextZone() {
+  document.getElementById('zoneClearScreen').classList.remove('active');
+  if (State.zone < ZONES.length-1) {
+    State.zone++;
+    BattleSystem.enemiesDefeated = 0;
+    Background.scrollX = 0;
+    Player.x = 150;
+    Encounters.reset();
+    updateHUD();
+    State.phase = 'explore';
+  } else {
+    // Game complete!
+    gameComplete();
+  }
+}
+
+function gameOver() {
+  State.phase = 'gameover';
+  setTimeout(() => {
+    ctx.save();
+    ctx.fillStyle = 'rgba(0,0,0,0.85)';
+    ctx.fillRect(0,0,W,H);
+    ctx.fillStyle = '#FF4444';
+    ctx.font = '24px "Press Start 2P"';
+    ctx.textAlign = 'center';
+    ctx.shadowBlur = 20; ctx.shadowColor = '#FF4444';
+    ctx.fillText('GAME OVER', W/2, H/2-20);
+    ctx.fillStyle = 'white';
+    ctx.font = '10px "Press Start 2P"';
+    ctx.fillText('Presiona F5 para reiniciar', W/2, H/2+20);
+    ctx.restore();
+  }, 100);
+}
+
+function gameComplete() {
+  State.phase = 'gameover';
+  setTimeout(() => {
+    ctx.save();
+    ctx.fillStyle = 'rgba(0,0,0,0.9)';
+    ctx.fillRect(0,0,W,H);
+    ctx.fillStyle = '#FFD700';
+    ctx.font = '18px "Press Start 2P"';
+    ctx.textAlign = 'center';
+    ctx.shadowBlur = 30; ctx.shadowColor = '#FFD700';
+    ctx.fillText('¡PROMPT MASTER!', W/2, H/2-60);
+    ctx.fillStyle = '#00FFFF';
+    ctx.font = '10px "Press Start 2P"';
+    ctx.fillText(`PUNTUACIÓN FINAL: ${State.score}`, W/2, H/2-20);
+    ctx.fillStyle = 'white';
+    ctx.font = '9px "Exo 2"';
+    ctx.fillText('Has dominado el Prompt Engineering.', W/2, H/2+20);
+    ctx.fillText('¡Eres un verdadero Prompt Master!', W/2, H/2+44);
+    ctx.restore();
+  }, 100);
+}
+
+// ─── INPUT ───────────────────────────────────────────────────
+const Keys = {};
+window.addEventListener('keydown', e => {
+  Keys[e.key] = true;
+  if (e.key === 'e' || e.key === 'E') {
+    if (State.phase === 'explore') {
+      // manual trigger for nearest encounter
+      const worldX = Background.scrollX + Player.x;
+      let nearest = null, nearDist = 200;
+      Encounters.markers.forEach(m => {
+        if (!m.triggered) {
+          const d = Math.abs(worldX - m.x);
+          if (d < nearDist) { nearDist=d; nearest=m; }
+        }
+      });
+      if (nearest) { nearest.triggered=true; BattleSystem.startBattle(nearest.data); }
+    }
+  }
+  if (e.key === 'Enter' && State.phase === 'battle') {
+    executePromptFromInput();
+  }
+});
+window.addEventListener('keyup', e => { Keys[e.key] = false; });
+
+document.getElementById('attackBtn').addEventListener('click', executePromptFromInput);
+
+// AI Loading functions
+function showAILoading() {
+  const el = document.getElementById('aiLoading');
+  if (el) el.classList.add('active');
+}
+
+function hideAILoading() {
+  const el = document.getElementById('aiLoading');
+  if (el) el.classList.remove('active');
+}
+
+function executePromptFromInput() {
+  const text = document.getElementById('promptInput').value.trim();
+  if (!text || State.phase !== 'battle') return;
+  document.getElementById('promptInput').value = '';
+  
+  // Show loading animation
+  showAILoading();
+  vibrate(20);
+  
+  // Execute with delay for UX
+  setTimeout(() => {
+    hideAILoading();
+    BattleSystem.executePrompt(text);
+  }, 500);
+}
+
+// ═══════════════════════════════════════════════════════════
+// MOBILE TOUCH CONTROLS - PROFESSIONAL
+// ═══════════════════════════════════════════════════════════
+
+function bindTouchControls() {
+  const btnLeft = document.getElementById('btn-left');
+  const btnRight = document.getElementById('btn-right');
+  const btnAction = document.getElementById('btn-action');
+  const btnAttack = document.getElementById('mobileAttackBtn');
+  const promptInput = document.getElementById('promptInput');
+  const battleUI = document.getElementById('battleUI');
+  
+  // Initialize analog joystick
+  Joystick.init();
+  
+  // Movement controls with haptic feedback
+  const handleMove = (key, btn) => {
+    btn.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      Keys[key] = true;
+      btn.classList.add('active');
+      vibrate(15);
+    });
+    btn.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      Keys[key] = false;
+      btn.classList.remove('active');
+    });
+    btn.addEventListener('touchcancel', (e) => {
+      Keys[key] = false;
+      btn.classList.remove('active');
+    });
+  };
+  
+  handleMove('ArrowLeft', btnLeft);
+  handleMove('ArrowRight', btnRight);
+  
+  // Action button (E key - trigger encounter) with vibration
+  btnAction.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    btnAction.classList.add('active');
+    vibrate(25);
+    if (State.phase === 'explore') {
+      const worldX = Background.scrollX + Player.x;
+      let nearest = null, nearDist = 200;
+      Encounters.markers.forEach(m => {
+        if (!m.triggered) {
+          const d = Math.abs(worldX - m.x);
+          if (d < nearDist) { nearDist = d; nearest = m; }
+        }
+      });
+      if (nearest) {
+        nearest.triggered = true;
+        BattleSystem.startBattle(nearest.data);
+      }
+    }
+  });
+  btnAction.addEventListener('touchend', () => {
+    btnAction.classList.remove('active');
+  });
+  
+  // Attack button for mobile with haptic feedback and visual pulse
+  btnAttack.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    vibrate(30);
+    // Visual feedback
+    btnAttack.style.transform = 'scale(0.92)';
+    setTimeout(() => { btnAttack.style.transform = ''; }, 100);
+    if (State.phase === 'battle') {
+      executePromptFromInput();
+    }
+  });
+  
+  // Input focus handling for mobile - premium UX
+  if (promptInput && battleUI) {
+    promptInput.addEventListener('focus', () => {
+      battleUI.classList.add('focus-mode');
+      vibrate(10);
+    });
+    promptInput.addEventListener('blur', () => {
+      battleUI.classList.remove('focus-mode');
+      resizeCanvas();
+    });
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// RESIZE CANVAS - HiDPI FULLSCREEN
+// ═══════════════════════════════════════════════════════════
+function resizeCanvas() {
+  const canvas = document.getElementById('gameCanvas');
+  const ctx = canvas.getContext('2d');
+
+  const dpr = window.devicePixelRatio || 1;
+  const width = window.innerWidth;
+  const height = window.innerHeight;
+
+  canvas.width = width * dpr;
+  canvas.height = height * dpr;
+
+  canvas.style.width = width + "px";
+  canvas.style.height = height + "px";
+
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+  // Calculate internal scaling for proportion preservation
+  internalScale = Math.min(width / 800, height / 520);
+  offsetX = (width - 800 * internalScale) / 2;
+  offsetY = (height - 520 * internalScale) / 2;
+
+  // Update orientation state
+  isPortrait = height > width;
+  
+  // Update UI based on orientation
+  updateOrientationUI();
+}
+
+function updateOrientationUI() {
+  const joystick = document.getElementById('joystickContainer');
+  const controls = document.getElementById('mobileControls');
+  
+  if (isPortrait) {
+    if (joystick) joystick.classList.add('portrait');
+    if (controls) controls.classList.add('portrait');
+  } else {
+    if (joystick) joystick.classList.remove('portrait');
+    if (controls) controls.classList.remove('portrait');
+  }
+}
+
+window.addEventListener('resize', resizeCanvas);
+window.addEventListener('orientationchange', resizeCanvas);
+resizeCanvas();
+
+// Device detection functions
+function isMobileDevice() {
+  return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || ('ontouchstart' in window && window.innerWidth < 1024);
+}
+
+function disableMobileUI() {
+  document.getElementById('joystickContainer')?.classList.remove('visible');
+  document.getElementById('mobileControls')?.classList.remove('visible');
+  document.getElementById('mobileAttackBtn')?.classList.remove('visible');
+}
+
+function enableMobileUI() {
+  const controls = document.getElementById('mobileControls');
+  const attackBtn = document.getElementById('mobileAttackBtn');
+  const joystick = document.getElementById('joystickContainer');
+  
+  // SOLO joystick + attack en móvil
+  if (joystick) joystick.classList.add('visible');
+  if (attackBtn) attackBtn.classList.add('visible');
+  
+  // OCULTAR botones viejos
+  if (controls) controls.style.display = 'none';
+}
+
+// Device detection - declare early
+const isMobile = typeof window !== 'undefined' && (window.innerWidth < 900 || 'ontouchstart' in window);
+
+// Haptic feedback
+function vibrate(ms = 30) {
+  if (navigator.vibrate && isMobile) {
+    navigator.vibrate(ms);
+  }
+}
+
+// Audio unlock for mobile
+function unlockAudioMobile() {
+  const ambient = document.getElementById('ambientSound');
+  if (ambient) {
+    ambient.play().catch(() => {});
+  }
+  document.body.addEventListener('touchstart', unlockAudioMobile, { once: true });
+}
+
+// Initialize mobile features - execute on load
+window.addEventListener('load', () => {
+  resizeCanvas();
+  
+  if (isMobileDevice()) {
+    bindTouchControls();
+    enableMobileUI();
+    
+    // Start game on touch for mobile
+    const startBtn = document.getElementById('startBtn');
+    if (startBtn) {
+      startBtn.addEventListener('touchstart', function(e) {
+        e.preventDefault();
+        unlockAudioMobile();
+        this.click();
+      });
+    }
+  } else {
+    disableMobileUI();
+  }
+});
+
+// ─── DECORATIVE ELEMENTS ─────────────────────────────────────
+const DecoElements = {
+  runes: Array.from({length:6}, (_,i)=>({
+    x: 100+i*130, y: H-95,
+    symbol: ['✦','◈','⬡','✺','⬟','✧'][i],
+    color: '#ffffff22', size:12,
+    pulseOffset: rand(0, Math.PI*2)
+  })),
+
+  draw() {
+    const t = Date.now()/1000;
+    this.runes.forEach(r => {
+      const rx = ((r.x - Background.scrollX*0.8) % (W+200) + W+200) % (W+200);
+      const alpha = 0.1 + 0.1*Math.sin(t+r.pulseOffset);
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = '#aaaaff';
+      ctx.font = `${r.size}px serif`;
+      ctx.textAlign = 'center';
+      ctx.fillText(r.symbol, rx, r.y);
+    });
+    ctx.globalAlpha = 1;
+  }
+};
+
+// ─── AMBIENT PARTICLES ───────────────────────────────────────
+const AmbientParticles = {
+  list: Array.from({length:20}, ()=>({
+    x: rand(0,W), y: rand(H*0.2, H-100),
+    vy: rand(-0.5,-0.1), vx: rand(-0.2,0.2),
+    size: rand(1,3), life:rand(0,1), decay:rand(0.002,0.005),
+    color: '#aaaaff'
+  })),
+
+  update(zone) {
+    const zd = ZONES[zone];
+    this.list.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      p.life -= p.decay;
+      if (p.life <= 0 || p.y < 0) {
+        p.x = rand(0,W); p.y = H-110; p.life = rand(0.5,1);
+        p.color = zd.accentColor;
+      }
+    });
+  },
+
+  draw() {
+    this.list.forEach(p => {
+      ctx.globalAlpha = p.life*0.5;
+      ctx.fillStyle = p.color;
+      ctx.shadowBlur = 6; ctx.shadowColor = p.color;
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+      ctx.fill();
+    });
+    ctx.globalAlpha = 1; ctx.shadowBlur = 0;
+  }
+};
+
+// ═══════════════════════════════════════════════════════════
+// ANALOG JOYSTICK
+// ═══════════════════════════════════════════════════════════
+const Joystick = {
+  active: false,
+  startX: 0,
+  startY: 0,
+  currentX: 0,
+  currentY: 0,
+  baseRadius: 45,
+  stickRadius: 20,
+  maxRadius: 35,
+  threshold: 10,
+  
+  init() {
+    const container = document.getElementById('joystickContainer');
+    const stick = document.getElementById('joystickStick');
+    if (!container || !stick) return;
+    
+    container.addEventListener('touchstart', (e) => this.onStart(e), { passive: false });
+    container.addEventListener('touchmove', (e) => this.onMove(e), { passive: false });
+    container.addEventListener('touchend', (e) => this.onEnd(e), { passive: false });
+    container.addEventListener('touchcancel', (e) => this.onEnd(e), { passive: false });
+  },
+  
+  onStart(e) {
+    e.preventDefault();
+    const touch = e.touches[0];
+    const rect = e.target.getBoundingClientRect();
+    this.active = true;
+    this.startX = rect.left + rect.width / 2;
+    this.startY = rect.top + rect.height / 2;
+    this.currentX = touch.clientX;
+    this.currentY = touch.clientY;
+    document.getElementById('joystickStick').classList.add('active');
+    vibrate(10);
+  },
+  
+  onMove(e) {
+    if (!this.active) return;
+    e.preventDefault();
+    const touch = e.touches[0];
+    this.currentX = touch.clientX;
+    this.currentY = touch.clientY;
+    this.updateStickPosition();
+  },
+  
+  onEnd(e) {
+    this.active = false;
+    Keys['ArrowLeft'] = false;
+    Keys['ArrowRight'] = false;
+    document.getElementById('joystickStick').classList.remove('active');
+    document.getElementById('joystickStick').style.transform = 'translate(-50%, -50%)';
+  },
+  
+  updateStickPosition() {
+    const dx = this.currentX - this.startX;
+    const dy = this.currentY - this.startY;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    const clampedDist = Math.min(distance, this.maxRadius);
+    
+    const angle = Math.atan2(dy, dx);
+    const clampedX = Math.cos(angle) * clampedDist;
+    const clampedY = Math.sin(angle) * clampedDist;
+    
+    const stick = document.getElementById('joystickStick');
+    stick.style.transform = `translate(calc(-50% + ${clampedX}px), calc(-50% + ${clampedY}px))`;
+    
+    // Update keys based on joystick position
+    Keys['ArrowLeft'] = dx < -this.threshold;
+    Keys['ArrowRight'] = dx > this.threshold;
+  }
+};
+
+// ─── MAIN GAME LOOP ──────────────────────────────────────────
+let lastTime = 0;
+function gameLoop(ts) {
+  const dt = ts - lastTime; lastTime = ts;
+  
+  // Clear with scaling applied
+  ctx.save();
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.restore();
+  
+  // Apply internal scaling for proper proportion
+  ctx.save();
+  ctx.translate(offsetX, offsetY);
+  ctx.scale(internalScale, internalScale);
+
+  if (State.phase === 'title' || State.phase === 'gameover') {
+    Background.draw(0);
+    ctx.restore();
+    requestAnimationFrame(gameLoop);
+    return;
+  }
+
+  // Draw world
+  Background.draw(State.zone);
+  AmbientParticles.update(State.zone);
+  AmbientParticles.draw();
+  DecoElements.draw();
+
+  // Encounters
+  Encounters.check();
+  Encounters.draw();
+
+  // Entities
+  Enemy.update();
+  Enemy.draw();
+  Player.update(Keys);
+  Player.draw();
+
+  // Think bubble in battle
+  if (State.phase === 'battle') {
+    const val = document.getElementById('promptInput').value;
+    Player.drawThinkBubble(val || '¿Cuál es tu prompt?');
+    Player.state = 'think';
+  }
+
+  // FX
+  EnergyBeam.update();
+  EnergyBeam.draw();
+  Particles.update();
+  Particles.draw();
+  FloatTexts.update();
+  FloatTexts.draw();
+
+  ctx.restore();
+  requestAnimationFrame(gameLoop);
+}
+
+// ─── INIT ────────────────────────────────────────────────────
+function startGame() {
+  document.getElementById('titleScreen').style.display = 'none';
+  ambientSound.play().catch(()=>{});
+  State.phase = 'explore';
+  State.zone = 0;
+  State.score = 0;
+  BattleSystem.enemiesDefeated = 0;
+  Player.reset();
+  Background.scrollX = 0;
+  Encounters.reset();
+  updateHUD();
+}
+
+document.getElementById('startBtn').addEventListener('click', startGame);
+document.getElementById('nextZoneBtn').addEventListener('click', nextZone);
+
+// Restore progress
+const saved = JSON.parse(localStorage.getItem('promptAdventure') || '{}');
+if (saved.score) {
+  document.querySelector('#titleScreen .title-tips').innerHTML +=
+    `<br><br><span style="color:#FFD700">Mejor puntuación: ${saved.score}</span>`;
+}
+
+requestAnimationFrame(gameLoop);
+</script>
+</body>
+</html>

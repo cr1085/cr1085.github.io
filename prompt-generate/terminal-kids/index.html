@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Lumi — Tu Tutor Inteligente</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌟</text></svg>"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+
+<!-- ══════════════════════ PANTALLA DE BIENVENIDA ══════════════════════ -->
+<div id="welcome-screen" class="screen active">
+  <div class="welcome-bg">
+    <div class="star s1">⭐</div>
+    <div class="star s2">🌟</div>
+    <div class="star s3">✨</div>
+    <div class="star s4">💫</div>
+    <div class="star s5">⭐</div>
+  </div>
+  <div class="welcome-card">
+    <div class="lumi-intro">
+      <div class="avatar-big" id="avatar-welcome">
+        <div class="avatar-face">
+          <div class="avatar-eyes">
+            <div class="eye left-eye"><div class="pupil"></div></div>
+            <div class="eye right-eye"><div class="pupil"></div></div>
+          </div>
+          <div class="avatar-mouth happy"></div>
+          <div class="avatar-cheeks">
+            <div class="cheek left-cheek"></div>
+            <div class="cheek right-cheek"></div>
+          </div>
+        </div>
+        <div class="avatar-body-welcome"></div>
+      </div>
+      <div class="speech-bubble intro-bubble">
+        <p>¡Hola! Soy <strong>Lumi</strong> 🌟</p>
+        <p>¡Tu tutor personal, listo para aprender juntos!</p>
+      </div>
+    </div>
+    <h1 class="welcome-title">¡Bienvenido a <span>Lumi</span>!</h1>
+    <p class="welcome-sub">El tutor inteligente que aprende contigo, ¡paso a paso!</p>
+
+    <div class="setup-form">
+      <div class="form-group">
+        <label>👤 ¿Cómo te llamas?</label>
+        <input type="text" id="student-name" placeholder="Tu nombre aquí..." maxlength="30"/>
+      </div>
+      <div class="form-group">
+        <label>🎂 ¿Cuántos años tienes?</label>
+        <div class="age-selector">
+          <button class="age-btn" data-age="6">6</button>
+          <button class="age-btn" data-age="7">7</button>
+          <button class="age-btn" data-age="8">8</button>
+          <button class="age-btn" data-age="9">9</button>
+          <button class="age-btn" data-age="10">10</button>
+          <button class="age-btn" data-age="11">11</button>
+          <button class="age-btn" data-age="12">12</button>
+          <button class="age-btn" data-age="13">13</button>
+          <button class="age-btn" data-age="14">14</button>
+          <button class="age-btn" data-age="15">15</button>
+          <button class="age-btn" data-age="16">16</button>
+          <button class="age-btn" data-age="17">17+</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>📚 ¿Qué quieres aprender hoy?</label>
+        <div class="subject-grid">
+          <button class="subject-btn" data-subject="matemáticas">🔢 Matemáticas</button>
+          <button class="subject-btn" data-subject="ciencias naturales">🌿 Ciencias</button>
+          <button class="subject-btn" data-subject="sociales">🌍 Sociales</button>
+          <button class="subject-btn" data-subject="español">📖 Español</button>
+          <button class="subject-btn" data-subject="inglés">🗣️ Inglés</button>
+          <button class="subject-btn" data-subject="religión">✝️ Religión</button>
+        </div>
+      </div>
+      <button class="btn-start" id="btn-start" onclick="startSession()">
+        ¡Empezar a Aprender! 🚀
+      </button>
+
+      <button class="btn-start" id="btn-back" onclick="window.location.href='../app.html'">
+  ← Volver
+</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════ PANTALLA PRINCIPAL DE CHAT ══════════════════════ -->
+<div id="chat-screen" class="screen">
+
+  <!-- HEADER -->
+  <header class="app-header">
+    <button class="btn-menu" onclick="toggleSidebar()">☰</button>
+    <button class="btn-back" onclick="goBack()">← Inicio</button>
+    <div class="header-center">
+      <div class="header-avatar" id="header-avatar">
+        <div class="avatar-face small">
+          <div class="avatar-eyes small-eyes">
+            <div class="eye small-eye left-eye"><div class="pupil"></div></div>
+            <div class="eye small-eye right-eye"><div class="pupil"></div></div>
+          </div>
+          <div class="avatar-mouth happy small-mouth"></div>
+        </div>
+      </div>
+      <div class="header-info">
+        <span class="header-name">Lumi</span>
+        <span class="header-status" id="header-status">✨ Listo para aprender</span>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="points-display">
+        <span class="points-icon">⭐</span>
+        <span class="points-count" id="points-display">0</span>
+      </div>
+      <button class="btn-voice-toggle" id="btn-voice-toggle" onclick="toggleVoice()" title="Activar/Desactivar voz">🔊</button>
+    </div>
+  </header>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <div class="main-content">
+
+    <!-- BARRA LATERAL -->
+    <aside class="sidebar">
+      <div class="student-card">
+        <div class="student-avatar-mini">👤</div>
+        <div class="student-info">
+          <strong id="sidebar-name">Estudiante</strong>
+          <span id="sidebar-subject">📚 Materia</span>
+        </div>
+      </div>
+
+      <div class="progress-section">
+        <h3>🏆 Tu Progreso</h3>
+        <div class="level-badge" id="level-badge">
+          <span class="level-icon">🌱</span>
+          <span class="level-text" id="level-text">Nivel 1 - Semilla</span>
+        </div>
+        <div class="xp-bar-container">
+          <div class="xp-bar" id="xp-bar" style="width:0%"></div>
+        </div>
+        <p class="xp-text"><span id="current-xp">0</span> / <span id="max-xp">100</span> XP</p>
+      </div>
+
+      <div class="achievements-section">
+        <h3>🎖️ Logros</h3>
+        <div class="achievements-grid" id="achievements-grid">
+          <div class="achievement locked" title="Primera Pregunta">❓</div>
+          <div class="achievement locked" title="5 Respuestas Correctas">✅</div>
+          <div class="achievement locked" title="Explorador">🔭</div>
+          <div class="achievement locked" title="Super Estudiante">🌟</div>
+          <div class="achievement locked" title="Matemático">🔢</div>
+          <div class="achievement locked" title="Científico">🔬</div>
+        </div>
+      </div>
+
+      <div class="topics-section">
+        <h3>📋 Temas Vistos</h3>
+        <div id="topics-list" class="topics-list">
+          <p class="no-topics">¡Aún no hemos estudiado temas!</p>
+        </div>
+      </div>
+
+      <div class="quick-subjects">
+        <h3>🚀 Cambiar Materia</h3>
+        <div class="quick-btns">
+          <button onclick="quickSubject('matemáticas')">🔢</button>
+          <button onclick="quickSubject('ciencias naturales')">🌿</button>
+          <button onclick="quickSubject('sociales')">🌍</button>
+          <button onclick="quickSubject('español')">📖</button>
+          <button onclick="quickSubject('inglés')">🗣️</button>
+          <button onclick="quickSubject('religión')">✝️</button>
+        </div>
+      </div>
+      
+      <button class="game-launch-btn" onclick="openGame()">
+        <span class="game-icon-small">⚡</span>
+        <span>Reto Rápido</span>
+      </button>
+      
+      <button class="teacher-mode-btn" onclick="activateTeacherMode()">
+        <span class="teacher-icon">🧠</span>
+        <span>Modo Profesor</span>
+      </button>
+      
+      <button class="adventure-launch-btn" onclick="openAdventure()">
+        <span class="adventure-icon-small">🗺️</span>
+        <span>Aventura</span>
+      </button>
+      
+      <button class="platform-launch-btn" onclick="LUMI_PLATFORM.open()">
+        <span class="platform-icon-small">🕹️</span>
+        <span>Plataforma</span>
+      </button>
+    </aside>
+
+    <!-- ÁREA DE CHAT -->
+    <div class="chat-area">
+
+      <!-- AVATAR FLOTANTE -->
+      <div class="floating-avatar" id="floating-avatar">
+        <div class="avatar-container" id="avatar-container">
+          <div class="avatar-glow"></div>
+          <div class="avatar-main">
+            <div class="avatar-face">
+              <div class="avatar-eyes">
+                <div class="eye left-eye"><div class="pupil"></div></div>
+                <div class="eye right-eye"><div class="pupil"></div></div>
+              </div>
+              <div class="avatar-mouth happy" id="avatar-mouth"></div>
+              <div class="avatar-cheeks">
+                <div class="cheek left-cheek"></div>
+                <div class="cheek right-cheek"></div>
+              </div>
+            </div>
+          </div>
+          <div class="avatar-name-tag">✨ Lumi</div>
+        </div>
+        <!-- Partículas de celebración -->
+        <div class="particles" id="particles"></div>
+      </div>
+
+      <!-- MENSAJES -->
+      <div class="messages-container" id="messages-container">
+        <!-- Los mensajes se insertan aquí dinámicamente -->
+      </div>
+
+      <!-- SUGERENCIAS RÁPIDAS -->
+      <div class="quick-suggestions" id="quick-suggestions">
+        <button class="suggestion-btn" onclick="sendSuggestion(this)">🤔 Explícame con un ejemplo</button>
+        <button class="suggestion-btn" onclick="sendSuggestion(this)">🔄 Repite de otra forma</button>
+        <button class="suggestion-btn" onclick="sendSuggestion(this)">📝 Ponme un ejercicio</button>
+        <button class="suggestion-btn" onclick="sendSuggestion(this)">✅ ¿Cómo lo estoy haciendo?</button>
+      </div>
+
+      <!-- INPUT DE CHAT -->
+      <div class="chat-input-area">
+        <!-- Quick Emoji Bar -->
+        <div class="quick-emoji-bar" id="quick-emoji-bar">
+          <button class="quick-emoji-item" onclick="addQuickEmoji('🤔')" title="Pensativo">🤔</button>
+          <button class="quick-emoji-item" onclick="addQuickEmoji('❓')" title="Pregunta">❓</button>
+          <button class="quick-emoji-item" onclick="addQuickEmoji('💡')" title="Idea">💡</button>
+          <button class="quick-emoji-item" onclick="addQuickEmoji('✅')" title="Entendido">✅</button>
+          <button class="quick-emoji-item" onclick="addQuickEmoji('🙏')" title="Gracias">🙏</button>
+          <button class="quick-emoji-item" onclick="addQuickEmoji('🎉')" title="Celebrar">🎉</button>
+          <button class="quick-emoji-item" onclick="addQuickEmoji('😮')" title="Sorpresa">😮</button>
+          <button class="quick-emoji-item" onclick="addQuickEmoji('😢')" title="Triste">😢</button>
+        </div>
+        
+        <!-- Emoji Panel -->
+        <div class="emoji-panel" id="emoji-panel">
+          <div class="emoji-panel-header">
+            <span>😊</span>
+            <h4>Expresate con Emojis</h4>
+            <button class="close-panel" onclick="toggleEmojiPanel()">×</button>
+          </div>
+          <div class="emoji-search">
+            <input type="text" id="emoji-search" placeholder="Buscar emoji..." oninput="searchEmojis(this.value)">
+          </div>
+          <div class="emoji-categories" id="emoji-categories">
+            <button class="emoji-category-btn active" data-category="emociones" onclick="filterEmojis('emociones')">😊 Emociones</button>
+            <button class="emoji-category-btn" data-category="aprendizaje" onclick="filterEmojis('aprendizaje')">📚 Aprender</button>
+            <button class="emoji-category-btn" data-category="celebracion" onclick="filterEmojis('celebracion')">🎊 Celebrar</button>
+            <button class="emoji-category-btn" data-category="ayuda" onclick="filterEmojis('ayuda')">🆘 Ayuda</button>
+          </div>
+          <div class="emoji-grid" id="emoji-grid"></div>
+          <div class="emoji-phrase-panel" id="emoji-phrase-panel">
+            <p>💬 Frases rápidas con emojis:</p>
+            <div class="emoji-phrase-btns" id="emoji-phrase-btns"></div>
+          </div>
+        </div>
+        
+        <div class="input-wrapper">
+          <textarea id="chat-input" 
+            placeholder="Escribe tu pregunta aquí... ✏️" 
+            rows="1"
+            onkeydown="handleKeyDown(event)"
+            oninput="autoResize(this)"></textarea>
+          <button class="btn-emoji" id="btn-emoji" onclick="toggleEmojiPanel()" title="Emojis">
+            <span class="pulse-ring"></span>😊
+          </button>
+          <button class="btn-mic" id="btn-mic" onclick="toggleSpeechInput()" title="Hablar">🎤</button>
+          <button class="btn-send" id="btn-send" onclick="sendMessage()">
+            <span>Enviar</span> 🚀
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════ OVERLAY DE RECOMPENSA ══════════════════════ -->
+<div class="reward-overlay" id="reward-overlay">
+  <div class="reward-card">
+    <div class="reward-emoji" id="reward-emoji">🏆</div>
+    <h2 id="reward-title">¡Increíble!</h2>
+    <p id="reward-desc">Has desbloqueado un logro</p>
+    <div class="reward-confetti" id="reward-confetti"></div>
+    <button onclick="closeReward()">¡Genial! ✨</button>
+  </div>
+</div>
+
+<!-- ══════════════════════ OVERLAY DE CARGA ══════════════════════ -->
+<div class="loading-overlay" id="loading-overlay" style="display:none">
+  <div class="loading-spinner">
+    <div class="spinner-dot"></div>
+    <div class="spinner-dot"></div>
+    <div class="spinner-dot"></div>
+  </div>
+  <p>Lumi está pensando... 🤔</p>
+</div>
+
+<!-- ══════════════════════ JUEGO: RETO RÁPIDO ══════════════════════ -->
+<div class="game-overlay" id="game-overlay">
+  <div class="game-container">
+    <div class="game-header">
+      <div class="game-title">
+        <span class="game-icon">⚡</span>
+        <h2>Reto Rápido</h2>
+      </div>
+      <button class="game-close" onclick="closeGame()">✕</button>
+    </div>
+    
+    <div class="game-stats">
+      <div class="stat-box">
+        <span class="stat-label">Puntos</span>
+        <span class="stat-value" id="game-score">0</span>
+      </div>
+      <div class="stat-box">
+        <span class="stat-label">Combo</span>
+        <span class="stat-value" id="game-combo">x1</span>
+      </div>
+      <div class="stat-box">
+        <span class="stat-label">Ronda</span>
+        <span class="stat-value" id="game-round">1/10</span>
+      </div>
+    </div>
+    
+    <div class="game-content" id="game-content">
+      <div class="game-start-screen" id="game-start-screen">
+        <div class="game-avatar">
+          <div class="avatar-face">
+            <div class="avatar-eyes">
+              <div class="eye"><div class="pupil"></div></div>
+              <div class="eye"><div class="pupil"></div></div>
+            </div>
+            <div class="avatar-mouth excited"></div>
+          </div>
+        </div>
+        <h3>¡Prepárate para el desafío!</h3>
+        <p>Responde preguntas rápido y gana muchos puntos</p>
+        <div class="game-subject-select">
+          <p>Elige tu materia:</p>
+          <div class="subject-buttons">
+            <button class="game-subject-btn" data-subject="matemáticas" onclick="selectGameSubject('matemáticas')">🔢 Matemáticas</button>
+            <button class="game-subject-btn" data-subject="ciencias" onclick="selectGameSubject('ciencias')">🌿 Ciencias</button>
+            <button class="game-subject-btn" data-subject="sociales" onclick="selectGameSubject('sociales')">🌍 Sociales</button>
+            <button class="game-subject-btn" data-subject="español" onclick="selectGameSubject('español')">📖 Español</button>
+            <button class="game-subject-btn" data-subject="inglés" onclick="selectGameSubject('inglés')">🗣️ Inglés</button>
+            <button class="game-subject-btn" data-subject="francés" onclick="selectGameSubject('francés')">🗼 Francés</button>
+            <button class="game-subject-btn" data-subject="alemán" onclick="selectGameSubject('alemán')">🏰 Alemán</button>
+            <button class="game-subject-btn" data-subject="koreano" onclick="selectGameSubject('koreano')">🎌 Koreano</button>
+            <button class="game-subject-btn" data-subject="chino" onclick="selectGameSubject('chino')">🐉 Chino</button>
+            <button class="game-subject-btn" data-subject="portugués" onclick="selectGameSubject('portugués')">⚽ Portugués</button>
+          </div>
+        </div>
+        <button class="game-start-btn" onclick="startGame()" id="game-start-btn" disabled>
+          ¡Comenzar! 🚀
+        </button>
+      </div>
+      
+      <div class="game-question-screen" id="game-question-screen" style="display:none">
+        <div class="question-timer">
+          <div class="timer-bar" id="timer-bar"></div>
+          <span class="timer-text" id="timer-text">⏱️ 15s</span>
+        </div>
+        <div class="question-card">
+          <span class="question-number" id="question-number">Pregunta 1</span>
+          <p class="question-text" id="question-text">¿Cuánto es 5 + 3?</p>
+          <div class="question-hint" id="question-hint">💡 Pista: Es una suma simple</div>
+        </div>
+        <div class="answer-options" id="answer-options">
+          <button class="answer-btn" onclick="answerQuestion(0)">A) 6</button>
+          <button class="answer-btn" onclick="answerQuestion(1)">B) 7</button>
+          <button class="answer-btn" onclick="answerQuestion(2)">C) 8</button>
+          <button class="answer-btn" onclick="answerQuestion(3)">D) 9</button>
+        </div>
+      </div>
+      
+      <div class="game-result-screen" id="game-result-screen" style="display:none">
+        <div class="result-emoji" id="result-emoji">🏆</div>
+        <h3 id="result-title">¡Excelente!</h3>
+        <p class="result-score">Puntuación final</p>
+        <div class="final-score" id="final-score">150</div>
+        <div class="result-stats">
+          <div class="result-stat">
+            <span class="rs-icon">✅</span>
+            <span class="rs-value" id="correct-answers">8</span>
+            <span class="rs-label">Correctas</span>
+          </div>
+          <div class="result-stat">
+            <span class="rs-icon">🔥</span>
+            <span class="rs-value" id="max-combo">x5</span>
+            <span class="rs-label">Mejor Combo</span>
+          </div>
+        </div>
+        <div class="result-buttons">
+          <button class="result-btn primary" onclick="playAgain()">¡Jugar de nuevo! 🔄</button>
+          <button class="result-btn secondary" onclick="closeGame()">Volver al chat 💬</button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="game-footer">
+      <p>🏆 Mejor puntuación: <span id="best-score">0</span></p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════ AVENTURA EDUCATIVA ══════════════════════ -->
+<div class="adventure-overlay" id="adventure-overlay">
+  <div class="adventure-container">
+    <div class="adventure-header">
+      <div class="adventure-title">
+        <span class="adventure-icon">🗺️</span>
+        <h2>Aventura Educativa</h2>
+      </div>
+      <div class="adventure-stats">
+        <span id="adventure-zone-name">Selva Mágica 🌴</span>
+        <span id="adventure-xp">+0 XP</span>
+      </div>
+      <button class="adventure-close" onclick="closeAdventure()">✕</button>
+    </div>
+    
+    <div class="adventure-content">
+      <div class="adventure-map-container">
+        <canvas id="adventure-canvas"></canvas>
+      </div>
+      
+      <div class="adventure-sidebar">
+        <div class="zone-selector">
+          <h4>🌍 Zonas</h4>
+          <div class="zone-buttons">
+            <button class="zone-btn active" onclick="selectZone('selva')">🌴 Selva</button>
+            <button class="zone-btn" onclick="selectZone('ciudad')">🏙️ Ciudad</button>
+            <button class="zone-btn" onclick="selectZone('espacio')">🚀 Espacio</button>
+          </div>
+        </div>
+        
+        <div class="adventure-mission">
+          <h4>🎯 Misión</h4>
+          <p id="adventure-mission">Alcanza el templo</p>
+        </div>
+        
+        <div class="adventure-controls">
+          <h4>⌨️ Controles</h4>
+          <p>WASD o Flechas para mover</p>
+          <p>ESC para salir</p>
+        </div>
+        
+        <div class="adventure-legend">
+          <h4>📋 Leyenda</h4>
+          <div class="legend-item"><span>🚪</span> Puerta</div>
+          <div class="legend-item"><span>🌊</span> Río</div>
+          <div class="legend-item"><span>🔥</span> Fogata</div>
+          <div class="legend-item"><span>🏛️</span> Templo</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Challenge Modal -->
+  <div class="challenge-modal" id="challenge-modal">
+    <div class="challenge-card">
+      <h3 id="challenge-title">Puerta Mágica 🚪</h3>
+      <p class="challenge-question" id="challenge-question">¿Cuánto es 5 + 3?</p>
+      <p class="challenge-hint" id="challenge-hint">💡 Pista: Suma simple</p>
+      <div class="challenge-options" id="challenge-options"></div>
+    </div>
+  </div>
+  
+  <!-- Challenge Result -->
+  <div class="challenge-result" id="challenge-result">
+    <div class="result-content">
+      <div class="result-emoji" id="challenge-result-emoji">🎉</div>
+      <h3 id="challenge-result-title">¡Correcto!</h3>
+      <p id="challenge-result-desc">¡Puedes continuar!</p>
+    </div>
+  </div>
+</div>
+
+<script src="adventure.js"></script>
+<script src="platformGame.js"></script>
+<script src="app.js"></script>
+<script>
+  // Verificar login en app padre (PromptGenerate)
+  (function() {
+    const isLoggedIn = localStorage.getItem('promptlab_logged_in') === 'true';
+    if (!isLoggedIn) {
+      // Redirigir a la app padre si no está logueado
+      window.location.href = '../app.html';
+    }
+  })();
+</script>
+</body>
+</html>

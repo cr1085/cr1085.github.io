@@ -1,0 +1,3026 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Crea prompts profesionales para ChatGPT, Claude y Gemini en segundos. Generador de prompts IA gratis y fácil de usar.">
+  <meta name="keywords" content="generador prompts IA profesionalmente, crear prompts ChatGPT, optimizador de prompts IA">
+  <meta name="3cb" content="PromptGenerate">
+  <link rel="icon" type="image/png" href="icons/1.png">
+  <title>Generador de Prompts IA Gratis | PromptGenerate</title>
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXX');
+  </script>
+
+  <style>
+    /* ═══════════════════════════════════════════════════════════════
+       PROMPT LAB - DISEÑO GAMIFICADO EDUCATIVO
+       Estilo: Videojuego educativo (Duolingo + RPG)
+    ═══════════════════════════════════════════════════════════════ */
+    
+    /* ── CSS Variables ── */
+    :root {
+      --accent: #6366f1;
+      --accent-light: #818cf8;
+      --accent-dark: #4f46e5;
+      --accent-glow: rgba(99, 102, 241, 0.4);
+      --cta: #f97316;
+      --cta-light: #fb923c;
+      --cta-dark: #ea580c;
+      --cta-glow: rgba(249, 115, 22, 0.35);
+      --success: #10b981;
+      --success-light: #34d399;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --xp: #a855f7;
+      --xp-light: #c084fc;
+      --level: #22d3ee;
+      
+      --radius-sm: 8px;
+      --radius: 14px;
+      --radius-lg: 20px;
+      --radius-xl: 28px;
+      
+      --font-display: 'Syne', sans-serif;
+      --font-body: 'DM Sans', sans-serif;
+      
+      --bg: #f0f4ff;
+      --bg-card: #ffffff;
+      --text: #1e1b4b;
+      --text-light: #475569;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --border-light: #f1f5f9;
+      --input-bg: #f8fafc;
+      
+      --shadow-sm: 0 2px 8px rgba(99, 102, 241, 0.06);
+      --shadow: 0 4px 20px rgba(99, 102, 241, 0.1);
+      --shadow-lg: 0 8px 32px rgba(99, 102, 241, 0.15);
+      --shadow-xl: 0 16px 48px rgba(99, 102, 241, 0.2);
+      
+      --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-bounce: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      background-image: 
+        radial-gradient(ellipse at 20% 20%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(168, 85, 247, 0.06) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(249, 115, 22, 0.04) 0%, transparent 60%);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      padding-bottom: 72px;
+      transition: var(--transition);
+    }
+
+    /* ── DARK MODE ── */
+    body.dark {
+      --bg: #0a0a1a;
+      --bg-card: #12122a;
+      --text: #e8e6f0;
+      --text-light: #a5a5c0;
+      --muted: #6b6b8a;
+      --border: #1e1e3a;
+      --border-light: #1a1a2e;
+      --input-bg: #0d0d1f;
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+      background: var(--bg);
+      color: var(--text);
+    }
+    body.dark .app-bar,
+    body.dark .pg-card,
+    body.dark .auth-card,
+    body.dark .profile-dropdown { background: var(--bg-card); border-color: var(--border); }
+    body.dark input.pg-input,
+    body.dark textarea.pg-textarea,
+    body.dark select.pg-select,
+    body.dark .auth-field input {
+      background: var(--input-bg) !important;
+      color: var(--text) !important;
+      border-color: var(--border) !important;
+    }
+    body.dark .tpl-chip { background: rgba(99, 102, 241, 0.15); border-color: rgba(99, 102, 241, 0.3); color: #a5b4fc; }
+    body.dark .tip-box { background: rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.3); color: #fcd34d; }
+    body.dark .usage-box { background: rgba(99, 102, 241, 0.08); border-color: rgba(99, 102, 241, 0.2); }
+    body.dark .template-card { background: #151530; border-color: var(--border); }
+    body.dark .template-card .material-symbols-outlined { color: #a5b4fc; }
+    body.dark hr { border-color: var(--border); }
+    body.dark .tool { background: rgba(99, 102, 241, 0.1); color: var(--text-light); }
+    body.dark .tool.active { background: var(--accent); color: #fff; }
+    body.dark .result-card { background: rgba(99, 102, 241, 0.06); border-color: rgba(99, 102, 241, 0.2); }
+    body.dark .quick-card { background: rgba(99, 102, 241, 0.06); border-color: rgba(99, 102, 241, 0.2); }
+    body.dark #historial li { background: rgba(99, 102, 241, 0.08); }
+    body.dark .btn-soft { background: rgba(99, 102, 241, 0.2); }
+    body.dark .game-card { background: linear-gradient(145deg, #1e1e4a, #2d2d5a); }
+    body.dark .book-cover { background: linear-gradient(135deg, #1e1e4a, #2d2d5a) !important; }
+    body.dark .step-number { background: #2d2d5a !important; border-color: #4a4a7a !important; color: #a5b4fc; box-shadow: 2px 3px 0px #1a1a2e !important; }
+
+    /* ── TYPOGRAPHY ── */
+    h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.02em; }
+    h2 { font-size: 1.25rem; font-weight: 800; }
+
+    /* ── HEADER ── */
+    .site-header {
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%);
+      padding: 18px 0;
+      box-shadow: 0 4px 30px rgba(79, 70, 229, 0.4);
+      position: relative;
+      overflow: hidden;
+    }
+    .site-header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: 
+        radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 40%),
+        radial-gradient(circle at 80% 50%, rgba(255,255,255,0.08) 0%, transparent 40%);
+      pointer-events: none;
+    }
+    .logo-badge {
+      width: 52px; height: 52px;
+      background: rgba(255,255,255,0.2);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 2px solid rgba(255,255,255,0.4);
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-display);
+      font-weight: 800; color: #fff; font-size: 18px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+      transition: var(--transition-bounce);
+    }
+    .logo-badge:hover { transform: scale(1.08) rotate(-3deg); }
+    .logo-badge img { width: 36px; height: 36px; }
+    .site-title { font-family: var(--font-display); font-size: 1.25rem; font-weight: 800; color: #fff; margin: 0; text-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+    .site-lead { color: rgba(255,255,255,0.8); font-size: 0.8rem; margin: 2px 0 0; font-weight: 500; }
+
+    /* ── APP BAR ── */
+    .app-bar {
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 0;
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* ── TABS / TOOLS ── */
+    .tool {
+      border: none;
+      background: var(--border-light);
+      padding: 10px 18px;
+      border-radius: var(--radius);
+      font-weight: 600; font-size: 0.875rem;
+      color: var(--text-light);
+      cursor: pointer;
+      font-family: var(--font-body);
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+    .tool::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--accent), var(--accent-light));
+      opacity: 0;
+      transition: var(--transition);
+    }
+    .tool:hover { 
+      background: rgba(99, 102, 241, 0.1); 
+      color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .tool.active { 
+      background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+      color: #fff;
+      box-shadow: 0 4px 15px var(--accent-glow);
+      transform: translateY(-2px);
+    }
+    .tool.active:hover { color: #fff; }
+    .tool .icon-btn { width: 18px; height: 18px; margin-right: 6px; vertical-align: middle; }
+
+    /* ── GAME TAB BUTTON ── */
+    .tool.game {
+      background: linear-gradient(135deg, #a855f7, #7c3aed);
+      color: white;
+      font-weight: 700;
+      box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
+    }
+    .tool.game:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 8px 25px rgba(168, 85, 247, 0.5);
+    }
+    .tool.game.active {
+      background: linear-gradient(135deg, #c084fc, #a855f7);
+      box-shadow: 0 6px 20px rgba(168, 85, 247, 0.5);
+    }
+
+    /* ── CARDS ── */
+    .pg-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      padding: 28px;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+    .pg-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--accent), var(--xp), var(--cta));
+      opacity: 0;
+      transition: var(--transition);
+    }
+    .pg-card:hover::before { opacity: 1; }
+    .pg-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
+    .pg-card h2 { 
+      font-family: var(--font-display); 
+      font-size: 1.2rem; 
+      font-weight: 800; 
+      margin: 0 0 6px;
+      background: linear-gradient(135deg, var(--text), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ── BUTTONS ── */
+    .btn-accent, .btn-cta-custom, .btn-ghost-custom, .btn-outline-custom, .btn-soft {
+      border: none;
+      border-radius: var(--radius);
+      font-weight: 700;
+      font-family: var(--font-body);
+      cursor: pointer;
+      transition: var(--transition-bounce);
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-accent {
+      background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+      color: #fff;
+      box-shadow: 0 4px 15px var(--accent-glow);
+      padding: 12px 24px;
+    }
+    .btn-accent:hover { 
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 8px 25px var(--accent-glow);
+    }
+    .btn-accent:active { transform: translateY(-1px) scale(0.98); }
+    .btn-accent:disabled { opacity: 0.5; transform: none; cursor: not-allowed; }
+
+    .btn-cta-custom {
+      background: linear-gradient(135deg, var(--cta), var(--cta-dark));
+      color: #fff;
+      box-shadow: 0 4px 15px var(--cta-glow);
+      padding: 12px 24px;
+    }
+    .btn-cta-custom:hover { 
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 8px 25px var(--cta-glow);
+      background: linear-gradient(135deg, var(--cta-light), var(--cta));
+    }
+    .btn-cta-custom:disabled { opacity: 0.5; transform: none; cursor: not-allowed; }
+
+    .btn-ghost-custom {
+      background: rgba(255,255,255,0.15);
+      border: 1.5px solid rgba(255,255,255,0.3);
+      color: #fff;
+      padding: 8px 16px;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .btn-ghost-custom:hover { 
+      background: rgba(255,255,255,0.25); 
+      border-color: rgba(255,255,255,0.5);
+      transform: translateY(-2px);
+    }
+
+    .btn-outline-custom {
+      background: transparent;
+      border: 2px solid var(--border);
+      color: var(--accent);
+      padding: 10px 20px;
+    }
+    .btn-outline-custom:hover { 
+      background: rgba(99, 102, 241, 0.08); 
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px var(--accent-glow);
+    }
+
+    .btn-soft {
+      background: rgba(99, 102, 241, 0.1);
+      color: var(--accent);
+      padding: 10px 20px;
+      font-weight: 600;
+    }
+    .btn-soft:hover { 
+      background: rgba(99, 102, 241, 0.18);
+      transform: translateY(-2px);
+    }
+
+    .btn-primary-auth {
+      background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+      color: #fff;
+      border: none; border-radius: var(--radius);
+      font-weight: 700; padding: 12px 22px;
+      font-family: var(--font-body); cursor: pointer;
+      box-shadow: 0 4px 15px var(--accent-glow);
+    }
+    .btn-primary-auth:hover { transform: translateY(-2px); box-shadow: 0 6px 20px var(--accent-glow); }
+    
+    .btn-secondary-auth {
+      background: var(--border-light);
+      color: var(--text);
+      border: none; border-radius: var(--radius);
+      font-weight: 600; padding: 12px 22px;
+      font-family: var(--font-body); cursor: pointer;
+    }
+    .btn-secondary-auth:hover { background: var(--border); transform: translateY(-2px); }
+    
+    .btn-cancel-auth {
+      background: transparent;
+      color: var(--muted);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      font-weight: 600; padding: 12px 22px;
+      font-family: var(--font-body); cursor: pointer;
+    }
+    .btn-cancel-auth:hover { background: var(--border-light); transform: translateY(-2px); }
+
+    /* ── TEMPLATE CHIPS ── */
+    .tpl-chips { display: flex; flex-wrap: wrap; gap: 10px; padding: 0; list-style: none; margin: 12px 0 20px; }
+    .tpl-chips li { list-style: none; }
+    .tpl-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-card);
+      border: 2px solid rgba(99, 102, 241, 0.2);
+      color: var(--accent);
+      border-radius: 999px;
+      padding: 8px 18px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      font-family: var(--font-body);
+      transition: var(--transition-bounce);
+      box-shadow: var(--shadow-sm);
+    }
+    .tpl-chip:hover { 
+      transform: translateY(-4px) scale(1.05); 
+      box-shadow: 0 8px 25px var(--accent-glow);
+      border-color: var(--accent);
+      background: rgba(99, 102, 241, 0.05);
+    }
+    .tpl-chip .icon-btn { width: 18px; height: 18px; }
+
+    /* ── USAGE BOX (XP BAR) ── */
+    .usage-box {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(168, 85, 247, 0.08));
+      border: 1px solid rgba(99, 102, 241, 0.15);
+      border-radius: var(--radius-lg);
+      padding: 20px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .usage-box::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--xp), var(--cta));
+    }
+    .usage-stat { position: relative; z-index: 1; }
+    .usage-stat strong { 
+      font-family: var(--font-display); 
+      font-size: 2rem; 
+      font-weight: 800; 
+      background: linear-gradient(135deg, var(--accent), var(--xp));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: block; 
+      line-height: 1; 
+    }
+    .usage-stat span { font-size: 0.8rem; color: var(--muted); font-weight: 600; }
+
+    /* ── FORM FIELDS ── */
+    .pg-label { font-weight: 700; font-size: 0.85rem; color: var(--text); margin-bottom: 6px; display: block; letter-spacing: -0.01em; }
+    .pg-hint { font-size: 0.76rem; color: var(--muted); margin-top: 4px; }
+
+    input.pg-input,
+    textarea.pg-textarea,
+    select.pg-select {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: var(--radius);
+      border: 2px solid var(--border);
+      font-size: 0.9rem;
+      color: var(--text);
+      background: var(--input-bg);
+      font-family: var(--font-body);
+      transition: var(--transition);
+    }
+    input.pg-input:focus, textarea.pg-textarea:focus, select.pg-select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px var(--accent-glow), var(--shadow-sm);
+      transform: translateY(-1px);
+    }
+    input.pg-input::placeholder, textarea.pg-textarea::placeholder { color: var(--muted); }
+    textarea.pg-textarea { min-height: 110px; resize: vertical; }
+    textarea.output {
+      min-height: 220px;
+      font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+      font-size: 0.85rem;
+      white-space: pre-wrap;
+      word-break: break-word;
+      line-height: 1.6;
+      background: linear-gradient(180deg, var(--input-bg), var(--bg-card));
+    }
+
+    /* ── TIP BOX ── */
+    .tip-box {
+      background: linear-gradient(135deg, #fffbeb, #fef3c7);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      color: #92400e;
+      border-radius: var(--radius);
+      padding: 14px 18px;
+      font-size: 0.85rem;
+      position: relative;
+      padding-left: 44px;
+    }
+    .tip-box::before {
+      content: '💡';
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.2rem;
+    }
+    body.dark .tip-box {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(245, 158, 11, 0.1));
+      border-color: rgba(245, 158, 11, 0.3);
+      color: #fcd34d;
+    }
+
+    /* ── SCORE BADGE (LEVEL) ── */
+    .score-badge {
+      background: linear-gradient(135deg, var(--accent), var(--xp));
+      color: #fff;
+      border-radius: var(--radius);
+      padding: 8px 16px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      white-space: nowrap;
+      box-shadow: 0 4px 12px var(--accent-glow);
+      animation: pulse-badge 2s ease-in-out infinite;
+    }
+    @keyframes pulse-badge {
+      0%, 100% { box-shadow: 0 4px 12px var(--accent-glow); }
+      50% { box-shadow: 0 4px 20px var(--accent-glow), 0 0 0 4px rgba(99, 102, 241, 0.1); }
+    }
+
+    /* ── ERROR BOX ── */
+    .error-box {
+      background: linear-gradient(135deg, #fef2f2, #fee2e2);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #dc2626;
+      padding: 12px 16px;
+      border-radius: var(--radius);
+      display: none;
+      font-size: 0.85rem;
+      animation: shake 0.4s ease;
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    /* ── RESULT CARD ── */
+    .result-card {
+      background: linear-gradient(180deg, rgba(99, 102, 241, 0.03), transparent);
+      border: 2px solid rgba(99, 102, 241, 0.12);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      margin-top: 20px;
+      position: relative;
+      transition: var(--transition);
+    }
+    .result-card:hover {
+      border-color: rgba(99, 102, 241, 0.25);
+      box-shadow: 0 8px 30px var(--accent-glow);
+    }
+
+    /* ── QUICK CARD ── */
+    .quick-card {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.06), rgba(168, 85, 247, 0.06));
+      border: 2px solid rgba(99, 102, 241, 0.12);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .quick-card::before {
+      content: '⚡';
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      font-size: 80px;
+      opacity: 0.05;
+      transform: rotate(15deg);
+    }
+    .quick-card h2 { 
+      font-family: var(--font-display); 
+      font-size: 1.1rem; 
+      font-weight: 800; 
+      margin: 0 0 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* ── TEMPLATE CARDS ── */
+    .template-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+    .template-card {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      padding: 24px 16px;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition-bounce);
+      border: 2px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+    .template-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--xp));
+      transform: scaleX(0);
+      transition: var(--transition);
+    }
+    .template-card:hover { 
+      transform: translateY(-6px) scale(1.02); 
+      box-shadow: var(--shadow-xl);
+      border-color: rgba(99, 102, 241, 0.3);
+    }
+    .template-card:hover::after { transform: scaleX(1); }
+    .template-card .material-symbols-outlined { 
+      font-size: 36px; 
+      color: var(--accent); 
+      display: block; 
+      margin-bottom: 10px;
+      transition: var(--transition-bounce);
+    }
+    .template-card:hover .material-symbols-outlined { 
+      transform: scale(1.15) rotate(5deg);
+      color: var(--xp);
+    }
+    .template-title { font-weight: 700; font-size: 0.85rem; }
+
+    /* ── LIBRARY / BOOKS ── */
+    .library-shelf { 
+      display: grid; 
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); 
+      gap: 36px; 
+      margin-top: 24px; 
+    }
+    .book-item { position: relative; height: 200px; cursor: pointer; perspective: 1000px; }
+    .book-3d { 
+      width: 100%; 
+      height: 100%; 
+      position: relative; 
+      transform-style: preserve-3d; 
+      transition: transform 0.5s ease;
+    }
+    .book-item:hover .book-3d { transform: rotateY(-20deg) scale(1.05); }
+    .book-cover {
+      position: absolute;
+      inset: 0;
+      border-radius: 6px 14px 14px 6px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: white;
+      font-weight: 700;
+      box-shadow: 12px 12px 30px rgba(0,0,0,0.2);
+      transition: var(--transition);
+    }
+    .book-item:hover .book-cover { box-shadow: 16px 16px 40px rgba(0,0,0,0.3); }
+    .book-spine { 
+      position: absolute; 
+      left: -10px; 
+      top: 0; 
+      width: 10px; 
+      height: 100%; 
+      border-radius: 6px 0 0 6px; 
+      background: linear-gradient(90deg, rgba(0,0,0,0.3), rgba(0,0,0,0.1));
+    }
+    .book-actions { position: absolute; bottom: -32px; left: 0; right: 0; display: flex; justify-content: center; gap: 8px; }
+    .book-use {
+      border: none;
+      padding: 6px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      cursor: pointer;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+      color: white;
+      font-family: var(--font-body);
+      transition: var(--transition-bounce);
+      box-shadow: 0 4px 12px var(--accent-glow);
+    }
+    .book-use:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 6px 20px var(--accent-glow); }
+
+    /* ── PROFILE ── */
+    .profile-avatar {
+      width: 42px; height: 42px;
+      border-radius: 50%;
+      overflow: hidden; 
+      cursor: pointer;
+      border: 3px solid var(--accent);
+      transition: var(--transition-bounce);
+      box-shadow: 0 4px 15px var(--accent-glow);
+    }
+    .profile-avatar:hover { 
+      transform: scale(1.1) rotate(5deg);
+      border-color: var(--xp);
+    }
+    .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .profile-box { display: flex; gap: 12px; align-items: center; font-weight: 600; }
+    .profile-dropdown {
+      position: absolute; top: 60px; right: 0;
+      background: var(--bg-card);
+      width: 260px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-xl);
+      padding: 16px;
+      display: none;
+      z-index: 1500;
+      animation: dropdownFade 0.2s ease;
+    }
+    @keyframes dropdownFade {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .profile-dropdown button {
+      width: 100%;
+      border: none;
+      padding: 12px 14px;
+      text-align: left;
+      background: transparent;
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-body);
+      color: var(--text);
+      font-size: 0.9rem;
+      transition: var(--transition);
+    }
+    .profile-dropdown button:hover { 
+      background: rgba(99, 102, 241, 0.1);
+      transform: translateX(4px);
+    }
+    .profile-info { display: flex; gap: 12px; align-items: center; }
+    .profile-info img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent); }
+
+    #planBadge {
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+      color: white;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      box-shadow: 0 4px 12px var(--accent-glow);
+    }
+
+    /* ── COUNTERS ── */
+    #counter, #optCounter { 
+      font-size: 0.82rem; 
+      color: var(--muted); 
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    #counter::before { content: '📝'; }
+    #optCounter::before { content: '✨'; }
+
+    /* ── AI HINT ── */
+    #aiHint { 
+      font-weight: 700; 
+      color: var(--xp); 
+      font-size: 0.88rem; 
+      min-height: 24px;
+      padding: 8px 12px;
+      background: rgba(168, 85, 247, 0.1);
+      border-radius: var(--radius-sm);
+      display: inline-block;
+      animation: hintFade 0.3s ease;
+    }
+    @keyframes hintFade {
+      from { opacity: 0; transform: translateY(-5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── AUTH MODAL ── */
+    .auth-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 10, 26, 0.8);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 2000;
+      animation: overlayFade 0.25s ease;
+    }
+    @keyframes overlayFade {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .auth-card {
+      width: 100%;
+      max-width: 440px;
+      background: var(--bg-card);
+      border-radius: var(--radius-xl);
+      padding: 32px;
+      box-shadow: var(--shadow-xl);
+      border: 1px solid var(--border);
+      animation: modalSlide 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @keyframes modalSlide {
+      from { opacity: 0; transform: translateY(20px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .auth-field { margin-bottom: 16px; }
+    .auth-field label { font-size: 0.85rem; font-weight: 700; margin-bottom: 6px; display: block; }
+    .auth-field input {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: var(--radius);
+      border: 2px solid var(--border);
+      font-size: 0.9rem;
+      background: var(--input-bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      transition: var(--transition);
+    }
+    .auth-field input:focus { 
+      outline: none; 
+      border-color: var(--accent); 
+      box-shadow: 0 0 0 4px var(--accent-glow);
+    }
+    #authMessage { font-size: 0.85rem; color: var(--muted); margin-top: 12px; }
+
+    /* ── SOCIAL LINKS ── */
+    .social-links a {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin: 6px 8px 6px 0;
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 600;
+      transition: var(--transition);
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      background: rgba(99, 102, 241, 0.08);
+    }
+    .social-links a:hover { 
+      color: #fff;
+      background: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px var(--accent-glow);
+    }
+
+    /* ── HISTORIAL ── */
+    #historial { padding: 0; list-style: none; margin: 12px 0 0; }
+    #historial li {
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      color: var(--muted);
+      background: rgba(99, 102, 241, 0.05);
+      margin-bottom: 8px;
+      border-left: 3px solid var(--accent);
+      transition: var(--transition);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    #historial li:hover {
+      background: rgba(99, 102, 241, 0.1);
+      transform: translateX(4px);
+    }
+
+    /* ── FREEMIUM BANNER ── */
+    .freemium-banner {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(90deg, var(--accent), var(--accent-dark), var(--xp));
+      color: white;
+      text-align: center;
+      padding: 14px 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      z-index: 999;
+      box-shadow: 0 -4px 30px rgba(99, 102, 241, 0.3);
+    }
+    .freemium-banner::before {
+      content: '🎮';
+      margin-right: 8px;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 575px) {
+      .header-actions .btn-ghost-custom .btn-label { display: none; }
+      .result-actions-wrap { flex-direction: column; align-items: stretch; }
+      .template-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       GAME SECTION - CONSOLE / ARCADE STYLE
+    ═══════════════════════════════════════════════════════════════ */
+    
+    .game-hub {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 24px;
+      margin-top: 24px;
+    }
+
+    .game-card {
+      background: linear-gradient(145deg, #1e293b, #0f172a);
+      border-radius: var(--radius-xl);
+      padding: 28px 24px;
+      text-align: center;
+      color: white;
+      cursor: pointer;
+      transition: var(--transition-bounce);
+      box-shadow: 
+        0 10px 40px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.08);
+      position: relative;
+      overflow: hidden;
+    }
+    .game-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+      transition: 0.5s;
+    }
+    .game-card:hover::before { left: 100%; }
+    .game-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--cta), var(--xp), var(--accent));
+    }
+    .game-card:hover {
+      transform: translateY(-8px) scale(1.03);
+      box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255,255,255,0.15);
+    }
+    .game-card img {
+      width: 90px;
+      margin-bottom: 14px;
+      filter: drop-shadow(0 8px 20px rgba(0,0,0,0.4));
+      transition: var(--transition-bounce);
+    }
+    .game-card:hover img {
+      transform: scale(1.1) rotate(-5deg);
+    }
+    .game-card h3 {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, #fff, #a5b4fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .game-card p {
+      font-size: 0.85rem;
+      opacity: 0.75;
+      line-height: 1.5;
+    }
+
+    /* Console Shell */
+    .console-shell {
+      background: linear-gradient(180deg, #1a1a2e, #0f0f1a);
+      padding: 40px;
+      border-radius: var(--radius-xl);
+      box-shadow: 
+        inset 0 0 60px rgba(0, 0, 0, 0.8),
+        0 30px 80px rgba(0, 0, 0, 0.6),
+        0 0 0 1px rgba(255,255,255,0.05);
+      position: relative;
+    }
+    .console-shell::before {
+      content: '';
+      position: absolute;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 140px;
+      height: 6px;
+      background: linear-gradient(90deg, #333, #555, #333);
+      border-radius: 20px;
+    }
+    .console-shell::after {
+      content: '';
+      position: absolute;
+      bottom: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 6px;
+      background: linear-gradient(90deg, #22c55e, #10b981);
+      border-radius: 20px;
+      box-shadow: 0 0 15px rgba(34, 197, 94, 0.5);
+    }
+
+    .game-frame {
+      width: 100%;
+      height: 720px;
+      background: radial-gradient(ellipse at center, #1e1b4b, #000);
+      border-radius: var(--radius-lg);
+      overflow: visible;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding-top: 12px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+      position: relative;
+      z-index: 2;
+    }
+    .game-frame iframe {
+      width: 900px;
+      height: 650px;
+      border: none;
+      border-radius: var(--radius);
+    }
+
+    @media (max-width: 900px) {
+      .game-frame iframe { width: 100%; height: 100%; }
+      .game-heroes { right: -25px; top: -20px; height: 90px; transform: rotate(6deg); }
+    }
+
+    .game-heroes {
+      position: absolute;
+      right: -50px;
+      top: -110px;
+      height: 210px;
+      pointer-events: none;
+      z-index: 0;
+      transform: rotate(20deg);
+      transform-origin: bottom left;
+      filter: drop-shadow(0 35px 60px rgba(0,0,0,0.8));
+      transition: var(--transition-bounce);
+    }
+    .game-heroes:hover { transform: translateY(-6px) scale(1.05); }
+    @media (max-width: 500px) {
+      .game-heroes { right: -10px; top: -10px; height: 70px; opacity: 0.9; }
+    }
+
+    #gameWrapper:fullscreen {
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #gameWrapper:fullscreen iframe { width: 100%; height: 100%; }
+
+    #gameEmulator {
+      position: fixed;
+      inset: 0;
+      background: #000;
+      display: none;
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+    #gamePlayer {
+      width: 100vw;
+      height: 100vh;
+      border: none;
+    }
+
+    #exitGameBtn {
+      position: fixed;
+      top: 14px;
+      right: 14px;
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 8px 14px;
+      font-size: 14px;
+      border-radius: var(--radius-sm);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 10000;
+      transition: var(--transition);
+    }
+    #exitGameBtn:hover {
+      background: var(--danger);
+      transform: scale(1.05);
+    }
+
+    .game-top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      margin-bottom: 0;
+      z-index: 3;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       STEP GUIDE (Manual Section)
+    ═══════════════════════════════════════════════════════════════ */
+    
+    .step-guide {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 16px;
+      padding: 14px;
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      transition: var(--transition);
+    }
+    .step-guide:hover {
+      transform: translateX(6px);
+      border-color: var(--accent);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .step-number {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-family: var(--font-display);
+      font-size: 16px;
+      color: #000;
+      background: #ffe8b6;
+      border: 2px solid #000;
+      transform: rotate(-6deg);
+      box-shadow: 3px 4px 0px #000;
+      flex-shrink: 0;
+      transition: var(--transition-bounce);
+    }
+    .step-guide:hover .step-number {
+      transform: rotate(0deg) scale(1.1);
+    }
+
+    .step-text strong {
+      font-size: 0.95rem;
+      display: block;
+      color: var(--text);
+    }
+    .step-text {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .step-guide:nth-child(1) .step-number { background: #d8f5a2; }
+    .step-guide:nth-child(2) .step-number { background: #c6e2ff; }
+    .step-guide:nth-child(3) .step-number { background: #ffe0e0; }
+    .step-guide:nth-child(4) .step-number { background: #ffd6ff; }
+    .step-guide:nth-child(5) .step-number { background: #ffe8b6; }
+    .step-guide:nth-child(6) .step-number { background: #d7f9ff; }
+    .step-guide:nth-child(7) .step-number { background: #e9ffc7; }
+    .step-guide:nth-child(8) .step-number { background: #ffd8c2; }
+    .step-guide:nth-child(9) .step-number { background: #f1dfff; }
+    .step-guide:nth-child(10) .step-number { background: #ffeaa7; }
+
+    /* ═══════════════════════════════════════════════════════════════
+       UTILITY & MISC
+    ═══════════════════════════════════════════════════════════════ */
+
+    #promptActions { display: none; }
+    .result-actions-wrap:empty { display: none; }
+    #quickModule { display: none; }
+
+    /* Create Account Button */
+    .create-account-btn {
+      background: linear-gradient(135deg, var(--cta), var(--cta-dark));
+      border: none;
+      font-weight: 700;
+      box-shadow: 0 6px 20px var(--cta-glow);
+      transition: var(--transition-bounce);
+    }
+    @media (min-width: 992px) {
+      .create-account-btn { position: absolute; right: 20px; top: 20px; }
+      .site-header .container { position: relative; }
+    }
+    @media (max-width: 991px) {
+      .create-account-btn { position: static; }
+    }
+    .create-account-btn:hover {
+      transform: translateY(-3px) scale(1.02);
+      background: linear-gradient(135deg, var(--cta-light), var(--cta));
+      box-shadow: 0 10px 30px var(--cta-glow);
+    }
+
+    /* Icon Button */
+    .icon-btn {
+      width: 18px;
+      height: 18px;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+
+    /* Loading/Generating Animation */
+    @keyframes generating {
+      0% { content: '⚡'; }
+      25% { content: '✨'; }
+      50% { content: '🎯'; }
+      75% { content: '💫'; }
+      100% { content: '⚡'; }
+    }
+
+    /* Focus states for accessibility */
+    button:focus-visible,
+    input:focus-visible,
+    textarea:focus-visible,
+    select:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    /* Click animation */
+    .btn-cta-custom:active,
+    .btn-accent:active,
+    .btn-soft:active,
+    .btn-outline-custom:active,
+    .book-use:active,
+    .game-card:active,
+    .template-card:active,
+    .tpl-chip:active {
+      transform: scale(0.95) !important;
+    }
+
+    /* Smooth scroll */
+    html { scroll-behavior: smooth; }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: var(--border-light); }
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent-dark); }
+
+  </style>
+</head>
+
+<body>
+
+  <!-- ══ HEADER ══ -->
+  <header class="site-header">
+    <div class="container">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+
+        <div class="d-flex align-items-center gap-3">
+          <div class="logo-badge">
+            <img src="icons/1.png" style="width: 36px; height: 36px;" alt="Promptlab">
+          </div>
+          <div>
+            <h1 class="site-title">PromptLab</h1>
+            <p class="site-lead">Generador de Prompts IA</p>
+          </div>
+        </div>
+
+        <div class="d-flex align-items-center gap-2 flex-wrap header-actions">
+          <button onclick="sendFeedback()" class="btn btn-ghost-custom btn-sm px-3">
+  <span class="btn-label"> <img src="icons/2.png" class="icon-btn" alt="Promptlab">Feedback</span>
+</button>
+          <button class="btn btn-ghost-custom btn-sm px-3" onclick="modoOscuro()"><img src="icons/3.png" class="icon-btn" alt="Promptlab"> <span class="btn-label">Tema</span></button>         
+          <a class="btn btn-cta-custom btn-sm px-3" href="https://buymeacoffee.com/cristiancua" target="_blank" rel="noopener noreferrer"><img src="icons/5.png" class="icon-btn" alt="Promptlab"> Invítame un café</a>
+          <button onclick="shareApp()" class="btn btn-ghost-custom btn-sm px-3">
+  <span class="btn-label"><img src="icons/4.png" class="icon-btn" alt="Promptlab">Compartir</span>
+</button>
+ <button id="upgradeBtn" class="btn btn-ghost-custom btn-sm px-3 create-account-btn" onclick="authButtonAction()">Crear cuenta</button>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- ══ APP BAR ══ -->
+  <div class="app-bar">
+    <div class="container">
+      <div class="d-flex align-items-center justify-content-between gap-3">
+
+        <div id="toolsBar" class="d-flex gap-2 flex-wrap" style="display:none !important;">
+          <button class="tool active" onclick="changeTab('generador', this)"><img src="icons/1.png" class="icon-btn" alt="Promptlab">Generador</button>
+          <button class="tool" onclick="changeTab('optimizador', this)"><img src="icons/6.png" class="icon-btn" alt="Promptlab">Optimizador</button>
+          <button class="tool" onclick="changeTab('plantillas', this)"><img src="icons/7.png" class="icon-btn" alt="Promptlab">Plantillas</button>
+          <button class="tool" onclick="changeTab('biblioteca', this)"><img src="icons/8.png" class="icon-btn" alt="Promptlab">Biblioteca</button>
+          <button class="tool game" onclick="changeTab('juego', this)"><img src="icons/9.png" class="icon-btn" alt="Promptlab"> Aprender jugando</button>
+          <button class="tool btn btn-accent" onclick="improveIdea()"><img src="icons/10.png" class="icon-btn" alt="Promptlab">Mejorar idea automáticamente</button>
+          <button class="tool" onclick="changeTab('manual', this)"><img src="icons/11.png" class="icon-btn" alt="Promptlab">Guía rápida</button>
+          <button class="tool" onclick=""><img src="icons/12.png" class="icon-btn" alt="Promptlab">Convertir idea en negocio</button>
+          
+        </div>
+        <div></div>
+
+        <div id="profileBox" class="profile-box position-relative" style="display:none;">
+          <span id="planBadge">Plan Free</span>
+          <div class="profile-avatar" onclick="toggleProfileMenu()">
+            <img id="avatarImg" src="https://i.pravatar.cc/100" alt="Avatar del usuario">
+          </div>
+          <div id="profileDropdown" class="profile-dropdown">
+            <div class="profile-info mb-2">
+              <img id="avatarMini" src="https://i.pravatar.cc/100" alt="Avatar mini">
+              <div>
+                <strong id="profileName" style="font-size:.9rem;">Usuario</strong>
+                <div style="font-size:.75rem;color:var(--muted);" id="profileEmail"></div>
+              </div>
+            </div>
+            <hr class="my-2">
+            <button onclick="openProfileModal()">✏️ Editar perfil</button>
+            <button onclick="authButtonAction()">🚪 Cerrar sesión</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ AUTH MODAL ══ -->
+  <div id="authModal" class="auth-overlay">
+    <div class="auth-card">
+      <h2 style="font-size:1.3rem;margin:0 0 4px;">Empieza gratis</h2>
+      <p style="font-size:0.84rem;color:var(--muted);margin:0 0 18px;">Regístrate gratis y desbloquea todas las herramientas</p>
+      <div class="auth-field">
+        <label>Email</label>
+        <input id="authEmail" type="email" placeholder="tu@email.com">
+      </div>
+      <div class="auth-field">
+        <label>Contraseña</label>
+        <input id="authPassword" type="password" placeholder="••••••••">
+      </div>
+      <div class="d-flex gap-2 mt-3 flex-wrap">
+        <button class="btn-cancel-auth" onclick="hideAuthModal()">Cancelar</button>
+        <button class="btn-secondary-auth" onclick="handleRegister()">Crear cuenta</button>
+        <button class="btn-primary-auth" onclick="handleLogin()">Entrar</button>
+      </div>
+      <div id="authMessage"></div>
+    </div>
+  </div>
+
+  <!-- ══ UPGRADE MODAL ══ -->
+  <div id="upgradeModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);align-items:center;justify-content:center;z-index:1300;padding:20px;">
+    <div style="background:var(--card-bg);padding:30px;border-radius:16px;max-width:400px;width:100%;text-align:center;border:1px solid var(--border);">
+      <div style="font-size:2.5rem;margin-bottom:10px;">🚀</div>
+      <h2 style="font-family:var(--font-display);font-size:1.3rem;margin:0 0 8px;">Desbloquea todo el potencial</h2>
+      <p style="color:var(--muted);font-size:0.85rem;margin:0 0 14px;">Optimizaciones ilimitadas y herramientas avanzadas por solo $5.000 COP al mes.</p>
+      <ul style="text-align:left;padding:0;list-style:none;font-size:0.875rem;margin:0 0 18px;">
+        <li class="mb-1">✅ Optimización ilimitada</li>
+        <li class="mb-1">✅ 5 variaciones automáticas</li>
+        <li class="mb-1">✅ Plantillas premium</li>
+        <li>✅ Biblioteca privada</li>
+      </ul>
+      <div class="d-flex gap-2 justify-content-center">
+        <button class="btn btn-outline-custom px-4 py-2" onclick="hideUpgradeModal()">Ahora no</button>
+        <button class="btn btn-cta-custom px-4 py-2" onclick="openWompi()">Activar PRO</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ PROFILE MODAL ══ -->
+  <div id="profileModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);align-items:center;justify-content:center;z-index:2000;padding:20px;">
+    <div style="background:var(--card-bg);padding:28px;border-radius:16px;max-width:460px;width:100%;border:1px solid var(--border);">
+      <h2 style="font-family:var(--font-display);font-size:1.2rem;margin:0 0 18px;">Editar perfil</h2>
+      <div class="mb-3">
+        <label class="pg-label">Nombre completo</label>
+        <input type="text" id="profileFullName" class="pg-input" placeholder="Nombre completo">
+      </div>
+      <div class="mb-3">
+        <label class="pg-label">Username</label>
+        <input type="text" id="profileUsername" class="pg-input" placeholder="@username">
+      </div>
+      <div class="mb-3">
+        <label class="pg-label">Biografía</label>
+        <textarea id="profileBio" class="pg-textarea" style="min-height:80px;" placeholder="Cuéntanos algo sobre ti..."></textarea>
+      </div>
+      <div class="mb-3">
+        <label class="pg-label">Foto de perfil</label>
+        <input type="file" id="profileAvatarFile" accept="image/*" class="pg-input" style="padding:8px;">
+      </div>
+      <div class="d-flex gap-2 justify-content-end mt-2">
+        <button class="btn btn-outline-custom px-4 py-2" onclick="closeProfileModal()">Cancelar</button>
+        <button class="btn btn-cta-custom px-4 py-2" onclick="saveProfile()">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ MAIN ══ -->
+  <div class="container py-4">
+    <div class="row g-4 align-items-start">
+
+      <!-- LEFT COLUMN -->
+      <div class="col-lg-8">
+
+        <!-- SECTION GENERADOR -->
+        <section id="section-generador" class="pg-card" aria-labelledby="form-title">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div style="width: 44px; height: 44px; background: linear-gradient(135deg, var(--accent), var(--xp)); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+              <span class="material-symbols-outlined" style="color: white; font-size: 24px;">edit_note</span>
+            </div>
+            <div>
+              <h2 id="form-title" style="margin-bottom: 2px;">Crea un Prompt Profesional</h2>
+              <p style="color: var(--muted); font-size: 0.85rem; margin: 0;">Completa los campos y genera prompts optimizados para IA</p>
+            </div>
+          </div>
+
+          <div class="tip-box mb-3">
+            <strong>💡 Consejo:</strong> Sé concreto y aporta contexto para mejores resultados.
+          </div>
+
+          <ul class="tpl-chips" aria-label="Plantillas rápidas">
+            <li><button class="tpl-chip" onclick="plantillaMarketing()"><img src="icons/14.png" class="icon-btn" alt="Promptlab"> Marketing</button></li>
+            <li><button class="tpl-chip" onclick="plantillaEmprendimiento()"><img src="icons/15.png" class="icon-btn" alt="Promptlab"> Emprendimiento</button></li>
+            <li><button class="tpl-chip" onclick="plantillaMarca()"><img src="icons/16.png" class="icon-btn" alt="Promptlab"> Marca personal</button></li>
+            <li><button class="tpl-chip" onclick="plantillaEducacion()"><img src="icons/17.png" class="icon-btn" alt="Promptlab"> Educación</button></li>
+            <li><button class="tpl-chip" onclick="plantillaMonetizacion()"><img src="icons/18.png" class="icon-btn" alt="Promptlab"> Monetización</button></li>
+            <li><button class="tpl-chip" onclick="plantillaProductividad()"><img src="icons/19.png" class="icon-btn" alt="Promptlab"> Productividad</button></li>
+          </ul>
+
+          <div class="usage-box d-flex gap-4 flex-wrap mb-4">
+            <div class="usage-stat">
+              <strong id="usageNumber">0</strong>
+              <span>Prompts generados</span>
+            </div>
+            <div class="usage-stat">
+              <strong id="optNumber">0</strong>
+              <span>Optimizaciones</span>
+            </div>
+          </div>
+
+          <form aria-describedby="form-desc" onsubmit="return false;">
+            <p id="form-desc" style="font-size:0.8rem;color:var(--muted);margin:0 0 14px;">Los campos clave se usan para componer el prompt final. Puedes dejar los opcionales vacíos.</p>
+
+            <div class="row g-3">
+              <div class="col-12 col-md-6">
+                <label class="pg-label" for="rol">Rol que asumirá la IA</label>
+                <input id="rol" type="text" class="pg-input" placeholder="Ej: estratega de contenido, profesor práctico">
+                <div class="pg-hint">Define la identidad profesional de la IA.</div>
+              </div>
+              <div class="col-12 col-md-6">
+                <label class="pg-label" for="objetivo">Objetivo principal</label>
+                <input id="objetivo" type="text" class="pg-input" placeholder="Ej: crear un guion para video corto con CTA claro">
+                <div class="pg-hint">Qué quieres lograr con este prompt.</div>
+              </div>
+              <div class="col-12 col-md-6">
+                <label class="pg-label" for="publico">Público objetivo</label>
+                <input id="publico" type="text" class="pg-input" placeholder="Ej: emprendedores, estudiantes, clientes">
+                <div class="pg-hint">Describe a quién va dirigido el resultado.</div>
+              </div>
+              <div class="col-12 col-md-6">
+                <label class="pg-label" for="contexto">Contexto o problema</label>
+                <textarea id="contexto" class="pg-textarea" style="min-height:80px; resize:none;" placeholder="Explica la situación, restricciones o contexto"></textarea>
+                <div class="pg-hint">Cuanto más claro, mejor la respuesta.</div>
+              </div>
+              <div class="col-6 col-md-3">
+                <label class="pg-label" for="tono">Tono</label>
+                <select id="tono" class="pg-select">
+                  <option value="">-- Selecciona --</option>
+                  <option>Simple</option>
+                  <option>Creativo</option>
+                  <option>Profesional</option>
+                  <option>Cercano</option>
+                </select>
+              </div>
+              <div class="col-6 col-md-3">
+                <label class="pg-label" for="lenguaje">Lenguaje</label>
+                <select id="lenguaje" class="pg-select">
+                  <option value="">-- Selecciona --</option>
+                  <option>Fácil y sin tecnicismos</option>
+                  <option>Claro y directo</option>
+                </select>
+              </div>
+              <div class="col-6 col-md-3">
+                <label class="pg-label" for="extension">Extensión</label>
+                <select id="extension" class="pg-select">
+                  <option value="">-- Selecciona --</option>
+                  <option>Corto</option>
+                  <option>Medio</option>
+                  <option>Largo</option>
+                </select>
+              </div>
+              <div class="col-6 col-md-3">
+                <label class="pg-label" for="formato">Formato de salida</label>
+                <select id="formato" class="pg-select">
+                  <option value="">-- Selecciona --</option>
+                  <option>Lista</option>
+                  <option>Pasos</option>
+                  <option>Tabla</option>
+                  <option>Guion</option>
+                  <option>Texto</option>
+                </select>
+              </div>
+              <div class="col-12 col-md-6">
+                <label class="pg-label" for="evitar">Qué evitar</label>
+                <input id="evitar" type="text" class="pg-input" placeholder="Ej: tecnicismos, lenguaje formal excesivo">
+              </div>
+              <div class="col-12 col-md-6">
+                <label class="pg-label" for="incluir">Qué incluir <span style="font-weight:400;color:var(--muted)">(opcional)</span></label>
+                <input id="incluir" type="text" class="pg-input" placeholder="Ej: ejemplos, pasos, llamada a la acción">
+              </div>
+            </div>
+
+            <div id="aiHint" class="mt-3"></div>
+
+            <div class="d-flex align-items-center gap-3 mt-4 flex-wrap">
+              <button id="generarBtn" class="btn btn-cta-custom px-4 py-3" type="button" onclick="generarPrompt()">
+                <span class="material-symbols-outlined align-middle me-1" style="font-size: 20px;">auto_awesome</span>
+                Generar Prompt
+              </button>
+              <div class="score-badge" id="eficiencia" aria-live="polite"></div>
+            </div>
+
+            <div class="d-flex gap-3 mt-2 flex-wrap">
+              <div id="counter" style="color: var(--muted); font-size: 0.8rem; font-weight: 600;">📝 Prompts usados hoy: 0 / 5</div>
+              <div id="optCounter" style="color: var(--muted); font-size: 0.8rem; font-weight: 600;">✨ Optimización gratuita: 5 / 5</div>
+            </div>
+
+            <div id="formError" class="error-box mt-2" role="alert"></div>
+
+            <div class="result-card mt-3">
+              <div class="d-flex justify-content-between align-items-start gap-2 mb-2 flex-wrap result-actions-wrap">
+                <div>
+                  <label class="pg-label mb-0" for="resultado">Prompt generado</label>
+                  <div style="font-size:0.75rem;color:var(--muted);">Listo para usar — copia o descarga rápido</div>
+                </div>
+                <!-- <div class="d-flex gap-2 flex-wrap"> -->
+                  <div id="promptActions" class="d-flex gap-2 flex-wrap">
+                  <button id="copBtn" class="btn btn-outline-custom btn-sm px-3 py-1" onclick="copiarPrompt()">📋 Copiar</button>
+                  <button id="dscBtn" class="btn btn-soft btn-sm px-3 py-1" onclick="descargarPrompt()">⬇ Descargar</button>
+                  <button id="optBtn" class="btn btn-accent btn-sm px-3 py-1"  onclick="optimizarPrompt()">✨ Optimizar</button>
+                  <button id="comBtn"  onclick="compartirPrompt()" class="btn btn-accent btn-sm px-3 py-1">📤 Compartir</button>
+
+                </div>
+              </div>
+              <textarea id="resultado" class="pg-textarea output" style="resize:none;" placeholder="Aquí aparecerá el prompt generado..."></textarea>
+            <!-- <div class="mt-2">
+<button class="btn btn-cta-custom w-100 py-2" onclick="copiarPrompt()">
+📋 Copiar Prompt
+</button>
+</div> -->
+            </div>
+
+          </form>
+        </section>
+
+        <!-- SECTION OPTIMIZADOR -->
+        <section id="section-optimizador" class="pg-card" style="display:none;">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div style="width: 44px; height: 44px; background: linear-gradient(135deg, var(--success), var(--accent)); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+              <span class="material-symbols-outlined" style="color: white; font-size: 24px;">auto_fix_high</span>
+            </div>
+            <div>
+              <h2 style="margin-bottom: 2px;">Optimiza tu Prompt</h2>
+              <p style="color: var(--muted); font-size: 0.85rem; margin: 0;">Mejora cualquier prompt existente</p>
+            </div>
+          </div>
+          <label class="pg-label mt-2">Tu prompt actual</label>
+          <textarea id="optimizarInput" class="pg-textarea" placeholder="Pega aquí tu prompt..." style="min-height:150px;"></textarea>
+          <div class="mt-3">
+            <button class="btn btn-cta-custom px-4 py-2" onclick="runStandaloneOptimizer()">✨ Optimizar</button>
+          </div>
+          <label class="pg-label mt-3">Versión optimizada</label>
+          <textarea id="optimizarOutput" class="pg-textarea output" placeholder="Aquí aparecerá la versión optimizada..."></textarea>
+        </section>
+
+        <!-- SECTION PLANTILLAS -->
+        <section id="section-plantillas" class="pg-card" style="display:none;">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div style="width: 44px; height: 44px; background: linear-gradient(135deg, var(--cta), var(--warning)); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+              <span class="material-symbols-outlined" style="color: white; font-size: 24px;">dashboard</span>
+            </div>
+            <div>
+              <h2 style="margin-bottom: 2px;">Plantillas PRO</h2>
+              <p style="color: var(--muted); font-size: 0.85rem; margin: 0;">Listas para usar</p>
+            </div>
+          </div>
+          <div class="template-grid">
+            <div class="template-card" onclick="insertTemplate('youtube')">
+              <span class="material-symbols-outlined">smart_display</span>
+              <div class="template-title">YouTube</div>
+            </div>
+            <div class="template-card" onclick="insertTemplate('tiktok')">
+              <span class="material-symbols-outlined">music_note</span>
+              <div class="template-title">TikTok</div>
+            </div>
+            <div class="template-card" onclick="insertTemplate('instagram')">
+              <span class="material-symbols-outlined">photo_camera</span>
+              <div class="template-title">Instagram</div>
+            </div>
+            <div class="template-card" onclick="insertTemplate('ventas')">
+              <span class="material-symbols-outlined">shopping_cart</span>
+              <div class="template-title">Ventas</div>
+            </div>
+            <div class="template-card" onclick="insertTemplate('funnels')">
+              <span class="material-symbols-outlined">conversion_path</span>
+              <div class="template-title">Funnels</div>
+            </div>
+            <div class="template-card" onclick="insertTemplate('imagenIA')">
+              <span class="material-symbols-outlined">image</span>
+              <div class="template-title">Imagen IA</div>
+            </div>
+            <div class="template-card" onclick="insertTemplate('videoIA')">
+              <span class="material-symbols-outlined">movie</span>
+              <div class="template-title">Video IA</div>
+            </div>
+          </div>
+          <label class="pg-label mt-4">Resultado</label>
+          <textarea id="plantillaOutput" class="pg-textarea output"></textarea>
+        </section>
+
+        <!-- SECTION BIBLIOTECA -->
+        <section id="section-biblioteca" class="pg-card" style="display:none;">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div style="width: 44px; height: 44px; background: linear-gradient(135deg, var(--xp), var(--accent-dark)); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+              <span class="material-symbols-outlined" style="color: white; font-size: 24px;">library_books</span>
+            </div>
+            <div>
+              <h2 style="margin-bottom: 2px;">Biblioteca Personal</h2>
+              <p style="color: var(--muted); font-size: 0.85rem; margin: 0;">Tus prompts guardados</p>
+            </div>
+          </div>
+          <div class="library-shelf" id="libraryList"></div>
+        </section>
+
+        <!-- SECTION MANUAL -->
+<section id="section-manual" class="pg-card" style="display:none;">
+
+<div class="d-flex align-items-center gap-3 mb-3">
+  <div style="width: 44px; height: 44px; background: linear-gradient(135deg, var(--level), var(--accent)); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+    <span class="material-symbols-outlined" style="color: white; font-size: 24px;">menu_book</span>
+  </div>
+  <div>
+    <h2 style="margin-bottom: 2px;">Guía Rápida</h2>
+    <p style="color: var(--muted); font-size: 0.85rem; margin: 0;">Aprende a crear prompts efectivos</p>
+  </div>
+</div>
+
+<div style="text-align:center;margin-top:20px;">
+<img src="manual-ejemplo.png" 
+alt="Guía visual para crear prompts en PromptLab"
+style="max-width:100%;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.1);">
+</div>
+
+<div style="margin-top:20px;font-size:0.9rem;color:var(--muted);">
+
+<!-- <p><strong>1️⃣ Rol que asumirá la IA</strong><br>
+Define qué tipo de experto quieres que sea la IA.</p>
+
+<p><strong>2️⃣ Objetivo principal</strong><br>
+Describe claramente qué quieres que la IA haga.</p>
+
+<p><strong>3️⃣ Público objetivo</strong><br>
+Indica para quién es el contenido o resultado.</p>
+
+<p><strong>4️⃣ Contexto o problema</strong><br>
+Explica la situación para que la IA entienda mejor el escenario.</p>
+
+<p><strong>5️⃣ Tono</strong><br>
+Define el estilo de comunicación (profesional, cercano, creativo).</p>
+
+<p><strong>6️⃣ Lenguaje</strong><br>
+Elige si quieres algo simple o más técnico.</p>
+
+<p><strong>7️⃣ Extensión</strong><br>
+Selecciona si deseas una respuesta corta o detallada.</p>
+
+<p><strong>8️⃣ Formato de salida</strong><br>
+Indica cómo quieres recibir la respuesta: lista, guion, tabla, etc.</p>
+
+<p><strong>9️⃣ Qué evitar</strong><br>
+Define elementos que no quieres en la respuesta.</p>
+
+<p><strong>🔟 Qué incluir</strong><br>
+Añade elementos importantes como ejemplos o llamadas a la acción.</p> -->
+
+
+<div class="step-guide">
+<div class="step-number">1</div>
+<div class="step-text">
+<strong>Rol que asumirá la IA</strong>
+Define qué tipo de experto quieres que sea la IA.
+</div>
+</div>
+
+<div class="step-guide">
+<div class="step-number">2</div>
+<div class="step-text">
+<strong>Objetivo principal</strong>
+Describe claramente qué quieres que la IA haga.
+</div>
+</div>
+
+<div class="step-guide">
+<div class="step-number">3</div>
+<div class="step-text">
+<strong>Público objetivo</strong>
+Indica para quién es el contenido o resultado.
+</div>
+</div>
+
+<div class="step-guide">
+<div class="step-number">4</div>
+<div class="step-text">
+<strong>Contexto o problema</strong>
+Explica la situación para que la IA entienda mejor el escenario.
+</div>
+</div>
+
+<div class="step-guide">
+<div class="step-number">5</div>
+<div class="step-text">
+<strong>Tono</strong>
+Define el estilo de comunicación.
+</div>
+</div>
+
+<div class="step-guide">
+<div class="step-number">6</div>
+<div class="step-text">
+<strong>Lenguaje</strong>
+Elige si quieres algo simple o más técnico.
+</div>
+</div>
+
+<div class="step-guide">
+<div class="step-number">7</div>
+<div class="step-text">
+<strong>Extensión</strong>
+Selecciona si deseas una respuesta corta o detallada.
+</div>
+</div>
+
+<div class="step-guide">
+<div class="step-number">8</div>
+<div class="step-text">
+<strong>Formato de salida</strong>
+Indica cómo quieres recibir la respuesta.
+</div>
+</div>
+
+<div class="step-guide">
+<div class="step-number">9</div>
+<div class="step-text">
+<strong>Qué evitar</strong>
+Define elementos que no quieres en la respuesta.
+</div>
+</div>
+
+<div class="step-guide">
+<div class="step-number">10</div>
+<div class="step-text">
+<strong>Qué incluir</strong>
+Añade ejemplos o llamada a la acción.
+</div>
+</div>
+
+</div>
+
+</section>
+
+
+<!-- <section id="section-juego" class="pg-card" style="display:none;">
+
+<h2>Prompt Quest</h2>
+
+<p style="color:var(--muted);font-size:0.9rem;">
+¿No sabes qué es un prompt?
+
+Aprende jugando en Prompt Quest.
+</p>
+
+
+<div id="gameContainer"></div>
+
+</section> -->
+
+<section id="section-juego" class="pg-card" style="display:none;">
+
+<div class="d-flex align-items-center gap-3 mb-3">
+  <div style="width: 44px; height: 44px; background: linear-gradient(135deg, var(--cta), var(--xp)); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+    <span class="material-symbols-outlined" style="color: white; font-size: 24px;">sports_esports</span>
+  </div>
+  <div>
+    <h2 style="margin-bottom: 2px;">Zona Gamer</h2>
+    <p style="color: var(--muted); font-size: 0.85rem; margin: 0;">Aprende Prompt Engineering jugando</p>
+  </div>
+</div>
+
+<div class="game-hub">
+
+<div class="game-card" onclick="loadGame('prompt-quest.html')">
+<img src="logo.png">
+<h3>Prompt Quest</h3>
+<p>Aprende a crear prompts paso a paso.</p>
+</div>
+
+<div class="game-card" onclick="loadGame('prompt-battle.html')">
+<img src="logo-prompt-battle.png">
+<h3>Prompt Battle</h3>
+<p>Derrota enemigos escribiendo mejores prompts.</p>
+</div>
+
+<div class="game-card" onclick="loadGame('prompt-adventure.html')">
+<img src="adventure.png">
+<h3>Prompt Adventure</h3>
+<p>Explora el mundo de la IA resolviendo retos.</p>
+</div>
+
+</div>
+
+<div id="gameContainer" style="margin-top:20px;"></div>
+
+</section>
+
+      </div><!-- /col-lg-8 -->
+
+      <!-- RIGHT COLUMN: SIDEBAR -->
+      <div class="col-lg-4 d-flex flex-column gap-4">
+
+        <!-- Quick Prompt -->
+        <div id="quickModule" class="quick-card">
+          <h2><span style="font-size: 1.4rem;">⚡</span> Flash Prompt</h2>
+          <p style="color: var(--muted); font-size: 0.83rem; margin: 0 0 16px;">Genera un prompt PRO en 1 clic</p>
+          <label class="pg-label" for="quickInput">Tu idea</label>
+          <input id="quickInput" type="text" class="pg-input mb-3" placeholder="Ej: Crear un ebook sobre productividad con IA" aria-label="Idea para generar prompt">
+          <button class="btn btn-cta-custom w-100 py-3 mb-3" onclick="quickDemo()">
+            <span class="material-symbols-outlined align-middle me-1" style="font-size: 20px;">bolt</span>
+            Generar flash
+          </button>
+          <label class="pg-label" for="quickOutput">Prompt generado</label>
+          <textarea id="quickOutput" class="pg-textarea output" placeholder="Aquí aparecerá el prompt optimizado..." aria-label="Resultado del prompt" style="min-height: 160px; resize: none;"></textarea>
+        </div>
+
+        <!-- Resources -->
+        <div class="pg-card">
+          <div class="d-flex align-items-center gap-2 mb-3">
+            <span class="material-symbols-outlined" style="color: var(--accent);">group</span>
+            <h2 style="font-size: 1rem; margin: 0;">Comunidad</h2>
+          </div>
+          <p style="color: var(--muted); font-size: 0.83rem; margin: 0 0 16px;">Conecta con otros usuarios y comparte tus mejores prompts</p>
+
+          <h3 style="font-size: .85rem; font-weight: 700; margin: 0 0 10px; color: var(--text-light);">📋 Historial reciente</h3>
+          <ul id="historial"></ul>
+
+          <hr class="my-3" style="border-color: var(--border);">
+
+          <h3 style="font-size: .85rem; font-weight: 700; margin: 0 0 10px; color: var(--text-light);">🔗 Conecta</h3>
+          <div class="social-links">
+            <a href="https://github.com/cr1085" target="_blank" rel="noopener noreferrer">
+              <span class="material-symbols-outlined" style="font-size: 16px;">code</span> GitHub
+            </a>
+            <a href="https://www.instagram.com/3cbsoluciones/" target="_blank" rel="noopener noreferrer">
+              <span class="material-symbols-outlined" style="font-size: 16px;">photo_camera</span> Instagram
+            </a>
+            <a href="https://www.linkedin.com/in/cristian-cuadrado-beltran-983ba126/" target="_blank" rel="noopener noreferrer">
+              <span class="material-symbols-outlined" style="font-size: 16px;">work</span> LinkedIn
+            </a>
+            <a href="https://x.com/cr1085" target="_blank" rel="noopener noreferrer">
+              <span class="material-symbols-outlined" style="font-size: 16px;">tag</span> X / Twitter
+            </a>
+          </div>
+
+          <div class="mt-3">
+            <a class="btn btn-cta-custom w-100 py-3" href="https://whatsapp.com/channel/0029VbAyIhDAjPXUVJr5LE3z" target="_blank" rel="noopener noreferrer">
+              <span class="material-symbols-outlined align-middle me-1" style="font-size: 18px;">chat</span>
+              Únete al canal
+            </a>
+          </div>
+        </div>
+
+      </div><!-- /col-lg-4 -->
+
+    </div><!-- /row -->
+
+    <footer class="text-center mt-4" style="color: var(--muted); font-size: 0.8rem;">
+      <p class="mb-0">💡 PromptLab - Herramienta de creación de prompts con IA</p>
+    </footer>
+
+  </div><!-- /container -->
+
+  <!-- FREEMIUM BANNER -->
+  <div class="freemium-banner">
+    <span>🎮</span> Grundfunktionen kostenlos. <strong>Unterstütze das Projekt</strong>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+
+    // Animaciones de clic para botones (sin cambiar lógica)
+    document.addEventListener('click', function(e) {
+      const btn = e.target.closest('.btn-cta-custom, .btn-accent, .btn-soft, .btn-outline-custom, .book-use, .game-card, .template-card, .tpl-chip');
+      if (btn) {
+        btn.style.transform = 'scale(0.95)';
+        setTimeout(() => {
+          btn.style.transform = '';
+        }, 150);
+      }
+    });
+
+   // let freeTrialUsed = false;
+   let freeTrialUsed = localStorage.getItem("promptTrialUsed") === "true";
+  /* ── TEMPLATES ── */
+  const templates = {
+    youtube: `... plantilla pro youtube ...`,
+    tiktok: `
+Actúa como creador experto en contenido viral para TikTok.
+
+Crea un guion ultra dinámico de máximo 45 segundos.
+
+Estructura:
+- Hook disruptivo inmediato.
+- Problema común.
+- Solución rápida.
+- CTA claro.
+
+Optimizado para retención y compartidos.
+`.trim(),
+    instagram: `
+Actúa como estratega de crecimiento en Instagram.
+
+Crea un carrusel viral estructurado así:
+Slide 1: Hook poderoso.
+Slides 2-5: Desarrollo práctico.
+Último slide: CTA fuerte.
+
+Tono cercano y persuasivo.
+`.trim(),
+    ventas: `... versión pro ...`,
+    funnels: `... versión pro ...`,
+    imagenIA: `
+Actúa como experto en generación de imágenes IA.
+
+Crea un prompt detallado incluyendo:
+- Estilo artístico
+- Iluminación
+- Cámara
+- Colores
+- Nivel de detalle
+- Referencias visuales
+
+Optimizado para Midjourney / DALL·E.
+`.trim(),
+    videoIA: `
+Actúa como experto en generación de video IA.
+
+Crea un prompt estructurado incluyendo:
+- Descripción escena
+- Movimiento de cámara
+- Ambiente
+- Iluminación
+- Duración estimada
+
+Optimizado para Runway o Pika.
+`.trim()
+  };
+
+
+  const promptEngine = {
+  ebook: (idea) => `
+Actúa como experto en productividad y desarrollo personal.
+
+Crea un ebook profesional titulado:
+"${idea}"
+
+Incluye:
+
+- Introducción clara al problema
+- 5 capítulos con estrategias prácticas
+- Ejemplos aplicables
+- Consejos accionables
+- Conclusión con plan de acción
+
+El contenido debe ser claro, útil y aplicable.
+`.trim(),
+
+  negocio: (idea) => `
+Actúa como consultor experto en negocios digitales.
+
+Diseña un modelo de negocio basado en:
+
+"${idea}"
+
+Incluye:
+
+- Nicho rentable
+- Propuesta de valor
+- Producto o servicio digital
+- Estrategia de marketing
+- Embudo de ventas
+- Proyección inicial de ingresos
+`.trim(),
+
+  curso: (idea) => `
+Actúa como experto en educación digital.
+
+Diseña un curso completo basado en:
+
+"${idea}"
+
+Incluye:
+
+- Objetivo del curso
+- Perfil del estudiante
+- Módulos estructurados
+- Lecciones clave
+- Ejercicios prácticos
+- Proyecto final
+`.trim(),
+
+  contenido: (idea) => `
+Actúa como estratega de contenido digital.
+
+Crea una estrategia de contenido basada en:
+
+"${idea}"
+
+Incluye:
+
+- Ideas de publicaciones
+- Guiones para video
+- Hooks virales
+- CTA efectivos
+- Calendario de contenido
+`.trim()
+};
+
+  window.addEventListener("load", () => {
+    document.getElementById("quickInput").value = "Crear un curso online para aprender a usar inteligencia artificial";
+  });
+
+  function insertTemplate(type) {
+    document.getElementById('plantillaOutput').value = templates[type] || '';
+  }
+
+  /* ── MODALS ── */
+  function showUpgradeModal() { document.getElementById('upgradeModal').style.display = 'flex'; }
+  function hideUpgradeModal() { document.getElementById('upgradeModal').style.display = 'none'; }
+
+  /* ── GENERATE PROMPT ── */
+  async function generarPrompt() {
+    const required = [
+      { el: document.getElementById('rol'),      name: 'Rol' },
+      { el: document.getElementById('objetivo'), name: 'Objetivo' },
+      { el: document.getElementById('publico'),  name: 'Público' },
+      { el: document.getElementById('contexto'), name: 'Contexto' }
+    ];
+    const empty = required.filter(r => !r.el.value || !r.el.value.trim()).map(r => r.name);
+    const errorEl = document.getElementById('formError');
+    if (empty.length) {
+      errorEl.textContent = 'Completa los campos obligatorios: ' + empty.join(', ') + '.';
+      errorEl.style.display = 'block';
+      required.find(r => !r.el.value || !r.el.value.trim()).el.focus();
+      return;
+    } else { errorEl.style.display = 'none'; }
+
+    await initSupabase();
+    //const { data: { session } } = await supabase.auth.getSession();
+
+   const { data: { session } } = await supabase.auth.getSession();
+
+// usuario no logueado
+if(!session || !session.user){
+
+if(freeTrialUsed){
+showAuthModal();
+return;
+}
+
+// permitir 1 prompt gratis
+//freeTrialUsed = true;
+
+freeTrialUsed = true;
+localStorage.setItem("promptTrialUsed","true");
+
+}
+
+    const prompt = `
+Actúa como ${rol.value}.
+
+Ayúdame a ${objetivo.value}.
+
+Contexto:
+Esto es para ${publico.value}.
+La situación es: ${contexto.value}.
+
+Quiero que el resultado sea:
+- Tono: ${tono.value}
+- Lenguaje: ${lenguaje.value}
+- Extensión: ${extension.value}
+
+Formato de respuesta:
+- ${formato.value}
+
+Extra importante:
+- Evita ${evitar.value}
+- Incluye ${incluir.value || "lo necesario"}
+`.trim();
+
+    resultado.value = prompt;
+
+    if(!session || !session.user){
+document.getElementById("resultado").value +=
+"\n\n🔓 Regístrate gratis para copiar, optimizar y descargar este prompt.";
+}
+
+    guardarHistorial(prompt);
+    calcularEficiencia();
+    try { await incrementUsage(); } catch (e) { console.warn('incrementUsage', e); }
+    try { await updateUI(); } catch (e) { /* ignore */ }
+  }
+
+  function copiarPrompt() {
+
+  const text = document.getElementById("resultado").value.trim();
+
+  if(!text){
+    alert("Primero genera un prompt.");
+    return;
+  }
+
+  navigator.clipboard.writeText(text);
+  alert("Prompt copiado al portapapeles");
+
+}
+
+ function descargarPrompt() {
+
+  const text = document.getElementById("resultado").value.trim();
+
+  if(!text){
+    alert("No hay ningún prompt para descargar.");
+    return;
+  }
+
+  const blob = new Blob([text], { type: "text/plain" });
+
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "prompt.txt";
+  link.click();
+
+}
+  function calcularEficiencia() {
+    let score = 0;
+    if (rol.value.length > 10)         score += 15;
+    if (objetivo.value.length > 15)    score += 20;
+    if (contexto.value.length > 20)    score += 20;
+    if (publico.value.length > 5)      score += 10;
+    if (tono.value)                    score += 10;
+    if (lenguaje.value)                score += 10;
+    if (formato.value)                 score += 10;
+    if (evitar.value || incluir.value) score += 5;
+    eficiencia.textContent = `📊 Nivel Estratégico: ${score}%`;
+  }
+
+  /* ── HISTORIAL ── */
+  function guardarHistorial(prompt) {
+    let historial = JSON.parse(localStorage.getItem("historialPrompts")) || [];
+    historial.unshift(prompt);
+    localStorage.setItem("historialPrompts", JSON.stringify(historial));
+    mostrarHistorial();
+  }
+
+  function mostrarHistorial() {
+    let historial = JSON.parse(localStorage.getItem("historialPrompts")) || [];
+    const lista = document.getElementById("historial");
+    lista.innerHTML = "";
+    historial.slice(0, 5).forEach(p => {
+      const li = document.createElement("li");
+      li.textContent = p.substring(0, 80) + "...";
+      lista.appendChild(li);
+    });
+  }
+
+  window.onload = mostrarHistorial;
+
+  /* ── DARK MODE ── */
+  function modoOscuro() { document.body.classList.toggle("dark"); }
+
+  /* ── SUPABASE ── */
+  const SUPABASE_URL = 'https://rvgaozmexpocgxtlomkh.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ2Z2Fvem1leHBvY2d4dGxvbWtoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwNzMzOTIsImV4cCI6MjA4NzY0OTM5Mn0.SPssPQGYL541QpD7GZv6WHzCSMzmXAFGYHJRsfjfWmQ';
+  const DEFAULT_AVATAR = 'https://rvgaozmexpocgxtlomkh.supabase.co/storage/v1/object/public/avatars/5372211.png';
+  let supabase = null;
+
+  async function initSupabase() {
+    if (window.supabaseClient) { supabase = window.supabaseClient; return; }
+    const module = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm');
+    supabase = module.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    window.supabaseClient = supabase;
+    supabase.auth.onAuthStateChange((event, session) => {
+      updateAuthState(session && session.user ? session.user : null);
+    });
+  }
+
+  function showAuthModal() { document.getElementById('authModal').style.display = 'flex'; }
+  function hideAuthModal() { document.getElementById('authModal').style.display = 'none'; }
+
+  async function handleRegister() {
+    const email = document.getElementById('authEmail').value;
+    const password = document.getElementById('authPassword').value;
+    const msgEl = document.getElementById('authMessage');
+    msgEl.textContent = '';
+    try {
+      await initSupabase();
+      const { user, error } = await supabase.auth.signUp({ email, password });
+      if (error) throw error;
+      await supabase.from('profiles').upsert({ id: user.id, full_name: null, username: null, bio: null, avatar_url: DEFAULT_AVATAR, updated_at: new Date() });
+      msgEl.textContent = 'Revisa tu email para confirmar el registro.';
+    } catch (e) { msgEl.textContent = e.message || String(e); }
+  }
+
+  async function handleLogin() {
+    const email = document.getElementById('authEmail').value;
+    const password = document.getElementById('authPassword').value;
+    const msgEl = document.getElementById('authMessage');
+    msgEl.textContent = '';
+    try {
+      await initSupabase();
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+      hideAuthModal();
+    } catch (e) { msgEl.textContent = e.message || String(e); }
+  }
+
+  async function handleLogout() {
+    await initSupabase();
+    await supabase.auth.signOut();
+    updateAuthState(null);
+
+    // volver al generador
+document.querySelectorAll('[id^="section-"]').forEach(sec => sec.style.display = 'none');
+document.getElementById("section-generador").style.display = "block";
+
+// desactivar botones
+document.querySelectorAll('.tool').forEach(btn => btn.classList.remove('active'));
+  }
+
+  async function updateAuthState(user) {
+    if (user) { await ensureUserData(user.id).catch(() => {}); hideAuthModal(); }
+    await updateUI();
+  }
+
+  async function ensureUserData(userId) {
+    const { data, error } = await supabase.from('users_data').select('*').eq('id', userId).single();
+    if (data) return data;
+    if (error && error.code !== 'PGRST116') { console.error(error); return null; }
+    const row = { id: userId, total_prompts: 0, total_optimizations: 0, created_at: new Date().toISOString() };
+    const { error: insertError } = await supabase.from('users_data').insert(row);
+    if (insertError) { console.error(insertError); return null; }
+    return row;
+  }
+
+  async function fetchUserData(userId) {
+    const { data, error } = await supabase.from('users_data').select('*').eq('id', userId).limit(1).single();
+    if (error) return null;
+    return data;
+  }
+
+  async function updateUserData(userId, changes) {
+    const { data, error } = await supabase.from('users_data').update(changes).eq('id', userId);
+    if (error) throw error;
+    return data;
+  }
+
+  async function incrementUsage() {
+    await initSupabase();
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session || !session.user) { showAuthModal(); throw new Error('Inicia sesión para usar Prompt Lab'); }
+    const userId = session.user.id;
+    await ensureUserData(userId);
+    const row = await fetchUserData(userId);
+    await updateUserData(userId, { total_prompts: (row?.total_prompts || 0) + 1 });
+  }
+
+  async function getUsage() {
+    await initSupabase();
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session || !session.user) return { count: 0 };
+    const row = await fetchUserData(session.user.id) || await ensureUserData(session.user.id);
+    return { count: row.total_prompts || 0 };
+  }
+
+  async function getOptUsage() {
+    await initSupabase();
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session || !session.user) return { count: 0 };
+    const row = await fetchUserData(session.user.id) || await ensureUserData(session.user.id);
+    return { count: row.total_optimizations || 0 };
+  }
+
+  async function authButtonAction() {
+    await initSupabase();
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session || !session.user) { showAuthModal(); } else { await handleLogout(); }
+  }
+
+  async function updateUI() {
+    await initSupabase();
+    const { data: { session } } = await supabase.auth.getSession();
+    const planBadge    = document.getElementById('planBadge');
+    const counterEl    = document.getElementById('counter');
+    const generarBtn   = document.getElementById('generarBtn');
+    const upgradeBtn   = document.getElementById('upgradeBtn');
+    const optBtn       = document.getElementById('optBtn');
+    const optCounterEl = document.getElementById('optCounter');
+
+    if (!session || !session.user) {
+      updatePromptButtons(false);
+      bloquearHerramientas(false);
+      planBadge.textContent = 'Plan Free';
+      planBadge.style.background = '#e2e8f0'; planBadge.style.color = '#334155';
+      counterEl.textContent = 'Inicia sesión para usar Prompt Lab';
+      //generarBtn.disabled = true; 
+      generarBtn.disabled = false;
+      optBtn.disabled = true;
+      upgradeBtn.textContent = 'Regístrate gratis y desbloquea todas las herramientas';
+      document.getElementById('usageNumber').textContent = 0;
+      document.getElementById('optNumber').textContent = 0;
+      document.getElementById('toolsBar').style.display = 'none';
+      const profileBox = document.getElementById('profileBox');
+      document.getElementById("quickModule").style.display = "none";
+      if (profileBox) profileBox.style.display = 'none';
+      const profileDropdown = document.getElementById('profileDropdown');
+      if (profileDropdown) profileDropdown.style.display = 'none';
+      return;
+    }
+
+    bloquearHerramientas(true);
+    updatePromptButtons(true);
+    document.getElementById("quickModule").style.display = "block";
+
+    const row  = await fetchUserData(session.user.id) || await ensureUserData(session.user.id);
+    const plan = row.plan || 'free';
+    document.getElementById('toolsBar').style.display = 'flex';
+
+    if (plan === 'pro') {
+      planBadge.textContent = 'PRO ✨';
+      planBadge.style.background = '#ffedd5'; planBadge.style.color = '#7a2e00';
+    } else {
+      planBadge.textContent = 'Plan Free';
+      planBadge.style.background = '#e2e8f0'; planBadge.style.color = '#334155';
+    }
+
+    counterEl.textContent    = `Prompts totales: ${row.total_prompts || 0}`;
+    optCounterEl.textContent = `Optimizaciones totales: ${row.total_optimizations || 0}`;
+    document.getElementById('usageNumber').textContent = row.total_prompts || 0;
+    document.getElementById('optNumber').textContent   = row.total_optimizations || 0;
+
+    const profileBox = document.getElementById('profileBox');
+    if (profileBox) profileBox.style.display = 'flex';
+    const profileEmailEl = document.getElementById('profileEmail');
+    if (profileEmailEl) profileEmailEl.textContent = session.user.email || '';
+    const profileDropdown = document.getElementById('profileDropdown');
+    if (profileDropdown) profileDropdown.style.display = 'none';
+    loadProfile().catch(() => {});
+
+    if (plan === 'free' && row.total_optimizations >= 5) {
+      optBtn.textContent = "Disponible en PRO";
+      optBtn.style.opacity = "0.6";
+    }
+    generarBtn.disabled = false; optBtn.disabled = false;
+    upgradeBtn.textContent = 'Cerrar sesión';
+  }
+
+  loadProfile();
+
+  window.addEventListener('load', function () {
+    mostrarHistorial();
+    updateUI();
+    ['rol','objetivo','publico','contexto','tono','lenguaje','extension','formato','evitar','incluir'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.addEventListener('input', () => {
+        const fe = document.getElementById('formError');
+        if (fe) fe.style.display = 'none';
+      });
+    });
+  });
+
+  /* ── PLANTILLAS ── */
+  function plantillaMarketing() {
+    rol.value = "estratega experto en marketing digital"; objetivo.value = "crear una estrategia de contenido que genere clientes";
+    publico.value = "emprendedores y pequeñas empresas"; contexto.value = "quiero aumentar ventas usando redes sociales";
+    tono.value = "Profesional"; lenguaje.value = "Claro y directo"; extension.value = "Medio"; formato.value = "Pasos";
+  }
+  function plantillaEmprendimiento() {
+    rol.value = "consultor experto en emprendimiento y modelos de negocio"; objetivo.value = "diseñar una idea de negocio rentable";
+    publico.value = "personas que quieren iniciar un emprendimiento"; contexto.value = "busco oportunidades digitales con bajo presupuesto";
+    tono.value = "Creativo"; lenguaje.value = "Claro y directo"; extension.value = "Medio"; formato.value = "Lista";
+  }
+  function plantillaMarca() {
+    rol.value = "estratega en marca personal y posicionamiento profesional"; objetivo.value = "optimizar mi perfil profesional en redes sociales";
+    publico.value = "reclutadores y clientes potenciales"; contexto.value = "quiero mejorar mi presencia digital";
+    tono.value = "Profesional"; lenguaje.value = "Claro y directo"; extension.value = "Corto"; formato.value = "Pasos";
+  }
+  function plantillaEducacion() {
+    rol.value = "profesor experto en enseñanza práctica"; objetivo.value = "explicar un tema complejo de forma sencilla";
+    publico.value = "estudiantes principiantes"; contexto.value = "necesito simplificar un concepto técnico";
+    tono.value = "Simple"; lenguaje.value = "Fácil y sin tecnicismos"; extension.value = "Medio"; formato.value = "Lista";
+  }
+  function plantillaMonetizacion() {
+    rol.value = "asesor experto en monetización digital"; objetivo.value = "identificar oportunidades reales para generar ingresos";
+    publico.value = "personas que quieren ganar dinero online"; contexto.value = "quiero usar inteligencia artificial para crear ingresos";
+    tono.value = "Profesional"; lenguaje.value = "Claro y directo"; extension.value = "Medio"; formato.value = "Pasos";
+  }
+  function plantillaProductividad() {
+    rol.value = "consultor experto en productividad y automatización"; objetivo.value = "crear un sistema eficiente para organizar mi trabajo";
+    publico.value = "profesionales ocupados"; contexto.value = "quiero optimizar tiempo usando IA";
+    tono.value = "Cercano"; lenguaje.value = "Claro y directo"; extension.value = "Corto"; formato.value = "Lista";
+  }
+
+  /* ── OPTIMIZE ── */
+  async function optimizarPrompt() {
+    const resultadoEl = document.getElementById("resultado");
+
+  if(!resultadoEl.value.trim()){
+    alert("Primero genera un prompt antes de optimizar.");
+    return;
+  }
+
+  await initSupabase();
+  const { data:{session} } = await supabase.auth.getSession();
+
+  if(!session){
+    showAuthModal();
+    return;
+  }
+   // if (!session || !session.user) { showAuthModal(); return; }
+    const userId = session.user.id;
+    let row = await fetchUserData(userId) || await ensureUserData(userId);
+    const plan = row.plan || 'free';
+    if (plan === 'free' && row.total_optimizations >= 5) { showUpgradeModal(); return; }
+    const promptOriginal = resultadoEl.value;
+    const promptOptimizado = `
+Mejora el siguiente prompt para que sea más claro, específico y profesional.
+Hazlo más estructurado y efectivo:
+
+${promptOriginal}
+`.trim();
+    resultadoEl.value = promptOptimizado;
+    await updateUserData(userId, { total_optimizations: (row.total_optimizations || 0) + 1 });
+    await updateUI();
+    alert("Prompt optimizado correctamente");
+  }
+
+  /* ── PROFILE MENU ── */
+  function toggleProfileMenu() {
+    const menu = document.getElementById('profileDropdown');
+    menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+  }
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.profile-box')) document.getElementById('profileDropdown').style.display = 'none';
+  });
+
+  async function openProfileModal() {
+    await populateProfileForm();
+    document.getElementById('profileModal').style.display = 'flex';
+  }
+  async function populateProfileForm() {
+    await initSupabase();
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) return;
+    const { data } = await supabase.from('profiles').select('*').eq('id', session.user.id).single();
+    if (data) {
+      document.getElementById('profileFullName').value = data.full_name || '';
+      document.getElementById('profileUsername').value  = data.username  || '';
+      document.getElementById('profileBio').value       = data.bio       || '';
+    }
+  }
+  function closeProfileModal() { document.getElementById('profileModal').style.display = 'none'; }
+
+  async function saveProfile() {
+    await initSupabase();
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) return;
+    const userId   = session.user.id;
+    const full_name = document.getElementById('profileFullName').value;
+    const username  = document.getElementById('profileUsername').value;
+    const bio       = document.getElementById('profileBio').value;
+    let existingAvatar = null;
+    const { data: existing } = await supabase.from('profiles').select('avatar_url').eq('id', userId).single();
+    if (existing && existing.avatar_url) existingAvatar = existing.avatar_url;
+    let avatar_url = existingAvatar || DEFAULT_AVATAR;
+    const fileInput = document.getElementById('profileAvatarFile');
+    const file = fileInput.files[0];
+    if (file) {
+      const filePath = `${userId}-${Date.now()}`;
+      const { error: upErr } = await supabase.storage.from('avatars').upload(filePath, file, { upsert: true });
+      if (upErr) console.error('upload avatar', upErr);
+      const { data } = supabase.storage.from('avatars').getPublicUrl(filePath);
+      avatar_url = data.publicUrl;
+    }
+    await supabase.from('profiles').upsert({ id: userId, full_name, username, bio, avatar_url, updated_at: new Date() });
+    closeProfileModal();
+    loadProfile();
+  }
+
+  async function loadProfile() {
+    await initSupabase();
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) return;
+    const { data } = await supabase.from('profiles').select('*').eq('id', session.user.id).single();
+    if (data) {
+      document.getElementById('profileName').textContent  = data.full_name || 'Usuario';
+      document.getElementById('profileEmail').textContent = session.user.email;
+      const avatar = data.avatar_url || DEFAULT_AVATAR;
+      document.getElementById('avatarImg').src  = avatar;
+      document.getElementById('avatarMini').src = avatar;
+    }
+  }
+
+  /* ── TABS ── */
+  async function changeTab(tabName, button) {
+
+      await initSupabase();
+  const { data: { session } } = await supabase.auth.getSession();
+
+  if(!session && tabName !== "generador"){
+    showAuthModal();
+    return;
+  }
+
+
+  document.querySelectorAll('.tool').forEach(btn => btn.classList.remove('active'));
+button.classList.add('active');
+
+document.querySelectorAll('[id^="section-"]').forEach(sec => sec.style.display = 'none');
+
+document.getElementById('section-' + tabName).style.display = 'block';
+
+const gameContainer = document.getElementById("gameContainer");
+
+// si salimos del juego → destruir iframe
+if(tabName !== "juego"){
+gameContainer.innerHTML = "";
+}
+
+// si entramos al juego → crear iframe nuevo
+if(tabName === "juego"){
+
+gameContainer.innerHTML = `
+
+`;
+
+}
+
+if (tabName === 'biblioteca') loadLibrary();
+
+ 
+    document.querySelectorAll('.tool').forEach(btn => btn.classList.remove('active'));
+    button.classList.add('active');
+    document.querySelectorAll('[id^="section-"]').forEach(sec => sec.style.display = 'none');
+    document.getElementById('section-' + tabName).style.display = 'block';
+    if (tabName === 'biblioteca') loadLibrary();
+  }
+
+//function loadGame(gameFile){
+//
+//const gameContainer = document.getElementById("gameContainer");
+//
+////gameContainer.innerHTML = `
+////<iframe
+////src="${gameFile}"
+////style="width:100%;height:600px;border:none;border-radius:12px;">
+////</iframe>
+////`;
+//
+//gameContainer.innerHTML = `
+//<div class="game-top-bar">
+//  
+//<button class="btn btn-soft btn-sm" onclick="toggleFullscreen()">
+//⛶ Pantalla completa
+//</button>
+//
+//<button id="exitFullscreenBtn" class="btn btn-soft btn-sm" onclick="exitGameFullscreen()" style="display:none;">
+//✕ Salir
+//</button>
+//
+//<img src="arcade-warrior.png"  class="game-heroes">
+//</div>
+//
+//<div id="gameWrapper" class="game-frame">
+//
+//<iframe
+//src="${gameFile}"
+//scrolling="yes"
+//allowfullscreen
+//webkitallowfullscreen
+//mozallowfullscreen>
+//</iframe>
+//
+//</div>
+//`;
+//
+//
+//}
+
+
+function loadGame(gameFile){
+
+const emulator = document.getElementById("gameEmulator");
+const player = document.getElementById("gamePlayer");
+
+player.src = gameFile;
+
+emulator.style.display = "flex";
+
+document.body.style.overflow = "hidden";
+
+}
+
+
+function closeGame(){
+
+const emulator = document.getElementById("gameEmulator");
+const player = document.getElementById("gamePlayer");
+
+player.src = "";
+
+emulator.style.display = "none";
+
+document.body.style.overflow = "auto";
+
+}
+
+function toggleFullscreen(){
+
+const el = document.getElementById("gameWrapper");
+const exitBtn = document.getElementById("exitFullscreenBtn");
+
+if(!document.fullscreenElement){
+
+if(el.requestFullscreen){
+el.requestFullscreen();
+}else if(el.webkitRequestFullscreen){
+el.webkitRequestFullscreen();
+}else if(el.msRequestFullscreen){
+el.msRequestFullscreen();
+}
+
+exitBtn.style.display = "inline-block";
+
+}else{
+
+exitGameFullscreen();
+
+}
+
+}
+
+function exitGameFullscreen(){
+
+const exitBtn = document.getElementById("exitFullscreenBtn");
+
+if(document.exitFullscreen){
+document.exitFullscreen();
+}else if(document.webkitExitFullscreen){
+document.webkitExitFullscreen();
+}else if(document.msExitFullscreen){
+document.msExitFullscreen();
+}
+
+if(exitBtn){
+exitBtn.style.display = "none";
+}
+
+}
+
+document.addEventListener("fullscreenchange",()=>{
+
+const exitBtn = document.getElementById("exitFullscreenBtn");
+
+if(!document.fullscreenElement && exitBtn){
+exitBtn.style.display = "none";
+}
+
+});
+
+  /* ── POWER LIBRARY ── */
+  const powerLibrary = [
+    { title: "Libro Comercial", icon: "menu_book", ai: "ChatGPT 4o", badge: "Pro",
+      prompt: `Actúa como escritor profesional experto en libros comerciales digitales.\n\nCrea un libro completo listo para vender.\n\nIncluye obligatoriamente:\n- Título atractivo y comercial\n- Subtítulo estratégico\n- Tabla de contenidos optimizada\n- Desarrollo por capítulos\n- Ejemplos prácticos\n- Conclusión con llamada a la acción\n\nFormato claro y estructurado.\nNo agregues explicaciones fuera del contenido del libro.`.trim() },
+    { title: "Videojuego Indie", icon: "sports_esports", ai: "Claude 3.5", badge: "Avanzado",
+      prompt: `Actúa como diseñador senior de videojuegos y arquitecto de sistemas.\n\nDiseña un videojuego indie completo incluyendo:\n\n- Concepto principal\n- Mecánica central\n- Historia base\n- Sistema de progresión\n- Economía interna\n- Modelo de monetización\n- Roadmap de desarrollo técnico\n\nEstructura todo en formato profesional listo para desarrollo.`.trim() },
+    { title: "Startup IA", icon: "rocket_launch", ai: "Gemini 1.5", badge: "Pro",
+      prompt: `Actúa como consultor senior de startups tecnológicas con enfoque en IA.\n\nDesarrolla:\n\n- Problema validado\n- Propuesta de valor clara\n- Modelo de negocio\n- Estrategia de adquisición\n- Proyección inicial\n- Roadmap MVP\n\nFormato ejecutivo estructurado.`.trim() },
+    { title: "Investigación con fuentes", icon: "search", ai: "Perplexity", badge: "Pro",
+      prompt: `Actúa como investigador profesional.\n\nDesarrolla un informe profundo incluyendo:\n\n- Introducción clara\n- Análisis estructurado\n- Datos actualizados\n- Referencias citables\n- Conclusiones estratégicas\n\nEntrega contenido listo para presentar.`.trim() }
+  ];
+
+  function loadLibrary() {
+    const container = document.getElementById('libraryList');
+    container.innerHTML = '';
+    const colors = [
+      "linear-gradient(135deg,#0b5cff,#063ea8)",
+      "linear-gradient(135deg,#16a34a,#065f46)",
+      "linear-gradient(135deg,#ff6b35,#c2410c)",
+      "linear-gradient(135deg,#7c3aed,#4c1d95)",
+      "linear-gradient(135deg,#ef4444,#7f1d1d)"
+    ];
+    powerLibrary.forEach((item, index) => {
+      const div = document.createElement('div');
+      div.className = 'book-item';
+      const color = colors[index % colors.length];
+      div.innerHTML = `
+        <div class="book-3d">
+          <div class="book-spine"></div>
+          <div class="book-cover" style="background:${color}">
+            <span class="material-symbols-outlined" style="font-size:28px;margin-bottom:6px;">${item.icon}</span>
+            <div style="font-size:13px;font-weight:700">${item.title}</div>
+            <div style="font-size:10px;margin-top:4px;opacity:.9">${item.ai}</div>
+          </div>
+        </div>
+        <div class="book-actions">
+          <button class="book-use" onclick="usePowerPrompt(${index})">Usar</button>
+        </div>
+      `;
+      container.appendChild(div);
+    });
+  }
+
+  function usePowerPrompt(index) {
+    const item = powerLibrary[index];
+    document.querySelectorAll('[id^="section-"]').forEach(sec => sec.style.display = 'none');
+    document.getElementById('section-generador').style.display = 'block';
+    document.querySelectorAll('.tool').forEach(btn => btn.classList.remove('active'));
+    const generadorBtn = document.querySelector('.tool');
+    if (generadorBtn) generadorBtn.classList.add('active');
+    document.getElementById('aiHint').textContent = "Recomendado para: " + item.ai;
+    document.getElementById('resultado').value = item.prompt;
+    alert(`Optimizado para ${item.ai}`);
+  }
+
+  function usePrompt(index) {
+    const library = JSON.parse(localStorage.getItem('historialPrompts')) || [];
+    const prompt = library[index];
+    changeTab('generador', document.querySelector('.tool'));
+    document.getElementById('resultado').value = prompt;
+  }
+
+  /* ── QUICK DEMO ── */
+  async function quickDemo() {
+
+  const idea = document.getElementById("quickInput").value.trim();
+
+  if (!idea) {
+    alert("Escribe una idea primero.");
+    return;
+  }
+
+  await initSupabase();
+  const { data: { session } } = await supabase.auth.getSession();
+
+  // 🚫 si no está logueado
+  if (!session || !session.user) {
+    showAuthModal();
+    return;
+  }
+
+  const prompt = `
+Actúa como un experto en IA y generación de prompts.
+
+Convierte la siguiente idea en un prompt profesional claro y estructurado.
+
+Idea:
+${idea}
+
+El prompt debe incluir:
+- contexto claro
+- objetivo
+- instrucciones específicas
+- formato de respuesta
+`.trim();
+
+  document.getElementById("quickOutput").value = prompt;
+}
+
+  /* ── SHARE ── */
+  //function compartirPrompt() {
+  //  const text = document.getElementById("resultado").value;
+  //  const shareText = `Acabo de crear este prompt con PromptGenerate:\n\n${text}\n\nPrueba la herramienta aquí:\nhttps://cr1085.github.io/prompt-generate/`;
+  //  navigator.clipboard.writeText(shareText);
+  //  alert("Prompt copiado para compartir 🚀");
+  //}
+
+  function compartirPrompt() {
+
+  const text = document.getElementById("resultado").value.trim();
+
+  if(!text){
+    alert("Primero genera un prompt para compartir.");
+    return;
+  }
+
+  const shareText = `Acabo de crear este prompt con PromptGenerate:
+
+${text}
+
+Prueba la herramienta aquí:
+https://cr1085.github.io/prompt-generate/`;
+
+  navigator.clipboard.writeText(shareText);
+
+  alert("Prompt copiado para compartir ");
+
+}
+
+  function bloquearHerramientas(logueado){
+
+  const optimizador = document.getElementById("section-optimizador");
+  const plantillas = document.getElementById("section-plantillas");
+  const biblioteca = document.getElementById("section-biblioteca");
+const manual = document.getElementById("section-manual");
+  if(!logueado){
+
+    optimizador.style.display = "none";
+    plantillas.style.display = "none";
+    biblioteca.style.display = "none";
+    manual.style.display = "none";
+
+  }
+
+}
+
+
+function detectIdeaType(text){
+
+text = text.toLowerCase();
+
+if(text.includes("ebook") || text.includes("libro"))
+return "ebook";
+
+if(text.includes("negocio") || text.includes("ganar dinero") || text.includes("monetizar"))
+return "negocio";
+
+if(text.includes("curso") || text.includes("enseñar"))
+return "curso";
+
+return "contenido";
+
+}
+
+async function improveIdea(){
+
+await initSupabase();
+const { data:{session} } = await supabase.auth.getSession();
+
+if(!session){
+  showAuthModal();
+  return;
+}
+
+// detectar qué prompt existe
+const quickPrompt = document.getElementById("quickOutput").value.trim();
+const mainPrompt  = document.getElementById("resultado").value.trim();
+
+let basePrompt = "";
+let targetArea = null;
+
+// prioridad: si existe el principal usar ese
+if(mainPrompt){
+  basePrompt = mainPrompt;
+  targetArea = document.getElementById("resultado");
+}
+else if(quickPrompt){
+  basePrompt = quickPrompt;
+  targetArea = document.getElementById("quickOutput");
+}
+else{
+  alert("Primero genera un prompt.");
+  return;
+}
+
+// motor de mejora automática
+const improvedPrompt = `
+Actúa como experto en ingeniería de prompts para inteligencia artificial.
+
+Reescribe y mejora el siguiente prompt para que sea:
+
+- Más claro
+- Más específico
+- Más estructurado
+- Más efectivo para IA
+
+Prompt original:
+${basePrompt}
+
+El nuevo prompt debe incluir:
+
+1. Rol claro para la IA
+2. Contexto detallado
+3. Objetivo específico
+4. Instrucciones paso a paso
+5. Formato de salida claro
+
+Entrega solo el prompt mejorado.
+`.trim();
+
+targetArea.value = improvedPrompt;
+
+document.getElementById("aiHint").textContent =
+"🧠 Prompt mejorado automáticamente";
+
+}
+
+function sendFeedback(){
+
+const message = encodeURIComponent(
+"Hola Cristian, estuve probando PromptLab y tengo este feedback:"
+);
+
+window.open(
+"https://wa.me/573170582873?text=" + message,
+"_blank"
+);
+
+}
+
+function checkPromptButtons(){
+
+const text = document.getElementById("resultado").value.trim();
+
+const copyButtons = document.querySelectorAll("[onclick='copiarPrompt()']");
+const optBtn = document.getElementById("optBtn");
+
+copyButtons.forEach(btn=>{
+  btn.disabled = !text;
+});
+
+if(optBtn){
+  optBtn.disabled = !text;
+}
+
+}
+
+document.getElementById("resultado").addEventListener("input",checkPromptButtons);
+
+
+function shareApp(){
+
+const url = "https://cr1085.github.io/prompt-generate/";
+const text = "Mira esta herramienta para crear prompts profesionales para IA: PromptLab";
+
+if(navigator.share){
+
+navigator.share({
+title: "PromptLab – Generador de Prompts IA",
+text: text,
+url: url
+});
+
+}else{
+
+showShareMenu(url,text);
+
+}
+
+}
+
+function showShareMenu(url,text){
+
+const shareText = encodeURIComponent(text + " " + url);
+
+const menu = `
+Compartir en:
+
+1️⃣ WhatsApp  
+https://wa.me/?text=${shareText}
+
+2️⃣ Twitter / X  
+https://twitter.com/intent/tweet?text=${shareText}
+
+3️⃣ Facebook  
+https://www.facebook.com/sharer/sharer.php?u=${url}
+
+4️⃣ LinkedIn  
+https://www.linkedin.com/sharing/share-offsite/?url=${url}
+
+`;
+
+alert(menu);
+
+}
+
+
+function updatePromptButtons(logged){
+
+const actions = document.getElementById("promptActions");
+
+const copBtn = document.getElementById("copBtn");
+const dscBtn = document.getElementById("dscBtn");
+const comBtn = document.getElementById("comBtn");
+const optBtn = document.getElementById("optBtn");
+
+if(!logged){
+
+actions.style.display = "none";
+
+copBtn.style.display = "none";
+dscBtn.style.display = "none";
+comBtn.style.display = "none";
+optBtn.style.display = "none";
+
+}else{
+
+actions.style.display = "flex";
+
+copBtn.style.display = "inline-block";
+dscBtn.style.display = "inline-block";
+comBtn.style.display = "inline-block";
+optBtn.style.display = "inline-block";
+
+}
+
+}
+  </script>
+
+
+<div id="gameEmulator">
+
+<button id="exitGameBtn" onclick="closeGame()">
+✕ Salir del juego
+</button>
+
+<iframe id="gamePlayer"></iframe>
+
+</div>
+
+</body>
+</html>

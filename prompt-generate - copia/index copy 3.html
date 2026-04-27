@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="Generador de prompts para IA: crea prompts claros y efectivos para contenido, marketing y educación. Recursos y plantillas para mejorar tus resultados con inteligencia artificial.">
+  <title>Generador de Prompts para IA — Prompt Lab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Merriweather:wght@700&display=swap"
+    rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #f7fafc;
+      --card: #ffffff;
+      --muted: #6b7280;
+      --accent: #0b5cff;
+      --accent-600: #084abf;
+      --cta: #ff6b35;
+      --success: #16a34a;
+      --danger: #ef4444;
+      --shadow: 0 6px 18px rgba(11, 92, 255, 0.08);
+      --radius: 12px;
+      --max-width: 1100px;
+    }
+
+    html,
+    body {
+      height: 100%;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+      background: var(--bg);
+      color: #0f172a;
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.45;
+      padding: 32px 20px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: var(--max-width);
+    }
+
+    header.site-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 22px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px
+    }
+
+    .logo {
+      width: 56px;
+      height: 56px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--accent), var(--accent-600));
+      color: white;
+      font-weight: 700;
+      font-family: Merriweather, serif;
+      font-size: 20px;
+      box-shadow: var(--shadow)
+    }
+
+    h1 {
+      font-family: Merriweather, serif;
+      margin: 0;
+      font-size: 22px
+    }
+
+    p.lead {
+      margin: 6px 0 0;
+      color: var(--muted)
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center
+    }
+
+    .btn {
+      border: 0;
+      padding: 10px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--accent)
+    }
+
+    .btn-cta {
+      background: var(--cta);
+      color: white
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 28px;
+      align-items: start
+    }
+
+    .card {
+      background: var(--card);
+      padding: 20px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow)
+    }
+
+    form .row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px
+    }
+
+    /* Inputs y layout más robusto */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box
+    }
+
+    label {
+      font-weight: 600;
+      color: #0f172a;
+      font-size: 13px
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid #e6eef8;
+      font-size: 14px;
+      color: #031024;
+      background: linear-gradient(180deg, #ffffff, #fbfdff);
+      box-shadow: 0 4px 10px rgba(2, 6, 23, 0.03)
+    }
+
+    input {
+      height: 44px
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical
+    }
+
+    textarea.output {
+      min-height: 220px;
+      resize: vertical;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Courier New', monospace
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: #94a3b8
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 6px 20px rgba(11, 92, 255, 0.08)
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 13px
+    }
+
+    /* plantillas como chips (sin marcadores) */
+    .plantillas {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 6px 0 14px;
+      align-items: center;
+      list-style: none;
+      padding: 0
+    }
+
+    .plantillas li {
+      list-style: none;
+      margin: 0;
+      padding: 0
+    }
+
+    .plantillas button {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .tpl {
+      background: #ffffff;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(11, 92, 255, 0.12);
+      color: var(--accent);
+      cursor: pointer;
+      transition: transform .16s cubic-bezier(.2, .9, .2, 1), box-shadow .16s ease, background .12s ease;
+      font-weight: 600;
+      font-size: 14px;
+      box-shadow: 0 6px 18px rgba(11, 92, 255, 0.04)
+    }
+
+    .tpl:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 18px 30px rgba(11, 92, 255, 0.08);
+      background: linear-gradient(180deg, #f6fbff, #ffffff)
+    }
+
+    .tpl:focus {
+      outline: 3px solid rgba(11, 92, 255, 0.12);
+      outline-offset: 4px
+    }
+
+    .tpl:active {
+      transform: translateY(-1px) scale(.995)
+    }
+
+    /* Remove default list markers site-wide inside cards to avoid stray bullets */
+    .card ul,
+    .card ol {
+      margin: 0;
+      padding: 0;
+      list-style: none
+    }
+
+    /* Smooth theme transition */
+    body,
+    .card,
+    input,
+    textarea,
+    select,
+    .tpl {
+      transition: background .18s ease, color .18s ease, box-shadow .18s ease, border-color .18s ease
+    }
+
+    .controls {
+      display: flex;
+      gap: 12px;
+      margin-top: 12px;
+      align-items: center
+    }
+
+    .controls .btn-cta {
+      padding: 12px 18px;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(255, 107, 53, 0.12)
+    }
+
+    .controls .btn-cta:hover {
+      transform: translateY(-2px)
+    }
+
+    .result-actions .btn {
+      margin-left: 8px
+    }
+
+    .result-actions .btn-ghost {
+      background: transparent;
+      border: 1px solid rgba(11, 92, 255, 0.06)
+    }
+
+    .badge {
+      font-weight: 700;
+      color: var(--muted);
+      margin-left: auto
+    }
+
+    .result-card .output {
+      min-height: 180px;
+      white-space: pre-wrap;
+      word-break: break-word
+    }
+
+    .error-box {
+      background: #fff1f0;
+      border: 1px solid #fecaca;
+      color: #991b1b;
+      padding: 8px 12px;
+      border-radius: 8px;
+      margin-top: 12px;
+      display: none
+    }
+
+    aside .card h2 {
+      margin-top: 0
+    }
+
+    .links a {
+      display: inline-block;
+      margin: 6px 8px;
+      color: var(--accent);
+      text-decoration: none
+    }
+
+    footer {
+      margin-top: 26px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px
+    }
+
+    @media(max-width:980px) {
+      main {
+        grid-template-columns: 1fr
+      }
+
+      .top-actions {
+        flex-wrap: wrap
+      }
+    }
+
+    @media(max-width:600px) {
+      .controls {
+        flex-direction: column;
+        align-items: stretch
+      }
+
+      .controls .badge {
+        margin-left: 0
+      }
+
+      .result-actions {
+        display: flex;
+        gap: 8px
+      }
+    }
+
+    /* Dark mode support (preserves existing modoOscuro toggle) */
+    body.dark {
+      background: #071226;
+      color: #e6eef8
+    }
+
+    body.dark .card {
+      background: #071426;
+      box-shadow: 0 10px 30px rgba(2, 6, 23, 0.6)
+    }
+
+    body.dark .logo {
+      filter: brightness(1.05)
+    }
+
+    body.dark input,
+    body.dark textarea,
+    body.dark select {
+      background: #0b1a2b;
+      color: #e6eef8;
+      border: 1px solid #123148
+    }
+
+    body.dark .muted {
+      color: #93b3d6
+    }
+
+    body.dark .btn-ghost {
+      color: #a8d1ff
+    }
+
+    body.dark .btn-cta {
+      background: #ff7a4a
+    }
+
+    body.dark .tpl {
+      background: #052033;
+      border: 1px solid #0e3550;
+      color: #cfe8ff;
+      box-shadow: none
+    }
+
+    body.dark .plantillas .tpl:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(2, 8, 40, 0.6)
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <header class="site-header">
+      <div class="brand">
+        <div class="logo">PL</div>
+        <div>
+          <h1>Prompt Lab</h1>
+          <p class="lead">Generador práctico de prompts para obtener resultados útiles con IA</p>
+        </div>
+      </div>
+
+      <div class="top-actions">
+        <button class="btn btn-ghost" onclick="modoOscuro()">🌙 Tema</button>
+        <button id="upgradeBtn" class="btn btn-ghost" onclick="togglePro()">Mejorar a Pro</button>
+        <a class="btn btn-cta" href="https://buymeacoffee.com/cristiancua" target="_blank"
+          rel="noopener noreferrer">Apóyame</a>
+        <div id="proBadge"
+          style="display:none;background:#ffedd5;color:#7a2e00;padding:6px 10px;border-radius:999px;font-weight:700">PRO
+        </div>
+      </div>
+    </header>
+
+    <!-- Modal de autenticación (login / register) -->
+    <div id="authModal" style="display:none;position:fixed;inset:0;background:rgba(2,6,23,0.6);align-items:center;justify-content:center;padding:20px;z-index:1200">
+      <div style="max-width:420px;width:100%;background:var(--card);padding:18px;border-radius:12px;box-shadow:var(--shadow)">
+        <h3 style="margin:0 0 8px">Acceder / Registrarse</h3>
+        <div style="display:flex;gap:8px;margin-bottom:8px">
+          <input id="authEmail" type="email" placeholder="Email" style="flex:1" />
+          <input id="authPassword" type="password" placeholder="Contraseña" style="flex:1" />
+        </div>
+        <div style="display:flex;gap:8px;justify-content:flex-end">
+          <button class="btn btn-ghost" onclick="hideAuthModal()">Cerrar</button>
+          <button class="btn" onclick="handleRegister()">Registrarse</button>
+          <button class="btn btn-cta" onclick="handleLogin()">Iniciar sesión</button>
+        </div>
+        <div id="authMessage" style="margin-top:8px;color:var(--muted);font-size:13px"></div>
+      </div>
+    </div>
+
+    <!-- Propuesta de valor destacada -->
+    <section style="max-width:1100px;margin:12px auto 18px;">
+      <div class="card" style="display:flex;align-items:center;gap:18px;justify-content:space-between;">
+        <div style="flex:1">
+          <h2 style="margin:0 0 6px">Convierte ideas simples en prompts profesionales</h2>
+          <p class="muted">Convierte ideas simples en prompts profesionales listos para cualquier IA. Optimizado para
+            ChatGPT, Claude y modelos generativos de imágenes y video.</p>
+          <ul style="margin:10px 0 0;padding-left:18px;color:var(--muted)">
+            <li>✔ Optimizado para ChatGPT</li>
+            <li>✔ Adaptado para Claude y Gemini</li>
+            <li>✔ Prompts para imágenes y video IA</li>
+            <li>✔ Estrategias de monetización con IA</li>
+          </ul>
+        </div>
+        <div style="min-width:260px;text-align:right">
+          <p style="margin:0 0 8px;font-weight:700;color:var(--accent)">Usuarios PRO generan resultados 4x más efectivos
+          </p>
+          <p class="muted" style="margin:0 0 12px">Desbloquea optimización avanzada y prompts ilimitados por solo $5.000
+            COP.</p>
+          <button class="btn btn-cta" style="padding:10px 16px;" onclick="openWompi()">Activar PRO por $5.000</button>
+        </div>
+      </div>
+    </section>
+
+    <main>
+      <section class="card" aria-labelledby="form-title">
+        <h2 id="form-title">Crea un prompt claro y efectivo</h2>
+        <p class="muted">Rellena las opciones para generar un prompt optimizado para tareas de contenido, marketing y
+          aprendizaje con IA.</p>
+
+        <div class="muted"
+          style="margin:12px 0;padding:12px;border-radius:10px;background:#fff7ed;border:1px solid #ffedd5">💡 Consejo:
+          ser concreto y aportar contexto mejora la calidad de la respuesta.</div>
+
+        <ul class="plantillas" aria-label="Plantillas rápidas">
+          <li><button class="tpl" onclick="plantillaMarketing()">Marketing</button></li>
+          <li><button class="tpl" onclick="plantillaEmprendimiento()">Emprendimiento</button></li>
+          <li><button class="tpl" onclick="plantillaMarca()">Marca personal</button></li>
+          <li><button class="tpl" onclick="plantillaEducacion()">Educación</button></li>
+          <li><button class="tpl" onclick="plantillaMonetizacion()">Monetización</button></li>
+          <li><button class="tpl" onclick="plantillaProductividad()">Productividad</button></li>
+        </ul>
+
+        <form aria-describedby="form-desc" onsubmit="return false;">
+          <div id="form-desc" class="muted">Los campos clave se usan para componer el prompt final. Puedes dejar
+            opcionales si no aplican.</div>
+
+          <div class="row" style="margin-top:12px">
+            <div>
+              <label for="rol">Rol que asumirá la IA</label>
+              <input id="rol" type="text" placeholder="Ej: estratega de contenido, profesor práctico">
+              <div class="muted">Define la identidad profesional de la IA.</div>
+            </div>
+
+            <div>
+              <label for="objetivo">Objetivo principal</label>
+              <input id="objetivo" type="text" placeholder="Ej: crear un guion para video corto con CTA claro">
+              <div class="muted">Qué quieres lograr con este prompt.</div>
+            </div>
+
+            <div>
+              <label for="publico">Público objetivo</label>
+              <input id="publico" type="text" placeholder="Ej: emprendedores, estudiantes, clientes">
+              <div class="muted">Describe a quién va dirigido el resultado.</div>
+            </div>
+
+            <div>
+              <label for="contexto">Contexto o problema</label>
+              <textarea id="contexto" placeholder="Explica la situación, restricciones o contexto"></textarea>
+              <div class="muted">Cuanto más claro, mejor la respuesta.</div>
+            </div>
+
+            <div>
+              <label for="tono">Tono</label>
+              <select id="tono">
+                <option value="">-- Selecciona --</option>
+                <option>Simple</option>
+                <option>Creativo</option>
+                <option>Profesional</option>
+                <option>Cercano</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="lenguaje">Tipo de lenguaje</label>
+              <select id="lenguaje">
+                <option value="">-- Selecciona --</option>
+                <option>Fácil y sin tecnicismos</option>
+                <option>Claro y directo</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="extension">Extensión</label>
+              <select id="extension">
+                <option value="">-- Selecciona --</option>
+                <option>Corto</option>
+                <option>Medio</option>
+                <option>Largo</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="formato">Formato de salida</label>
+              <select id="formato">
+                <option value="">-- Selecciona --</option>
+                <option>Lista</option>
+                <option>Pasos</option>
+                <option>Tabla</option>
+                <option>Guion</option>
+                <option>Texto</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="evitar">Qué evitar</label>
+              <input id="evitar" type="text" placeholder="Ej: tecnicismos, lenguaje formal excesivo">
+            </div>
+
+            <div>
+              <label for="incluir">Qué incluir (opcional)</label>
+              <input id="incluir" type="text" placeholder="Ej: ejemplos, pasos, llamada a la acción">
+            </div>
+
+          </div>
+
+          <div class="controls">
+            <button id="generarBtn" class="btn btn-cta" type="button" onclick="generarPrompt()">Generar mi
+              prompt</button>
+            <div class="badge" id="eficiencia" aria-live="polite"></div>
+            <div id="counter" class="muted" style="margin-left:8px;font-weight:600">Prompts usados hoy: 0 / 5</div>
+            <div id="optCounter" class="muted" style="margin-left:8px">Optimización gratuita restante: 5 / 5</div>
+          </div>
+          <div id="formError" class="error-box" role="alert"></div>
+
+          <div class="result-card card" style="margin-top:14px">
+            <div class="result-header"
+              style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:8px">
+              <div>
+                <label for="resultado">Prompt generado</label>
+                <div class="muted" style="font-size:13px">Listo para usar — copia o descarga rápido</div>
+              </div>
+              <div class="result-actions">
+                <button class="btn btn-ghost" type="button" onclick="copiarPrompt()">Copiar</button>
+                <button class="btn" type="button" onclick="descargarPrompt()">Descargar .txt</button>
+                <button id="optBtn" class="btn" type="button" onclick="optimizarPrompt()"
+                  style="margin-left:8px">Optimizar Prompt</button>
+              </div>
+            </div>
+            <textarea id="resultado" class="output" placeholder="Aquí aparecerá el prompt generado"></textarea>
+          </div>
+
+        </form>
+      </section>
+
+      <aside>
+        <div class="card">
+          <h2>Recursos y comunidad</h2>
+          <p class="muted">Plantillas, ejemplos y un espacio para compartir tus mejores prompts.</p>
+
+          <h3 style="margin-top:12px">Historial</h3>
+          <ul id="historial" class="muted" style="padding-left:18px"></ul>
+
+          <hr style="margin:16px 0">
+
+          <h3>Conecta</h3>
+          <div class="links">
+            <a href="https://github.com/cr1085" target="_blank" rel="noopener noreferrer">GitHub</a>
+            <a href="https://www.instagram.com/3cbsoluciones/" target="_blank" rel="noopener noreferrer">Instagram</a>
+            <a href="https://www.linkedin.com/in/cristian-cuadrado-beltran-983ba126/" target="_blank"
+              rel="noopener noreferrer">LinkedIn</a>
+            <a href="https://x.com/cr1085" target="_blank" rel="noopener noreferrer">X / Twitter</a>
+          </div>
+
+          <div style="margin-top:14px;text-align:center">
+            <a class="btn btn-cta" href="https://whatsapp.com/channel/0029VbAyIhDAjPXUVJr5LE3z" target="_blank"
+              rel="noopener noreferrer">Únete al canal</a>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:16px">
+          <h2>Planes</h2>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:10px">
+            <div
+              style="flex:1;min-width:220px;padding:12px;border-radius:10px;border:1px solid #e6eef8;background:#f8fafc">
+              <h3 style="margin:0 0 6px">Plan Gratis</h3>
+              <p class="muted" style="margin:0 0 8px">5 prompts/día • 5 optimizaciones gratuitas • Plantillas básicas
+              </p>
+              <ul style="margin:6px 0 0;padding-left:16px;color:var(--muted)">
+                <li>5 prompts diarios</li>
+                <li>Optimización: 5 usos</li>
+                <li>Plantillas básicas</li>
+                <li>Historial limitado</li>
+              </ul>
+            </div>
+
+            <div
+              style="flex:1;min-width:220px;padding:12px;border-radius:10px;border:2px solid var(--cta);background:linear-gradient(180deg,#fff7f0,#fff)">
+              <h3 style="margin:0 0 6px">Plan PRO</h3>
+              <p style="margin:0 0 8px;font-weight:700;color:var(--cta)">$5.000 COP — ilimitado</p>
+              <p class="muted" style="margin:0 0 8px">Prompts ilimitados, optimizaciones avanzadas y plantillas premium.
+              </p>
+              <ul style="margin:6px 0 0;padding-left:16px;color:var(--muted)">
+                <li>Prompts ilimitados</li>
+                <li>Optimización avanzada ilimitada</li>
+                <li>5 variaciones automáticas</li>
+                <li>Plantillas premium: Ventas, YouTube, Funnels</li>
+                <li>Biblioteca privada</li>
+              </ul>
+              <div style="margin-top:10px">
+                <button class="btn"
+                  style="background:var(--cta);color:#fff;padding:10px 12px;border-radius:10px;font-weight:700"
+                  onclick="openWompi()">Activar PRO por $5.000</button>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:12px;color:var(--muted);font-size:13px">Modelos soportados: ChatGPT, Claude, Gemini,
+            DeepSeek, Z.ai, Midjourney (imágenes), Runway/Pika (video)</div>
+        </div>
+      </aside>
+    </main>
+
+    <footer>
+      <p>Generador de prompts • Herramienta para creación de prompts y plantillas de IA</p>
+    </footer>
+
+    <hr style="margin-top:18px;border:none">
+
+  </div>
+
+  <script>
+    function generarPrompt() {
+      // Validación de campos obligatorios
+      const required = [{
+          el: document.getElementById('rol'),
+          name: 'Rol'
+        },
+        {
+          el: document.getElementById('objetivo'),
+          name: 'Objetivo'
+        },
+        {
+          el: document.getElementById('publico'),
+          name: 'Público'
+        },
+        {
+          el: document.getElementById('contexto'),
+          name: 'Contexto'
+        }
+      ];
+      const empty = required.filter(r => !r.el.value || !r.el.value.trim()).map(r => r.name);
+      const errorEl = document.getElementById('formError');
+      if (empty.length) {
+        errorEl.textContent = 'Completa los campos obligatorios: ' + empty.join(', ') + '.';
+        errorEl.style.display = 'block';
+        // enfocar el primer campo vacío
+        required.find(r => !r.el.value || !r.el.value.trim()).el.focus();
+        return;
+      } else {
+        errorEl.style.display = 'none';
+      }
+
+      // Límite freemium: checkear antes de generar
+      const isPro = getIsPro();
+      const usage = getUsage();
+      if (!isPro && usage.count >= 5) {
+        alert('Has alcanzado el límite diario de 5 prompts. Mejora a Pro para generación ilimitada.');
+        updateUI();
+        return;
+      }
+      const prompt = `
+Actúa como ${rol.value}.
+
+Ayúdame a ${objetivo.value}.
+
+Contexto:
+Esto es para ${publico.value}.
+La situación es: ${contexto.value}.
+
+Quiero que el resultado sea:
+- Tono: ${tono.value}
+- Lenguaje: ${lenguaje.value}
+- Extensión: ${extension.value}
+
+Formato de respuesta:
+- ${formato.value}
+
+Extra importante:
+- Evita ${evitar.value}
+- Incluye ${incluir.value || "lo necesario"}
+`.trim();
+
+      resultado.value = prompt;
+      guardarHistorial(prompt);
+      calcularEficiencia();
+      // incrementar contador tras generar
+      incrementUsage();
+      updateUI();
+    }
+
+    function copiarPrompt() {
+      navigator.clipboard.writeText(resultado.value);
+      alert("✅ Prompt copiado al portapapeles");
+    }
+
+    function descargarPrompt() {
+      const blob = new Blob([resultado.value], {
+        type: "text/plain"
+      });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "prompt.txt";
+      link.click();
+    }
+
+    function calcularEficiencia() {
+      let score = 0;
+
+      if (rol.value.length > 10) score += 15;
+      if (objetivo.value.length > 15) score += 20;
+      if (contexto.value.length > 20) score += 20;
+      if (publico.value.length > 5) score += 10;
+      if (tono.value) score += 10;
+      if (lenguaje.value) score += 10;
+      if (formato.value) score += 10;
+      if (evitar.value || incluir.value) score += 5;
+
+      eficiencia.textContent = `📊 Nivel Estratégico del Prompt: ${score}%`;
+    }
+
+
+
+    function guardarHistorial(prompt) {
+      let historial = JSON.parse(localStorage.getItem("historialPrompts")) || [];
+      historial.unshift(prompt);
+      localStorage.setItem("historialPrompts", JSON.stringify(historial));
+      mostrarHistorial();
+    }
+
+    function mostrarHistorial() {
+      let historial = JSON.parse(localStorage.getItem("historialPrompts")) || [];
+      const lista = document.getElementById("historial");
+      lista.innerHTML = "";
+
+      historial.slice(0, 5).forEach(p => {
+        const li = document.createElement("li");
+        li.textContent = p.substring(0, 80) + "...";
+        lista.appendChild(li);
+      });
+    }
+
+    window.onload = mostrarHistorial;
+
+    function modoOscuro() {
+      document.body.classList.toggle("dark");
+    }
+
+    /* ---------- Freemium: localStorage usage and pro simulation ---------- */
+    const USAGE_KEY = 'pl_prompts_usage_v1';
+    const PRO_KEY = 'pl_is_pro_v1';
+    const OPT_KEY = 'pl_opt_usage_v1';
+    const MAX_OPT_FREE = 5; // optimizaciones gratuitas para usuarios gratis
+    // Configurable Wompi link (simulación)
+    const WOMPI_LINK = 'https://checkout.wompi.co/p/your_payment_link_here';
+
+    function getUsage() {
+      try {
+        const raw = localStorage.getItem(USAGE_KEY);
+        if (!raw) return {
+          count: 0,
+          lastReset: Date.now()
+        };
+        const obj = JSON.parse(raw);
+        // reset if older than 24h
+        if (Date.now() - (obj.lastReset || 0) > 24 * 60 * 60 * 1000) {
+          return {
+            count: 0,
+            lastReset: Date.now()
+          };
+        }
+        return obj;
+      } catch (e) {
+        return {
+          count: 0,
+          lastReset: Date.now()
+        }
+      };
+    }
+
+    function saveUsage(obj) {
+      localStorage.setItem(USAGE_KEY, JSON.stringify(obj));
+    }
+
+    function incrementUsage() {
+      const isPro = getIsPro();
+      if (isPro) return; // no contar para Pro
+      const u = getUsage();
+      // if lastReset older than 24h, reset
+      if (Date.now() - (u.lastReset || 0) > 24 * 60 * 60 * 1000) {
+        u.count = 0;
+        u.lastReset = Date.now();
+      }
+      u.count = (u.count || 0) + 1;
+      saveUsage(u);
+    }
+
+    function resetUsageIfNeeded() {
+      const u = getUsage();
+      if (Date.now() - (u.lastReset || 0) > 24 * 60 * 60 * 1000) {
+        const next = {
+          count: 0,
+          lastReset: Date.now()
+        };
+        saveUsage(next);
+      }
+    }
+
+    function getIsPro() {
+      return localStorage.getItem(PRO_KEY) === '1';
+    }
+
+    function setIsPro(val) {
+      localStorage.setItem(PRO_KEY, val ? '1' : '0');
+    }
+
+    function togglePro() {
+      const current = getIsPro();
+      setIsPro(!current);
+      alert(!current ? 'Ahora eres usuario PRO (modo simulado).' : 'Has regresado al plan Gratis.');
+      updateUI();
+    }
+
+    function openWompi() {
+      // Simulación básica: abrir checkout y marcar PRO en localStorage
+      try {
+        window.open(WOMPI_LINK, '_blank');
+      } catch (e) {
+        /* ignore */ }
+      // Marcar como PRO (simulación) y actualizar UI
+      setIsPro(true);
+      alert('Redirigido al pago (simulado). Tu cuenta ahora está en modo PRO.');
+      updateUI();
+    }
+
+    function updateUI() {
+      // counter
+      resetUsageIfNeeded();
+      const u = getUsage();
+      const isPro = getIsPro();
+      const counterEl = document.getElementById('counter');
+      const generarBtn = document.getElementById('generarBtn');
+      const proBadge = document.getElementById('proBadge');
+      const upgradeBtn = document.getElementById('upgradeBtn');
+      const optBtn = document.getElementById('optBtn');
+      // optimizer counter
+      const opt = getOptUsage();
+      const optCounterEl = document.getElementById('optCounter');
+      if (optCounterEl) {
+        optCounterEl.textContent =
+          `Optimización gratuita restante: ${Math.max(0, MAX_OPT_FREE - (opt.count||0))} / ${MAX_OPT_FREE}`;
+      }
+
+      if (isPro) {
+        counterEl.textContent = 'Prompts usados hoy: — / ∞';
+        generarBtn.disabled = false;
+        proBadge.style.display = 'inline-block';
+        upgradeBtn.textContent = 'Cancelar Pro';
+        optBtn.style.display = 'inline-block';
+        if (optCounterEl) optCounterEl.style.opacity = '0.8';
+      } else {
+        counterEl.textContent = `Prompts usados hoy: ${u.count||0} / 5`;
+        generarBtn.disabled = (u.count || 0) >= 5;
+        proBadge.style.display = 'none';
+        upgradeBtn.textContent = 'Mejorar a Pro';
+        optBtn.style.display = 'none';
+        if (optCounterEl) optCounterEl.style.opacity = '1';
+      }
+
+      // small visual disabled state
+      if (generarBtn.disabled) {
+        generarBtn.style.opacity = '0.5';
+        generarBtn.style.cursor = 'not-allowed';
+      } else {
+        generarBtn.style.opacity = '1';
+        generarBtn.style.cursor = 'pointer';
+      }
+    }
+
+    // Optimizer usage helpers
+    function getOptUsage() {
+      try {
+        const raw = localStorage.getItem(OPT_KEY);
+        if (!raw) return {
+          count: 0
+        };
+        return JSON.parse(raw);
+      } catch (e) {
+        return {
+          count: 0
+        }
+      };
+    }
+
+    function saveOptUsage(obj) {
+      localStorage.setItem(OPT_KEY, JSON.stringify(obj));
+    }
+
+    function incrementOptUsage() {
+      if (getIsPro()) return; // Pro unlimited
+      const o = getOptUsage();
+      o.count = (o.count || 0) + 1;
+      saveOptUsage(o);
+    }
+
+    // Optimizar Prompt (free limitada / PRO ilimitado)
+    function optimizarPrompt() {
+      const resultadoEl = document.getElementById('resultado');
+      const base = (resultadoEl.value || '').trim();
+      if (!base) {
+        alert('Genera un prompt antes de optimizarlo.');
+        return;
+      }
+
+      if (getIsPro()) {
+        // Versión avanzada para PRO
+        const mejoras = [];
+        mejoras.push('\n---\n[OPTIMIZACIÓN PRO] Versión mejorada por Prompt Lab PRO');
+        if (rol.value) mejoras.push(`Identidad recomendada: ${rol.value}.`);
+        if (objetivo.value) mejoras.push(
+          `Objetivo (más claro): ${objetivo.value}. Añade métricas o formato esperado si aplica.`);
+        if (publico.value) mejoras.push(`Público: ${publico.value}. Especifica tono y nivel esperado.`);
+        if (contexto.value) mejoras.push(
+          `Contexto adicional: ${contexto.value}. Restringe formato si necesitas menos palabras.`);
+        mejoras.push(
+          'Instrucciones: Responde con pasos numerados, breve introducción, 2 ejemplos de salida y una CTA al final.');
+        mejoras.push('Sugerencia de temperatura y longitud: temperatura 0.7, max_tokens 400.');
+
+        const nuevo = base + '\n\n' + mejoras.join('\n');
+        resultadoEl.value = nuevo;
+        alert('✅ Prompt optimizado (PRO) aplicado.');
+        return;
+      }
+
+      // Usuario gratis: límite de optimizaciones
+      const o = getOptUsage();
+      if ((o.count || 0) >= MAX_OPT_FREE) {
+        if (confirm(
+          'Has agotado tus optimizaciones gratuitas.\n¿Quieres mejorar a PRO para optimizaciones ilimitadas?')) {
+          openWompi();
+        }
+        return;
+      }
+
+      // Aplicar optimización gratuita
+      const freeOpt = base +
+        "\n\n[OPTIMIZACIÓN GRATUITA] Clarifica el objetivo, sugiere tono y un formato de salida breve.\n- Tono sugerido: claro y directo\n- Longitud sugerida: 1-2 párrafos\n\nEjemplo de salida: \n- Resultado breve con pasos o lista.";
+      resultadoEl.value = freeOpt;
+      incrementOptUsage();
+      updateUI();
+      alert('Optimización gratuita aplicada.');
+    }
+
+    // inicializar UI al cargar
+    window.addEventListener('load', function () {
+      // asegurarse que historial se muestra
+      mostrarHistorial();
+      updateUI();
+      // limpiar errores al tipear en inputs
+      ['rol', 'objetivo', 'publico', 'contexto', 'tono', 'lenguaje', 'extension', 'formato', 'evitar', 'incluir']
+      .forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.addEventListener('input', () => {
+            const fe = document.getElementById('formError');
+            if (fe) fe.style.display = 'none';
+          });
+        }
+      });
+    });
+
+    function plantillaMarketing() {
+      rol.value = "estratega experto en marketing digital";
+      objetivo.value = "crear una estrategia de contenido que genere clientes";
+      publico.value = "emprendedores y pequeñas empresas";
+      contexto.value = "quiero aumentar ventas usando redes sociales";
+      tono.value = "Profesional";
+      lenguaje.value = "Claro y directo";
+      extension.value = "Medio";
+      formato.value = "Pasos";
+    }
+
+    function plantillaEmprendimiento() {
+      rol.value = "consultor experto en emprendimiento y modelos de negocio";
+      objetivo.value = "diseñar una idea de negocio rentable";
+      publico.value = "personas que quieren iniciar un emprendimiento";
+      contexto.value = "busco oportunidades digitales con bajo presupuesto";
+      tono.value = "Creativo";
+      lenguaje.value = "Claro y directo";
+      extension.value = "Medio";
+      formato.value = "Lista";
+    }
+
+    function plantillaMarca() {
+      rol.value = "estratega en marca personal y posicionamiento profesional";
+      objetivo.value = "optimizar mi perfil profesional en redes sociales";
+      publico.value = "reclutadores y clientes potenciales";
+      contexto.value = "quiero mejorar mi presencia digital";
+      tono.value = "Profesional";
+      lenguaje.value = "Claro y directo";
+      extension.value = "Corto";
+      formato.value = "Pasos";
+    }
+
+    function plantillaEducacion() {
+      rol.value = "profesor experto en enseñanza práctica";
+      objetivo.value = "explicar un tema complejo de forma sencilla";
+      publico.value = "estudiantes principiantes";
+      contexto.value = "necesito simplificar un concepto técnico";
+      tono.value = "Simple";
+      lenguaje.value = "Fácil y sin tecnicismos";
+      extension.value = "Medio";
+      formato.value = "Lista";
+    }
+
+    function plantillaMonetizacion() {
+      rol.value = "asesor experto en monetización digital";
+      objetivo.value = "identificar oportunidades reales para generar ingresos";
+      publico.value = "personas que quieren ganar dinero online";
+      contexto.value = "quiero usar inteligencia artificial para crear ingresos";
+      tono.value = "Profesional";
+      lenguaje.value = "Claro y directo";
+      extension.value = "Medio";
+      formato.value = "Pasos";
+    }
+
+    function plantillaMarketing() {
+      rol.value = "estratega experto en marketing digital";
+      objetivo.value = "crear una estrategia de contenido que genere clientes";
+      publico.value = "emprendedores y pequeñas empresas";
+      contexto.value = "quiero aumentar ventas usando redes sociales";
+      tono.value = "Profesional";
+      lenguaje.value = "Claro y directo";
+      extension.value = "Medio";
+      formato.value = "Pasos";
+    }
+
+    function plantillaEmprendimiento() {
+      rol.value = "consultor experto en emprendimiento y modelos de negocio";
+      objetivo.value = "diseñar una idea de negocio rentable";
+      publico.value = "personas que quieren iniciar un emprendimiento";
+      contexto.value = "busco oportunidades digitales con bajo presupuesto";
+      tono.value = "Creativo";
+      lenguaje.value = "Claro y directo";
+      extension.value = "Medio";
+      formato.value = "Lista";
+    }
+
+    function plantillaMarca() {
+      rol.value = "estratega en marca personal y posicionamiento profesional";
+      objetivo.value = "optimizar mi perfil profesional en redes sociales";
+      publico.value = "reclutadores y clientes potenciales";
+      contexto.value = "quiero mejorar mi presencia digital";
+      tono.value = "Profesional";
+      lenguaje.value = "Claro y directo";
+      extension.value = "Corto";
+      formato.value = "Pasos";
+    }
+
+    function plantillaEducacion() {
+      rol.value = "profesor experto en enseñanza práctica";
+      objetivo.value = "explicar un tema complejo de forma sencilla";
+      publico.value = "estudiantes principiantes";
+      contexto.value = "necesito simplificar un concepto técnico";
+      tono.value = "Simple";
+      lenguaje.value = "Fácil y sin tecnicismos";
+      extension.value = "Medio";
+      formato.value = "Lista";
+    }
+
+    function plantillaMonetizacion() {
+      rol.value = "asesor experto en monetización digital";
+      objetivo.value = "identificar oportunidades reales para generar ingresos";
+      publico.value = "personas que quieren ganar dinero online";
+      contexto.value = "quiero usar inteligencia artificial para crear ingresos";
+      tono.value = "Profesional";
+      lenguaje.value = "Claro y directo";
+      extension.value = "Medio";
+      formato.value = "Pasos";
+    }
+
+    function plantillaProductividad() {
+      rol.value = "consultor experto en productividad y automatización";
+      objetivo.value = "crear un sistema eficiente para organizar mi trabajo";
+      publico.value = "profesionales ocupados";
+      contexto.value = "quiero optimizar tiempo usando IA";
+      tono.value = "Cercano";
+      lenguaje.value = "Claro y directo";
+      extension.value = "Corto";
+      formato.value = "Lista";
+    }
+  </script>
+
+</body>
+
+</html>

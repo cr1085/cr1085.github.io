@@ -1,0 +1,2399 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PROMPT QUEST — Domina la IA</title>
+
+<!-- Google Fonts: Orbitron (display) + Rajdhani (body) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<!-- Supabase CDN -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+/* ============================================================
+   CSS VARIABLES & RESET
+   ============================================================ */
+:root {
+  --bg-deep:      #020817;
+  --bg-card:      #0a1628;
+  --bg-panel:     #0d1f3c;
+  --border:       #1a3a6e;
+  --neon-blue:    #00d4ff;
+  --neon-purple:  #b44fff;
+  --neon-green:   #00ff88;
+  --neon-red:     #ff3366;
+  --neon-yellow:  #ffd700;
+  --text-primary: #e0f0ff;
+  --text-muted:   #5a7a9e;
+  --glow-blue:    0 0 20px rgba(0,212,255,0.5);
+  --glow-purple:  0 0 20px rgba(180,79,255,0.5);
+  --glow-green:   0 0 20px rgba(0,255,136,0.4);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg-deep);
+  color: var(--text-primary);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 16px;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* Animated star field background */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 10% 20%, rgba(0,212,255,0.4) 0%, transparent 100%),
+    radial-gradient(1px 1px at 30% 60%, rgba(180,79,255,0.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 70% 15%, rgba(0,212,255,0.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 90% 80%, rgba(180,79,255,0.4) 0%, transparent 100%),
+    radial-gradient(1px 1px at 50% 90%, rgba(0,255,136,0.2) 0%, transparent 100%);
+  background-size: 200px 200px, 300px 300px, 250px 250px, 180px 180px, 350px 350px;
+  pointer-events: none;
+  z-index: 0;
+  animation: starDrift 60s linear infinite;
+}
+
+@keyframes starDrift {
+  0%   { background-position: 0 0, 0 0, 0 0, 0 0, 0 0; }
+  100% { background-position: 200px 200px, -300px 300px, 250px -250px, -180px 180px, 350px -350px; }
+}
+
+/* Scanlines overlay */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.03) 2px,
+    rgba(0,0,0,0.03) 4px
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+#app {
+  position: relative;
+  z-index: 2;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 30px;
+  background: linear-gradient(135deg, rgba(0,212,255,0.05), rgba(180,79,255,0.05));
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  margin-bottom: 24px;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+}
+
+.header::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple), var(--neon-blue));
+  background-size: 200% 100%;
+  animation: shimmer 3s linear infinite;
+}
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-icon {
+  width: 48px; height: 48px;
+  background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px;
+  box-shadow: var(--glow-blue);
+  animation: iconPulse 2s ease-in-out infinite;
+}
+
+@keyframes iconPulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(0,212,255,0.5); }
+  50%       { box-shadow: 0 0 40px rgba(0,212,255,0.9), 0 0 60px rgba(180,79,255,0.3); }
+}
+
+.logo-text h1 {
+  font-family: 'Orbitron', monospace;
+  font-size: 1.6rem;
+  font-weight: 900;
+  letter-spacing: 4px;
+  background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.logo-text p {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.header-stats {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+
+.stat-badge {
+  text-align: center;
+}
+
+.stat-badge .val {
+  font-family: 'Orbitron', monospace;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--neon-blue);
+}
+
+.stat-badge .lbl {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.rank-badge {
+  padding: 8px 20px;
+  background: linear-gradient(135deg, rgba(180,79,255,0.2), rgba(0,212,255,0.1));
+  border: 1px solid var(--neon-purple);
+  border-radius: 30px;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--neon-purple);
+  letter-spacing: 2px;
+  box-shadow: var(--glow-purple);
+  text-transform: uppercase;
+}
+
+/* ============================================================
+   TABS NAV
+   ============================================================ */
+.tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 24px;
+  background: rgba(10,22,40,0.8);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 6px;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 10px 16px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  color: var(--text-muted);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-transform: uppercase;
+}
+
+.tab-btn:hover { color: var(--neon-blue); }
+
+.tab-btn.active {
+  background: linear-gradient(135deg, rgba(0,212,255,0.15), rgba(180,79,255,0.1));
+  color: var(--neon-blue);
+  border: 1px solid rgba(0,212,255,0.3);
+  box-shadow: var(--glow-blue);
+}
+
+/* ============================================================
+   SCREENS
+   ============================================================ */
+.screen { display: none; }
+.screen.active { display: block; animation: fadeIn 0.4s ease; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   GAME MAP SCREEN
+   ============================================================ */
+.map-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.map-section {
+  background: rgba(10,22,40,0.9);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+.section-title {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--neon-blue);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Map path */
+.map-path {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  padding: 10px 0;
+}
+
+.map-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.node-btn {
+  width: 180px;
+  padding: 14px 20px;
+  border-radius: 14px;
+  border: 2px solid;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-align: center;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  position: relative;
+}
+
+.node-btn.completed {
+  background: linear-gradient(135deg, rgba(0,255,136,0.15), rgba(0,212,255,0.1));
+  border-color: var(--neon-green);
+  color: var(--neon-green);
+  box-shadow: 0 0 20px rgba(0,255,136,0.3);
+}
+
+.node-btn.active-node {
+  background: linear-gradient(135deg, rgba(0,212,255,0.2), rgba(180,79,255,0.15));
+  border-color: var(--neon-blue);
+  color: var(--neon-blue);
+  box-shadow: var(--glow-blue);
+  animation: nodePulse 2s ease-in-out infinite;
+}
+
+@keyframes nodePulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(0,212,255,0.4); }
+  50%       { box-shadow: 0 0 40px rgba(0,212,255,0.8), 0 0 60px rgba(180,79,255,0.3); }
+}
+
+.node-btn.locked {
+  background: rgba(10,20,40,0.5);
+  border-color: #1a3a6e;
+  color: #2a4a6e;
+  cursor: not-allowed;
+  filter: grayscale(1);
+}
+
+.node-btn.boss-node {
+  background: linear-gradient(135deg, rgba(255,51,102,0.15), rgba(255,165,0,0.1));
+  border-color: var(--neon-red);
+  color: var(--neon-red);
+}
+
+.node-btn.boss-node.active-node {
+  animation: bossGlow 1.5s ease-in-out infinite;
+}
+
+@keyframes bossGlow {
+  0%, 100% { box-shadow: 0 0 20px rgba(255,51,102,0.4); }
+  50%       { box-shadow: 0 0 50px rgba(255,51,102,0.9); }
+}
+
+.node-title {
+  font-size: 0.8rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.node-subtitle {
+  font-size: 0.7rem;
+  opacity: 0.7;
+  margin-top: 2px;
+}
+
+.node-icon {
+  font-size: 1.2rem;
+  margin-bottom: 4px;
+}
+
+/* Connector line */
+.connector {
+  width: 2px;
+  height: 30px;
+  background: linear-gradient(to bottom, var(--neon-blue), var(--neon-purple));
+  opacity: 0.4;
+  margin: 0 auto;
+}
+
+.connector.lit { opacity: 1; }
+
+/* ============================================================
+   MISSION PANEL
+   ============================================================ */
+.mission-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.mission-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mission-level-badge {
+  padding: 6px 16px;
+  background: linear-gradient(135deg, rgba(0,212,255,0.2), rgba(180,79,255,0.1));
+  border: 1px solid var(--neon-blue);
+  border-radius: 20px;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.65rem;
+  color: var(--neon-blue);
+  letter-spacing: 2px;
+}
+
+.boss-badge {
+  padding: 6px 16px;
+  background: linear-gradient(135deg, rgba(255,51,102,0.25), rgba(255,165,0,0.1));
+  border: 1px solid var(--neon-red);
+  border-radius: 20px;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.65rem;
+  color: var(--neon-red);
+  letter-spacing: 2px;
+  animation: blink 1s ease-in-out infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.5; }
+}
+
+.mission-title {
+  font-family: 'Orbitron', monospace;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+
+.mission-desc {
+  font-size: 0.9rem;
+  color: #8ab0d0;
+  line-height: 1.6;
+  padding: 14px;
+  background: rgba(0,212,255,0.04);
+  border-left: 3px solid var(--neon-blue);
+  border-radius: 0 8px 8px 0;
+}
+
+/* Prompt area */
+.prompt-area {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.prompt-label {
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+#promptInput {
+  width: 100%;
+  min-height: 120px;
+  background: rgba(0,10,30,0.8);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+  color: var(--text-primary);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1rem;
+  resize: vertical;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  outline: none;
+  line-height: 1.6;
+}
+
+#promptInput:focus {
+  border-color: var(--neon-blue);
+  box-shadow: 0 0 0 3px rgba(0,212,255,0.1);
+}
+
+.eval-btn {
+  align-self: flex-end;
+  padding: 12px 36px;
+  background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+  border: none;
+  border-radius: 30px;
+  color: #fff;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-transform: uppercase;
+  box-shadow: 0 4px 20px rgba(0,212,255,0.3);
+}
+
+.eval-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0,212,255,0.5), 0 0 20px rgba(180,79,255,0.3);
+}
+
+.eval-btn:active { transform: translateY(0); }
+
+/* Score breakdown */
+.score-breakdown {
+  display: none;
+  gap: 8px;
+  flex-direction: column;
+  padding: 16px;
+  background: rgba(0,10,30,0.6);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.score-breakdown.visible { display: flex; animation: slideDown 0.4s ease; }
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.score-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.score-item-name {
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+  flex: 1;
+}
+
+.score-item-bar {
+  flex: 3;
+  height: 6px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.score-item-fill {
+  height: 100%;
+  border-radius: 10px;
+  transition: width 0.8s cubic-bezier(0.4,0,0.2,1);
+  width: 0;
+}
+
+.fill-rol     { background: var(--neon-blue); }
+.fill-objetivo { background: var(--neon-purple); }
+.fill-contexto { background: var(--neon-green); }
+.fill-formato  { background: var(--neon-yellow); }
+.fill-opt      { background: var(--neon-red); }
+
+.score-item-pts {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.75rem;
+  color: var(--neon-blue);
+  min-width: 40px;
+  text-align: right;
+}
+
+/* Total score bar */
+.total-score-area {
+  margin-top: 4px;
+}
+
+.total-score-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  letter-spacing: 2px;
+  margin-bottom: 6px;
+}
+
+.total-score-num {
+  font-family: 'Orbitron', monospace;
+  color: var(--neon-blue);
+}
+
+.total-bar {
+  height: 10px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.total-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+  border-radius: 10px;
+  transition: width 1s cubic-bezier(0.4,0,0.2,1);
+  width: 0;
+  box-shadow: 0 0 10px rgba(0,212,255,0.5);
+}
+
+/* Feedback message */
+.feedback {
+  display: none;
+  padding: 14px 18px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  border-left: 4px solid;
+}
+
+.feedback.visible { display: block; animation: fadeIn 0.3s ease; }
+.feedback.success { background: rgba(0,255,136,0.1); border-color: var(--neon-green); color: var(--neon-green); }
+.feedback.warning { background: rgba(255,215,0,0.1); border-color: var(--neon-yellow); color: var(--neon-yellow); }
+.feedback.danger  { background: rgba(255,51,102,0.1); border-color: var(--neon-red); color: var(--neon-red); }
+
+/* ============================================================
+   ACHIEVEMENTS SCREEN
+   ============================================================ */
+.achievements-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.achievement-card {
+  background: rgba(10,22,40,0.9);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+  text-align: center;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.achievement-card.unlocked {
+  border-color: var(--neon-purple);
+  box-shadow: 0 0 20px rgba(180,79,255,0.2);
+}
+
+.achievement-card.unlocked::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--neon-purple), var(--neon-blue));
+}
+
+.achievement-card.locked {
+  filter: grayscale(0.8);
+  opacity: 0.5;
+}
+
+.ach-icon {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+.ach-name {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--neon-purple);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.ach-desc {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.ach-unlocked-badge {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 3px 10px;
+  background: rgba(0,255,136,0.1);
+  border: 1px solid var(--neon-green);
+  border-radius: 20px;
+  font-size: 0.6rem;
+  color: var(--neon-green);
+  letter-spacing: 1px;
+}
+
+/* ============================================================
+   DAILY CHALLENGE
+   ============================================================ */
+.daily-container {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.daily-card {
+  background: rgba(10,22,40,0.9);
+  border: 1px solid var(--neon-purple);
+  border-radius: 16px;
+  padding: 30px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 40px rgba(180,79,255,0.15);
+}
+
+.daily-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--neon-purple), var(--neon-blue), var(--neon-purple));
+  background-size: 200% 100%;
+  animation: shimmer 3s linear infinite;
+}
+
+.daily-timer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.timer-dot {
+  width: 8px; height: 8px;
+  background: var(--neon-green);
+  border-radius: 50%;
+  box-shadow: 0 0 10px var(--neon-green);
+  animation: timerPulse 1s ease-in-out infinite;
+}
+
+@keyframes timerPulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}
+
+.timer-text {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.75rem;
+  color: var(--neon-green);
+  letter-spacing: 2px;
+}
+
+.daily-title {
+  font-family: 'Orbitron', monospace;
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 14px;
+  background: linear-gradient(90deg, var(--neon-purple), var(--neon-blue));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.daily-desc {
+  font-size: 1rem;
+  color: #8ab0d0;
+  line-height: 1.7;
+  margin-bottom: 24px;
+  padding: 16px;
+  background: rgba(180,79,255,0.05);
+  border-left: 3px solid var(--neon-purple);
+  border-radius: 0 8px 8px 0;
+}
+
+.daily-requirements {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.req-tag {
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  border: 1px solid;
+}
+
+.req-tag.rol      { border-color: var(--neon-blue);   color: var(--neon-blue);   background: rgba(0,212,255,0.1); }
+.req-tag.objetivo { border-color: var(--neon-purple);  color: var(--neon-purple); background: rgba(180,79,255,0.1); }
+.req-tag.contexto { border-color: var(--neon-green);   color: var(--neon-green);  background: rgba(0,255,136,0.1); }
+.req-tag.formato  { border-color: var(--neon-yellow);  color: var(--neon-yellow); background: rgba(255,215,0,0.1); }
+
+/* Daily bonus tag */
+.bonus-pts {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  background: linear-gradient(135deg, rgba(255,215,0,0.15), rgba(255,165,0,0.1));
+  border: 1px solid var(--neon-yellow);
+  border-radius: 30px;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.75rem;
+  color: var(--neon-yellow);
+  margin-bottom: 20px;
+}
+
+/* ============================================================
+   RANKING SCREEN
+   ============================================================ */
+.ranking-container {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 24px;
+}
+
+.leaderboard {
+  background: rgba(10,22,40,0.9);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  overflow: hidden;
+}
+
+.ranking-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.ranking-table th {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  letter-spacing: 2px;
+  padding: 8px 10px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  text-transform: uppercase;
+}
+
+.ranking-table td {
+  padding: 10px;
+  font-size: 0.85rem;
+  border-bottom: 1px solid rgba(26,58,110,0.3);
+  vertical-align: middle;
+}
+
+.rank-pos {
+  font-family: 'Orbitron', monospace;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.rank-pos.gold   { color: var(--neon-yellow); }
+.rank-pos.silver { color: #aaa; }
+.rank-pos.bronze { color: #cd7f32; }
+.rank-pos.other  { color: var(--text-muted); }
+
+.rank-name {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.rank-pts {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.8rem;
+  color: var(--neon-blue);
+}
+
+.rank-lvl {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.rank-row:hover { background: rgba(0,212,255,0.03); }
+
+/* Register form */
+.register-panel {
+  background: rgba(10,22,40,0.9);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px 16px;
+  background: rgba(0,10,30,0.8);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text-primary);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.form-input:focus {
+  border-color: var(--neon-blue);
+  box-shadow: 0 0 0 3px rgba(0,212,255,0.1);
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 13px;
+  background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-transform: uppercase;
+}
+
+.submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0,212,255,0.4);
+}
+
+.msg-box {
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-top: 12px;
+  display: none;
+}
+
+.msg-box.success { background: rgba(0,255,136,0.1); border: 1px solid var(--neon-green); color: var(--neon-green); display: block; }
+.msg-box.error   { background: rgba(255,51,102,0.1); border: 1px solid var(--neon-red);   color: var(--neon-red);   display: block; }
+
+/* ============================================================
+   VICTORY OVERLAY
+   ============================================================ */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(2,8,23,0.92);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  display: none;
+}
+
+.overlay.active { display: flex; animation: fadeIn 0.3s ease; }
+
+.victory-box {
+  background: rgba(10,22,40,0.98);
+  border-radius: 24px;
+  padding: 48px;
+  text-align: center;
+  max-width: 480px;
+  width: 90%;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--neon-green);
+  box-shadow: 0 0 60px rgba(0,255,136,0.3);
+}
+
+.victory-box::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--neon-green), var(--neon-blue), var(--neon-green));
+  background-size: 200% 100%;
+  animation: shimmer 2s linear infinite;
+}
+
+.boss-defeat-box {
+  border-color: var(--neon-red);
+  box-shadow: 0 0 60px rgba(255,51,102,0.3);
+}
+
+.victory-emoji {
+  font-size: 4rem;
+  margin-bottom: 16px;
+  animation: bounceIn 0.6s cubic-bezier(0.68,-0.55,0.27,1.55);
+}
+
+@keyframes bounceIn {
+  from { transform: scale(0); }
+  to   { transform: scale(1); }
+}
+
+.victory-title {
+  font-family: 'Orbitron', monospace;
+  font-size: 1.6rem;
+  font-weight: 900;
+  margin-bottom: 10px;
+}
+
+.victory-title.win {
+  background: linear-gradient(90deg, var(--neon-green), var(--neon-blue));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.victory-title.boss {
+  background: linear-gradient(90deg, var(--neon-red), var(--neon-yellow));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.victory-score {
+  font-family: 'Orbitron', monospace;
+  font-size: 3rem;
+  font-weight: 900;
+  color: var(--neon-blue);
+  margin: 16px 0;
+}
+
+.victory-desc {
+  font-size: 0.9rem;
+  color: #8ab0d0;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.victory-ach {
+  display: inline-block;
+  padding: 8px 20px;
+  background: rgba(180,79,255,0.15);
+  border: 1px solid var(--neon-purple);
+  border-radius: 20px;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.7rem;
+  color: var(--neon-purple);
+  margin-bottom: 24px;
+}
+
+.continue-btn {
+  padding: 14px 40px;
+  background: linear-gradient(135deg, var(--neon-green), var(--neon-blue));
+  border: none;
+  border-radius: 30px;
+  color: #fff;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.continue-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0,255,136,0.5);
+}
+
+/* Particles */
+.particle {
+  position: fixed;
+  pointer-events: none;
+  border-radius: 50%;
+  animation: particleFly 1.5s ease-out forwards;
+  z-index: 101;
+}
+
+@keyframes particleFly {
+  0%   { transform: translate(0,0) scale(1); opacity: 1; }
+  100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+}
+
+/* ============================================================
+   MISC
+   ============================================================ */
+.notification {
+  position: fixed;
+  top: 20px; right: 20px;
+  padding: 14px 24px;
+  background: rgba(10,22,40,0.95);
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  z-index: 200;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  display: none;
+  animation: slideInRight 0.4s ease;
+  border-left: 3px solid var(--neon-blue);
+  max-width: 320px;
+}
+
+.notification.show { display: block; }
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to   { transform: translateX(0);   opacity: 1; }
+}
+
+.tips-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.tip-chip {
+  padding: 5px 12px;
+  background: rgba(0,212,255,0.08);
+  border: 1px solid rgba(0,212,255,0.2);
+  border-radius: 20px;
+  font-size: 0.75rem;
+  color: var(--neon-blue);
+}
+
+.technique-card {
+  background: rgba(0,10,30,0.6);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  border-left: 3px solid var(--neon-blue);
+}
+
+.technique-card h4 {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.7rem;
+  color: var(--neon-blue);
+  letter-spacing: 2px;
+  margin-bottom: 6px;
+}
+
+.technique-card p {
+  font-size: 0.82rem;
+  color: #7a9abc;
+  line-height: 1.5;
+}
+
+/* Loader dots */
+.loading-dots::after {
+  content: '...';
+  animation: loadDots 1s steps(3,end) infinite;
+}
+
+@keyframes loadDots {
+  0%  { content: '.'; }
+  33% { content: '..'; }
+  66% { content: '...'; }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .map-container, .ranking-container { grid-template-columns: 1fr; }
+  .header { flex-direction: column; gap: 16px; text-align: center; }
+  .header-stats { flex-wrap: wrap; justify-content: center; }
+  .tabs { flex-wrap: wrap; }
+}
+
+.section-title i{
+margin-right:8px;
+color:var(--neon-blue);
+animation: glowIcon 2s infinite alternate;
+}
+
+@keyframes glowIcon{
+from{ text-shadow:0 0 5px var(--neon-blue); }
+to{ text-shadow:0 0 15px var(--neon-blue); }
+}
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ===== HEADER ===== -->
+  <header class="header">
+    <div class="logo">
+      <div class="logo-icon"><img src="logo.png" alt="Logo" width="100px"></div>
+      <div class="logo-text">
+        <h1>PROMPT QUEST</h1>
+        <p>Domina el arte de los prompts</p>
+      </div>
+    </div>
+    <div class="header-stats">
+      <div class="stat-badge">
+        <div class="val" id="headerPts">0</div>
+        <div class="lbl">Puntos</div>
+      </div>
+      <div class="stat-badge">
+        <div class="val" id="headerLvl">1</div>
+        <div class="lbl">Nivel</div>
+      </div>
+      <div class="stat-badge">
+        <div class="val" id="headerAch">0</div>
+        <div class="lbl">Logros</div>
+      </div>
+      <div class="rank-badge" id="headerRank">APRENDIZ IA</div>
+    </div>
+  </header>
+
+  <!-- ===== TABS ===== -->
+  <nav class="tabs">
+    <button class="tab-btn active" onclick="switchTab('map')"><img src="mapa.png" class="icon-title" width="100px" height="80px" alt="Icono de mapa"> Mapa</button>
+    <button class="tab-btn" onclick="switchTab('daily')"><img src="diario.png" class="icon-title" width="100px" height="80px" alt="Icono de mapa"> Diario</button>
+    <button class="tab-btn" onclick="switchTab('achievements')"><img src="logros.png" class="icon-title" width="100px" height="80px" alt="Icono de mapa"> Logros</button>
+    <button class="tab-btn" onclick="switchTab('ranking')"><img src="ranking.png" class="icon-title" width="100px" height="80px" alt="Icono de mapa"> Ranking</button>
+    <button class="tab-btn" onclick="switchTab('guide')"><img src="guia.png" class="icon-title" width="100px" height="80px" alt="Icono de mapa"> Guía</button>
+  </nav>
+
+  <!-- ===== SCREEN: MAP ===== -->
+  <div id="screen-map" class="screen active">
+    <div class="map-container">
+
+      <!-- Map path -->
+      <div class="map-section">
+        <div class="section-title">
+          <img src="mapa.png" width="100px" height="80px" class="icon-title" alt="Icono de mapa">
+          Mapa de Progreso</div>
+        <div class="map-path" id="mapPath">
+          <!-- Generated by JS -->
+        </div>
+      </div>
+
+      <!-- Mission panel -->
+      <div class="map-section mission-panel" id="missionPanel">
+        <div class="mission-header">
+          <div class="mission-level-badge" id="missionBadge">NIVEL 1</div>
+          <div id="bossBadge" class="boss-badge" style="display:none">
+             <img src="jefe.png" class="icon-title" alt="Icono de jefe">
+            JEFE</div>
+        </div>
+        <div class="mission-title" id="missionTitle">ROL — El Inicio</div>
+        <div class="mission-desc" id="missionDesc">Crea un prompt donde indiques claramente el ROL de la IA. Usa frases como "Actúa como", "Eres un experto en", "Asume el rol de".</div>
+
+        <div class="tips-row" id="tipsRow"></div>
+
+        <div class="prompt-area">
+          <div class="prompt-label">✏️ Escribe tu prompt</div>
+          <textarea id="promptInput" placeholder="Escribe tu prompt aquí...
+Ejemplo: Actúa como un experto en marketing digital y ayúdame a..."></textarea>
+          <button class="eval-btn" onclick="evaluatePrompt()">⚡ EVALUAR PROMPT</button>
+        </div>
+
+        <!-- Score breakdown -->
+        <div class="score-breakdown" id="scoreBreakdown">
+          <div class="score-item">
+            <span class="score-item-name">ROL</span>
+            <div class="score-item-bar"><div class="score-item-fill fill-rol" id="fillRol"></div></div>
+            <span class="score-item-pts" id="ptsRol">0/20</span>
+          </div>
+          <div class="score-item">
+            <span class="score-item-name">OBJETIVO</span>
+            <div class="score-item-bar"><div class="score-item-fill fill-objetivo" id="fillObj"></div></div>
+            <span class="score-item-pts" id="ptsObj">0/20</span>
+          </div>
+          <div class="score-item">
+            <span class="score-item-name">CONTEXTO</span>
+            <div class="score-item-bar"><div class="score-item-fill fill-contexto" id="fillCtx"></div></div>
+            <span class="score-item-pts" id="ptsCtx">0/20</span>
+          </div>
+          <div class="score-item">
+            <span class="score-item-name">FORMATO</span>
+            <div class="score-item-bar"><div class="score-item-fill fill-formato" id="fillFmt"></div></div>
+            <span class="score-item-pts" id="ptsFmt">0/20</span>
+          </div>
+          <div class="score-item">
+            <span class="score-item-name">OPTIMIZACIÓN</span>
+            <div class="score-item-bar"><div class="score-item-fill fill-opt" id="fillOpt"></div></div>
+            <span class="score-item-pts" id="ptsOpt">0/20</span>
+          </div>
+          <div class="total-score-area">
+            <div class="total-score-label">
+              <span>PUNTUACIÓN TOTAL</span>
+              <span class="total-score-num" id="totalNum">0</span>
+            </div>
+            <div class="total-bar"><div class="total-bar-fill" id="totalFill"></div></div>
+          </div>
+        </div>
+
+        <div class="feedback" id="feedbackMsg"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== SCREEN: DAILY ===== -->
+  <div id="screen-daily" class="screen">
+    <div class="daily-container">
+      <div class="daily-card">
+        <div class="daily-timer">
+          <div class="timer-dot"></div>
+          <span class="timer-text">DESAFÍO ACTIVO — <span id="dailyCountdown">24:00:00</span></span>
+        </div>
+        <div class="daily-title" id="dailyTitle">Desafío del Día</div>
+        <div class="daily-desc" id="dailyDesc">Carga el desafío...</div>
+        <div class="daily-requirements" id="dailyReqs"></div>
+        <div class="bonus-pts">⭐ BONUS: +50 puntos extra si superas 90/100</div>
+
+        <div class="prompt-area">
+          <div class="prompt-label">✏️ Tu respuesta al desafío</div>
+          <textarea id="dailyInput" placeholder="Escribe tu prompt para el desafío diario..."></textarea>
+          <button class="eval-btn" onclick="evaluateDailyChallenge()">⚡ ENVIAR RESPUESTA</button>
+        </div>
+
+        <div class="feedback" id="dailyFeedback"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN: ACHIEVEMENTS ===== -->
+  <div id="screen-achievements" class="screen">
+    <div class="map-section" style="margin-bottom:24px">
+      <div class="section-title">🏆 Logros</div>
+      <div class="achievements-grid" id="achievementsGrid"></div>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN: RANKING ===== -->
+  <div id="screen-ranking" class="screen">
+    <div class="ranking-container">
+
+      <div class="register-panel">
+        <div class="section-title">👤 Unirse al Ranking</div>
+        <div id="playerInfo">
+          <div class="form-group">
+            <label class="form-label">Nombre de jugador</label>
+            <input class="form-input" type="text" id="playerName" placeholder="Tu apodo épico">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email (opcional)</label>
+            <input class="form-input" type="email" id="playerEmail" placeholder="email@ejemplo.com">
+          </div>
+          <button class="submit-btn" onclick="submitToRanking()"> GUARDAR PUNTUACIÓN</button>
+          <div id="rankingMsg" class="msg-box"></div>
+        </div>
+        <div style="margin-top:20px">
+          <div class="section-title" style="margin-top:0"> Tu Progreso</div>
+          <div style="display:flex;flex-direction:column;gap:10px;margin-top:10px">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:rgba(0,10,30,0.5);border-radius:8px;border:1px solid var(--border)">
+              <span style="color:var(--text-muted);font-size:0.8rem;letter-spacing:1px">PUNTOS TOTALES</span>
+              <span style="font-family:'Orbitron',monospace;color:var(--neon-blue)" id="myTotalPts">0</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:rgba(0,10,30,0.5);border-radius:8px;border:1px solid var(--border)">
+              <span style="color:var(--text-muted);font-size:0.8rem;letter-spacing:1px">NIVEL ACTUAL</span>
+              <span style="font-family:'Orbitron',monospace;color:var(--neon-green)" id="myLevel">1</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:rgba(0,10,30,0.5);border-radius:8px;border:1px solid var(--border)">
+              <span style="color:var(--text-muted);font-size:0.8rem;letter-spacing:1px">RANGO</span>
+              <span style="font-family:'Orbitron',monospace;color:var(--neon-purple)" id="myRank">Aprendiz IA</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:rgba(0,10,30,0.5);border-radius:8px;border:1px solid var(--border)">
+              <span style="color:var(--text-muted);font-size:0.8rem;letter-spacing:1px">LOGROS</span>
+              <span style="font-family:'Orbitron',monospace;color:var(--neon-yellow)" id="myAchCount">0/6</span>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:16px">
+          <button class="submit-btn" style="background:rgba(255,51,102,0.2);border:1px solid var(--neon-red);color:var(--neon-red)" onclick="resetProgress()">🔄 REINICIAR PROGRESO</button>
+        </div>
+      </div>
+
+      <div class="leaderboard">
+        <div class="section-title">👑 Top Jugadores Globales</div>
+        <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:16px">
+          Conecta Supabase para ver el ranking global en tiempo real.<br>
+          Ahora mostrando datos de ejemplo.
+        </p>
+        <table class="ranking-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Jugador</th>
+              <th>Puntos</th>
+              <th>Nivel</th>
+            </tr>
+          </thead>
+          <tbody id="rankingBody">
+          </tbody>
+        </table>
+        <div id="rankingLoading" style="text-align:center;padding:20px;color:var(--text-muted);font-size:0.85rem">
+          <span class="loading-dots">Cargando ranking</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== SCREEN: GUIDE ===== -->
+  <div id="screen-guide" class="screen">
+    <div class="map-section">
+      <div class="section-title"><img src="guia.png" class="icon-title" width="100px" height="80px" alt="Icono de mapa"> Guía del Jugador — Prompt Engineering</div>
+
+      <div class="technique-card">
+        <h4>🎭 ROL (20 pts)</h4>
+        <p>Define quién debe ser la IA. Usa frases como: "Actúa como un experto en X", "Eres un Y con Z años de experiencia", "Asume el rol de un consultor en..."</p>
+      </div>
+      <div class="technique-card">
+        <h4><img src="logros.png" class="icon-title" width="50px" height="50px" alt="Icono de mapa">OBJETIVO (20 pts)</h4>
+        <p>Especifica qué quieres lograr. Usa: "Ayúdame a crear...", "Quiero generar...", "Necesito que desarrolles...", "Tu tarea es..."</p>
+      </div>
+      <div class="technique-card">
+        <h4>🌍 CONTEXTO (20 pts)</h4>
+        <p>Proporciona información relevante. Usa: "Para un público de...", "Mi situación es...", "Esto es para...", "El contexto es que..."</p>
+      </div>
+      <div class="technique-card">
+        <h4>📋 FORMATO (20 pts)</h4>
+        <p>Especifica cómo quieres la respuesta. Usa palabras como: "en formato lista", "con pasos numerados", "en una tabla", "estructura la respuesta en secciones"</p>
+      </div>
+      <div class="technique-card">
+        <h4>✨ OPTIMIZACIÓN (20 pts)</h4>
+        <p>Detalles que mejoran la respuesta: longitud deseada, tono (formal/informal), ejemplos incluidos, restricciones específicas, audiencia objetivo.</p>
+      </div>
+
+      <div style="margin-top:20px;padding:20px;background:rgba(0,212,255,0.05);border:1px solid rgba(0,212,255,0.2);border-radius:12px">
+        <div style="font-family:'Orbitron',monospace;font-size:0.75rem;color:var(--neon-blue);letter-spacing:2px;margin-bottom:12px">💡 PROMPT EJEMPLO PERFECTO</div>
+        <p style="font-size:0.9rem;color:#8ab0d0;line-height:1.8;font-style:italic">
+          "Actúa como un experto en marketing digital con 10 años de experiencia [ROL]. Ayúdame a crear una estrategia de contenido para redes sociales [OBJETIVO]. Para una startup de tecnología educativa dirigida a estudiantes universitarios en Latinoamérica [CONTEXTO]. Presenta la estrategia en una tabla con columnas: plataforma, tipo de contenido, frecuencia y objetivo [FORMATO]. Incluye métricas clave para medir el éxito y ejemplos de posts exitosos similares [OPTIMIZACIÓN]."
+        </p>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /app -->
+
+<!-- ===== VICTORY OVERLAY ===== -->
+<div class="overlay" id="victoryOverlay">
+  <div class="victory-box" id="victoryBox">
+    <div class="victory-emoji" id="victoryEmoji">🎉</div>
+    <div class="victory-title win" id="victoryTitle">¡NIVEL COMPLETADO!</div>
+    <div class="victory-score" id="victoryScore">85</div>
+    <div class="victory-desc" id="victoryDesc">¡Excelente trabajo! Has dominado esta técnica.</div>
+    <div class="victory-ach" id="victoryAch" style="display:none"></div>
+    <button class="continue-btn" onclick="closeVictory()">CONTINUAR →</button>
+  </div>
+</div>
+
+<audio id="bgMusic" loop autoplay>
+  <source src="bg-music.mp3" type="audio/mpeg">
+</audio>
+
+<!-- ===== NOTIFICATION ===== -->
+<div class="notification" id="notification"></div>
+
+<!-- ===== JAVASCRIPT ===== -->
+<script>
+// ============================================================
+// SUPABASE CONFIG — Reemplaza con tus credenciales reales
+// Visita https://supabase.com para crear un proyecto gratis
+// ============================================================
+const SUPABASE_URL = 'https://rvgaozmexpocgxtlomkh.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ2Z2Fvem1leHBvY2d4dGxvbWtoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwNzMzOTIsImV4cCI6MjA4NzY0OTM5Mn0.SPssPQGYL541QpD7GZv6WHzCSMzmXAFGYHJRsfjfWmQ';
+
+// Inicializa Supabase (si tienes las credenciales)
+let supabaseClient = null;
+try {
+  if (SUPABASE_URL !== 'https://rvgaozmexpocgxtlomkh.supabase.co') {
+    const { createClient } = supabase;
+    supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
+    console.log('✅ Supabase conectado');
+  }
+} catch(e) {
+  console.log('⚠️ Supabase no configurado — usando modo offline');
+}
+
+
+const music = document.getElementById("bgMusic");
+
+const sounds = {
+  click: new Audio("click.mp3"),
+  win: new Audio("win.mp3"),
+  boss: new Audio("boss.mp3"),
+  error: new Audio("error.mp3")
+};
+
+function playSound(name){
+  if(sounds[name]){
+    sounds[name].currentTime = 0;
+    sounds[name].volume = 0.5;
+    sounds[name].play();
+  }
+}
+
+
+music.volume = 0.3;
+
+document.addEventListener("click", () => {
+  music.play();
+});
+
+
+document.addEventListener("visibilitychange", () => {
+
+const music = document.getElementById("bgMusic");
+
+if(document.hidden){
+music.pause();
+}else{
+music.play();
+}
+
+});
+
+// ============================================================
+// DATOS DEL JUEGO
+// ============================================================
+
+// Niveles y jefes
+const LEVELS = [
+  {
+    id: 1,
+    type: 'normal',
+    title: 'ROL — El Inicio',
+    rank: 'Aprendiz IA',
+    icon: '🎭',
+    desc: 'Crea un prompt para que una IA te ayude a generar ideas de negocio relacionadas con videojuegos. <strong>Debes indicar claramente el ROL de la IA.</strong>',
+    tips: ['actúa como', 'eres un experto', 'asume el rol de'],
+    focus: 'rol',
+    mission: 'Crea un prompt que incluya el ROL de la IA.'
+  },
+  {
+    id: 2,
+    type: 'normal',
+    title: 'OBJETIVO — La Misión',
+    rank: 'Aprendiz IA',
+    icon: '🎯',
+    desc: 'Crea un prompt para obtener una lista de estrategias de marketing para una app móvil. <strong>Define claramente el OBJETIVO de tu solicitud.</strong>',
+    tips: ['ayúdame a', 'quiero crear', 'necesito generar'],
+    focus: 'objetivo',
+    mission: 'Crea un prompt con OBJETIVO claro.'
+  },
+  {
+    id: 3,
+    type: 'boss',
+    title: 'JEFE — El Guardian',
+    rank: 'Constructor de Prompts',
+    icon: '👹',
+    desc: '<strong>⚔️ COMBATE JEFE:</strong> Crea un prompt que genere una estrategia completa para crecer un canal de videojuegos en TikTok. El prompt debe incluir <strong>ROL + OBJETIVO</strong>. Necesitas >80 pts para ganar.',
+    tips: ['actúa como', 'ayúdame a', 'quiero crear', 'estrategia'],
+    focus: 'all',
+    mission: '⚔️ Supera al Guardián del ROL+OBJETIVO',
+    bossThreshold: 80
+  },
+  {
+    id: 4,
+    type: 'normal',
+    title: 'CONTEXTO — El Trasfondo',
+    rank: 'Constructor de Prompts',
+    icon: '🌍',
+    desc: 'Crea un prompt para planificar un viaje de negocios. <strong>Incluye CONTEXTO relevante</strong> sobre tu situación, público o finalidad.',
+    tips: ['para', 'mi situación es', 'esto es para', 'el contexto es'],
+    focus: 'contexto',
+    mission: 'Crea un prompt rico en CONTEXTO.'
+  },
+  {
+    id: 5,
+    type: 'normal',
+    title: 'FORMATO — La Estructura',
+    rank: 'Arquitecto de IA',
+    icon: '📋',
+    desc: 'Crea un prompt para obtener un plan de estudio. <strong>Especifica el FORMATO</strong> en que quieres recibir la información.',
+    tips: ['en formato lista', 'con pasos', 'tabla', 'estructura'],
+    focus: 'formato',
+    mission: 'Crea un prompt con FORMATO definido.'
+  },
+  {
+    id: 6,
+    type: 'boss',
+    title: 'JEFE — Señor del Formato',
+    rank: 'Arquitecto de IA',
+    icon: '🔱',
+    desc: '<strong>⚔️ COMBATE JEFE:</strong> Crea un prompt que genere un plan completo de contenido para Instagram. Debe incluir <strong>ROL + OBJETIVO + CONTEXTO + FORMATO</strong>. ¡Necesitas >80 pts!',
+    tips: ['actúa como', 'ayúdame a', 'para mi empresa', 'tabla', 'lista', 'pasos'],
+    focus: 'all',
+    mission: '⚔️ ¡Derrota al Señor del Formato!',
+    bossThreshold: 80
+  },
+  {
+    id: 7,
+    type: 'normal',
+    title: 'OPTIMIZACIÓN — El Refinado',
+    rank: 'Estratega de IA',
+    icon: '⚙️',
+    desc: 'Crea un prompt para redactar un email de ventas. <strong>Optimiza con detalles</strong> como tono, longitud, público, restricciones.',
+    tips: ['tono formal', 'máximo', 'para un público', 'incluye ejemplos', 'en español'],
+    focus: 'optimizacion',
+    mission: 'Crea un prompt OPTIMIZADO al máximo.'
+  },
+  {
+    id: 8,
+    type: 'normal',
+    title: 'PROMPT MAESTRO',
+    rank: 'Maestro de Prompts',
+    icon: '🧠',
+    desc: '<strong>🏆 MISIÓN FINAL:</strong> Crea un prompt maestro completo que genere una historia de videojuego incluyendo: personaje principal, misiones, enemigos y sistema de progresión. Debe incluir <strong>TODOS los elementos</strong>: ROL + OBJETIVO + CONTEXTO + FORMATO + OPTIMIZACIÓN.',
+    tips: ['actúa como', 'necesito crear', 'para un juego indie', 'con secciones', 'detallado'],
+    focus: 'all',
+    mission: '🏆 Crea el PROMPT MAESTRO definitivo.',
+    bossThreshold: 90,
+    isFinal: true
+  }
+];
+
+// Rangos según nivel
+const RANKS = [
+  { min: 1, max: 2, name: 'Aprendiz IA' },
+  { min: 3, max: 4, name: 'Constructor de Prompts' },
+  { min: 5, max: 6, name: 'Arquitecto de IA' },
+  { min: 7, max: 7, name: 'Estratega de IA' },
+  { min: 8, max: 8, name: 'Maestro de Prompts' },
+];
+
+// Logros
+const ACHIEVEMENTS = [
+  { id: 'first_prompt',   icon: '⚡', name: 'Primer Prompt',         desc: 'Completa tu primer nivel con éxito.' },
+  { id: 'rol_master',     icon: '🎭', name: 'Dominio del Rol',        desc: 'Obtén 20/20 en la categoría ROL.' },
+  { id: 'ctx_master',     icon: '🌍', name: 'Arquitecto del Contexto', desc: 'Obtén 20/20 en CONTEXTO.' },
+  { id: 'fmt_master',     icon: '📋', name: 'Maestro del Formato',    desc: 'Obtén 20/20 en FORMATO.' },
+  { id: 'perfect_prompt', icon: '💯', name: 'Prompt Perfecto',        desc: 'Obtén 100/100 en un nivel.' },
+  { id: 'prompt_master',  icon: '👑', name: 'Maestro de Prompts',     desc: 'Completa el nivel final con >90 pts.' },
+];
+
+// Frases clave de detección
+const KEYWORDS = {
+  rol: ['actúa como', 'actua como', 'eres un', 'eres una', 'asume el rol', 'imagina que eres', 'compórtate como', 'comportate como', 'tú eres', 'tu eres', 'serás', 'seras', 'experto en', 'especialista en', 'como un', 'como una', 'fingir ser'],
+  objetivo: ['ayúdame a', 'ayudame a', 'quiero', 'necesito', 'genera', 'crea', 'escribe', 'desarrolla', 'diseña', 'diseña', 'elabora', 'explica', 'proporciona', 'dame', 'muéstrame', 'muestrame', 'hazme', 'realiza', 'construye', 'produce', 'redacta'],
+  contexto: [' para ', 'mi situación', 'mi situacion', 'esto es para', 'el contexto', 'actualmente', 'en el contexto', 'estoy trabajando', 'tengo un', 'tengo una', 'mi empresa', 'mi negocio', 'mi proyecto', 'dirigido a', 'enfocado en', 'para un', 'para una'],
+  formato: ['lista', 'pasos', 'tabla', 'estructura', 'secciones', 'apartados', 'puntos', 'viñetas', 'numerado', 'dividido', 'formato', 'esquema', 'columnas', 'categorías', 'categorias', 'orden', 'incluye', 'organiza'],
+  optimizacion: ['máximo', 'maximo', 'mínimo', 'minimo', 'tono', 'formal', 'informal', 'profesional', 'breve', 'detallado', 'específico', 'especifico', 'en español', 'en ingles', 'palabras', 'caracteres', 'párrafos', 'parrafos', 'ejemplos', 'sin', 'incluyendo', 'evitando', 'asegúrate', 'asegurate']
+};
+
+// Desafíos diarios
+const DAILY_CHALLENGES = [
+  {
+    title: 'Estratega Digital',
+    desc: 'Crea un prompt para generar una estrategia completa de marketing digital para una tienda online de productos artesanales en Latinoamérica. La estrategia debe ser accionable y realista.',
+    reqs: ['rol', 'objetivo', 'contexto', 'formato']
+  },
+  {
+    title: 'Educador IA',
+    desc: 'Crea un prompt para diseñar un programa de 30 días para aprender Python desde cero. Dirigido a personas sin experiencia previa en programación.',
+    reqs: ['rol', 'objetivo', 'contexto', 'formato']
+  },
+  {
+    title: 'Storyteller Creativo',
+    desc: 'Crea un prompt para generar una historia corta de ciencia ficción ambientada en el año 2150 donde la IA y los humanos coexisten pacíficamente.',
+    reqs: ['rol', 'objetivo', 'formato']
+  },
+  {
+    title: 'Asesor Financiero',
+    desc: 'Crea un prompt para obtener una guía de inversión básica para millennials latinoamericanos con ingresos medios que quieren empezar a invertir.',
+    reqs: ['rol', 'objetivo', 'contexto', 'formato']
+  },
+  {
+    title: 'Chef de Prompts',
+    desc: 'Crea un prompt para diseñar un menú semanal saludable y económico para una familia de 4 personas, con recetas fáciles de preparar.',
+    reqs: ['rol', 'objetivo', 'contexto', 'formato']
+  },
+  {
+    title: 'Consultor de Negocios',
+    desc: 'Crea un prompt para generar un plan de negocios básico para una startup de tecnología educativa dirigida a estudiantes universitarios.',
+    reqs: ['rol', 'objetivo', 'contexto', 'formato']
+  },
+  {
+    title: 'Coach de Productividad',
+    desc: 'Crea un prompt para diseñar un sistema de productividad personalizado para un freelancer que trabaja desde casa con múltiples clientes.',
+    reqs: ['rol', 'objetivo', 'contexto', 'formato']
+  }
+];
+
+// Datos de ranking ejemplo
+const SAMPLE_RANKING = [
+  { name: 'PromptWizard_MX', pts: 820, level: 8 },
+  { name: 'IAMaster_CO',     pts: 740, level: 7 },
+  { name: 'NeoPrompt_AR',    pts: 690, level: 7 },
+  { name: 'ByteHunter_PE',   pts: 580, level: 6 },
+  { name: 'AIArchitect',     pts: 520, level: 5 },
+  { name: 'PromptNinja',     pts: 480, level: 5 },
+  { name: 'DataDragon_CL',   pts: 420, level: 4 },
+  { name: 'TechSage_VE',     pts: 380, level: 4 },
+  { name: 'QuantumPE_EC',    pts: 300, level: 3 },
+  { name: 'AIApprentice',    pts: 200, level: 2 },
+];
+
+// ============================================================
+// ESTADO DEL JUEGO
+// ============================================================
+let gameState = {
+  currentLevel: 1,
+  totalPoints: 0,
+  levelPoints: {},    // puntos por nivel
+  achievements: [],   // ids de logros obtenidos
+  dailyCompleted: false,
+  dailyDate: null
+};
+
+// Cargar desde LocalStorage
+function loadState() {
+  const saved = localStorage.getItem('promptquest_state');
+  if (saved) {
+    try {
+      const parsed = JSON.parse(saved);
+      gameState = { ...gameState, ...parsed };
+    } catch(e) {}
+  }
+}
+
+// Guardar en LocalStorage
+function saveState() {
+  localStorage.setItem('promptquest_state', JSON.stringify(gameState));
+}
+
+// ============================================================
+// EVALUACIÓN DE PROMPTS
+// ============================================================
+function evaluateText(text) {
+  const t = text.toLowerCase();
+  const score = { rol: 0, objetivo: 0, contexto: 0, formato: 0, optimizacion: 0, total: 0, details: {} };
+
+  // Buscar keywords por categoría
+  for (const [cat, words] of Object.entries(KEYWORDS)) {
+    for (const w of words) {
+      if (t.includes(w)) {
+        score[cat] = 20;
+        score.details[cat] = w;
+        break;
+      }
+    }
+  }
+
+  // Bonus: texto largo = más contexto/optimización
+  const wordCount = text.trim().split(/\s+/).length;
+  if (wordCount >= 30 && !score.optimizacion) score.optimizacion = 10;
+  if (wordCount >= 50 && !score.optimizacion) score.optimizacion = 20;
+  if (wordCount >= 50 && !score.contexto)    score.contexto = 10;
+
+  score.total = score.rol + score.objetivo + score.contexto + score.formato + score.optimizacion;
+  score.total = Math.min(score.total, 100);
+
+  return score;
+}
+
+// Evaluar prompt principal
+function evaluatePrompt() {
+  playSound("click");
+  const text = document.getElementById('promptInput').value.trim();
+  if (text.length < 10) {
+    playSound("error");
+    showFeedback('feedbackMsg', '⚠️ Escribe un prompt más completo (mínimo 10 caracteres).', 'warning');
+    return;
+  }
+
+  const score = evaluateText(text);
+  const lvl = LEVELS[gameState.currentLevel - 1];
+
+  // Mostrar desglose visual
+  showScoreBreakdown(score);
+
+  // Guardar puntos del nivel
+  const prevPts = gameState.levelPoints[gameState.currentLevel] || 0;
+  if (score.total > prevPts) {
+    const gained = score.total - prevPts;
+    gameState.totalPoints += gained;
+    gameState.levelPoints[gameState.currentLevel] = score.total;
+  }
+
+  updateHeader();
+  checkAchievements(score);
+
+  // Jefe
+  if (lvl.type === 'boss' || lvl.isFinal) {
+    const threshold = lvl.bossThreshold || 80;
+    if (score.total >= threshold) {
+      setTimeout(() => showVictory(score, true, lvl.isFinal), 600);
+      advanceLevel();
+    } else {
+      showFeedback('feedbackMsg',
+        `⚔️ El jefe resiste... Obtuviste ${score.total}/100. Necesitas ${threshold} pts para vencer. ¡Sigue mejorando!`,
+        'danger');
+    }
+    saveState();
+    return;
+  }
+
+  // Normal: pasar con >60
+  if (score.total >= 60) {
+    setTimeout(() => showVictory(score, false, false), 600);
+    advanceLevel();
+  } else if (score.total >= 40) {
+    showFeedback('feedbackMsg',
+      `💡 Buen intento — ${score.total}/100. Agrega más elementos para superar el nivel. Usa los consejos arriba.`,
+      'warning');
+  } else {
+    showFeedback('feedbackMsg',
+      `❌ ${score.total}/100 — Tu prompt necesita más estructura. Revisa la guía y los consejos del nivel.`,
+      'danger');
+  }
+
+  saveState();
+}
+
+// Evaluar desafío diario
+function evaluateDailyChallenge() {
+  const text = document.getElementById('dailyInput').value.trim();
+  if (text.length < 10) {
+    showFeedback('dailyFeedback', '⚠️ Escribe un prompt más completo.', 'warning');
+    return;
+  }
+
+  const score = evaluateText(text);
+
+  if (score.total >= 70) {
+    const bonus = score.total >= 90 ? 50 : 0;
+    const earned = 30 + bonus;
+    gameState.totalPoints += earned;
+    gameState.dailyCompleted = true;
+    gameState.dailyDate = new Date().toDateString();
+    saveState();
+    updateHeader();
+
+    showFeedback('dailyFeedback',
+      `🎉 ¡Desafío completado! ${score.total}/100 — +${earned} pts${bonus ? ' (¡Bonus x2!)' : ''}`,
+      'success');
+  } else {
+    showFeedback('dailyFeedback',
+      `💪 Obtuviste ${score.total}/100. Necesitas al menos 70 para completar el desafío.`,
+      score.total >= 50 ? 'warning' : 'danger');
+  }
+}
+
+// Mostrar desglose de puntuación
+function showScoreBreakdown(score) {
+  const el = document.getElementById('scoreBreakdown');
+  el.classList.add('visible');
+
+  // Animar barras con delay
+  const items = [
+    ['fillRol', 'ptsRol', score.rol],
+    ['fillObj', 'ptsObj', score.objetivo],
+    ['fillCtx', 'ptsCtx', score.contexto],
+    ['fillFmt', 'ptsFmt', score.formato],
+    ['fillOpt', 'ptsOpt', score.optimizacion],
+  ];
+
+  items.forEach(([fillId, ptsId, pts], i) => {
+    setTimeout(() => {
+      document.getElementById(fillId).style.width = (pts / 20 * 100) + '%';
+      document.getElementById(ptsId).textContent = pts + '/20';
+    }, i * 100);
+  });
+
+  setTimeout(() => {
+    document.getElementById('totalFill').style.width = score.total + '%';
+    document.getElementById('totalNum').textContent = score.total + ' / 100';
+  }, 600);
+}
+
+// ============================================================
+// AVANZAR NIVEL
+// ============================================================
+function advanceLevel() {
+  if (gameState.currentLevel < LEVELS.length) {
+    gameState.currentLevel++;
+    saveState();
+    setTimeout(() => {
+      renderMap();
+      loadMission();
+    }, 100);
+  }
+}
+
+// ============================================================
+// LOGROS
+// ============================================================
+function checkAchievements(score) {
+  const newAchs = [];
+
+  // Primer prompt
+  if (!gameState.achievements.includes('first_prompt') && score.total > 0) {
+    gameState.achievements.push('first_prompt');
+    newAchs.push('first_prompt');
+  }
+  // Dominio del Rol
+  if (!gameState.achievements.includes('rol_master') && score.rol === 20) {
+    gameState.achievements.push('rol_master');
+    newAchs.push('rol_master');
+  }
+  // Arquitecto del Contexto
+  if (!gameState.achievements.includes('ctx_master') && score.contexto === 20) {
+    gameState.achievements.push('ctx_master');
+    newAchs.push('ctx_master');
+  }
+  // Maestro del Formato
+  if (!gameState.achievements.includes('fmt_master') && score.formato === 20) {
+    gameState.achievements.push('fmt_master');
+    newAchs.push('fmt_master');
+  }
+  // Prompt Perfecto
+  if (!gameState.achievements.includes('perfect_prompt') && score.total === 100) {
+    gameState.achievements.push('perfect_prompt');
+    newAchs.push('perfect_prompt');
+  }
+  // Maestro de Prompts
+  if (!gameState.achievements.includes('prompt_master') &&
+      gameState.currentLevel >= LEVELS.length &&
+      score.total >= 90) {
+    gameState.achievements.push('prompt_master');
+    newAchs.push('prompt_master');
+  }
+
+  newAchs.forEach(id => {
+    const ach = ACHIEVEMENTS.find(a => a.id === id);
+    if (ach) showNotification(`🏆 ¡Logro desbloqueado! ${ach.icon} ${ach.name}`);
+  });
+
+  saveState();
+  renderAchievements();
+}
+
+// ============================================================
+// RENDERIZAR MAPA
+// ============================================================
+function renderMap() {
+  const container = document.getElementById('mapPath');
+  container.innerHTML = '';
+
+  LEVELS.forEach((lvl, i) => {
+    const node = document.createElement('div');
+    node.className = 'map-node';
+
+    const isCompleted = gameState.currentLevel > lvl.id;
+    const isCurrent   = gameState.currentLevel === lvl.id;
+    const isLocked    = gameState.currentLevel < lvl.id;
+
+    let btnClass = 'node-btn ';
+    if (isCompleted) btnClass += 'completed';
+    else if (isCurrent) btnClass += 'active-node' + (lvl.type === 'boss' || lvl.isFinal ? ' boss-node' : '');
+    else btnClass += 'locked';
+
+    const pts = gameState.levelPoints[lvl.id] || 0;
+
+    node.innerHTML = `
+      <button class="${btnClass}" onclick="${isCurrent || isCompleted ? `selectLevel(${lvl.id})` : ''}">
+        <div class="node-icon">${lvl.icon}</div>
+        <div class="node-title">NIVEL ${lvl.id}</div>
+        <div class="node-subtitle">${lvl.title}</div>
+        ${isCompleted ? `<div style="font-size:0.65rem;margin-top:4px;opacity:0.8">✓ ${pts}/100</div>` : ''}
+        ${isCurrent ? `<div style="font-size:0.65rem;margin-top:4px;animation:blink 1s infinite">▶ ACTUAL</div>` : ''}
+      </button>
+    `;
+
+    if (i < LEVELS.length - 1) {
+      const connector = document.createElement('div');
+      connector.className = 'connector' + (isCompleted ? ' lit' : '');
+      node.appendChild(connector);
+    }
+
+    container.appendChild(node);
+  });
+}
+
+// Seleccionar nivel del mapa
+function selectLevel(id) {
+  if (id <= gameState.currentLevel) {
+    gameState.currentLevel = id;
+    loadMission();
+    switchTab('map');
+    document.getElementById('promptInput').value = '';
+    document.getElementById('scoreBreakdown').classList.remove('visible');
+    document.getElementById('feedbackMsg').classList.remove('visible');
+  }
+}
+
+// ============================================================
+// CARGAR MISIÓN ACTUAL
+// ============================================================
+function loadMission() {
+  const lvl = LEVELS[gameState.currentLevel - 1];
+  if (!lvl) return;
+
+  document.getElementById('missionBadge').textContent =
+    lvl.type === 'boss' ? `⚔️ JEFE ${lvl.id}` : (lvl.isFinal ? '🏆 FINAL' : `NIVEL ${lvl.id}`);
+
+  const bossBadge = document.getElementById('bossBadge');
+  bossBadge.style.display = (lvl.type === 'boss' || lvl.isFinal) ? 'block' : 'none';
+  bossBadge.textContent = lvl.isFinal ? '👑 MISIÓN FINAL' : '👹 JEFE';
+
+  document.getElementById('missionTitle').textContent = lvl.title;
+  document.getElementById('missionDesc').innerHTML = lvl.desc;
+
+  // Tips
+  const tipsRow = document.getElementById('tipsRow');
+  tipsRow.innerHTML = '<span style="font-size:0.75rem;color:var(--text-muted);letter-spacing:1px">💡 Palabras clave:</span>';
+  lvl.tips.forEach(tip => {
+    const chip = document.createElement('span');
+    chip.className = 'tip-chip';
+    chip.textContent = `"${tip}"`;
+    tipsRow.appendChild(chip);
+  });
+}
+
+// ============================================================
+// RENDERIZAR LOGROS
+// ============================================================
+function renderAchievements() {
+  const grid = document.getElementById('achievementsGrid');
+  grid.innerHTML = '';
+
+  ACHIEVEMENTS.forEach(ach => {
+    const unlocked = gameState.achievements.includes(ach.id);
+    const card = document.createElement('div');
+    card.className = 'achievement-card ' + (unlocked ? 'unlocked' : 'locked');
+    card.innerHTML = `
+      <div class="ach-icon">${ach.icon}</div>
+      <div class="ach-name">${ach.name}</div>
+      <div class="ach-desc">${ach.desc}</div>
+      ${unlocked ? '<div class="ach-unlocked-badge">✓ DESBLOQUEADO</div>' : ''}
+    `;
+    grid.appendChild(card);
+  });
+}
+
+// ============================================================
+// DESAFÍO DIARIO
+// ============================================================
+function loadDailyChallenge() {
+  const today = new Date().toDateString();
+  const dayIndex = new Date().getDate() % DAILY_CHALLENGES.length;
+  const ch = DAILY_CHALLENGES[dayIndex];
+
+  document.getElementById('dailyTitle').textContent = ch.title;
+  document.getElementById('dailyDesc').textContent  = ch.desc;
+
+  const reqs = document.getElementById('dailyReqs');
+  reqs.innerHTML = '';
+  ch.reqs.forEach(r => {
+    const tag = document.createElement('span');
+    tag.className = 'req-tag ' + r;
+    tag.textContent = r.toUpperCase();
+    reqs.appendChild(tag);
+  });
+
+  // Countdown
+  updateDailyCountdown();
+  setInterval(updateDailyCountdown, 1000);
+
+  // Check si ya completó hoy
+  if (gameState.dailyDate === today && gameState.dailyCompleted) {
+    document.getElementById('dailyInput').disabled = true;
+    showFeedback('dailyFeedback', '✅ Ya completaste el desafío de hoy. ¡Vuelve mañana!', 'success');
+  }
+}
+
+function updateDailyCountdown() {
+  const now   = new Date();
+  const end   = new Date(now);
+  end.setHours(23,59,59,0);
+  const diff  = end - now;
+  const h = Math.floor(diff / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  const s = Math.floor((diff % 60000) / 1000);
+  document.getElementById('dailyCountdown').textContent =
+    `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+// ============================================================
+// RANKING
+// ============================================================
+function loadRanking() {
+  if (supabaseClient) {
+    loadSupabaseRanking();
+  } else {
+    loadSampleRanking();
+  }
+}
+
+function loadSampleRanking() {
+  const tbody  = document.getElementById('rankingBody');
+  const loader = document.getElementById('rankingLoading');
+
+  // Combinar con jugador local si tiene puntos
+  const localPts = gameState.totalPoints;
+  let list = [...SAMPLE_RANKING];
+  if (localPts > 0) {
+    const playerName = localStorage.getItem('pq_player_name') || 'Tú';
+    list.push({ name: playerName, pts: localPts, level: gameState.currentLevel });
+    list.sort((a, b) => b.pts - a.pts);
+  }
+
+  tbody.innerHTML = '';
+  list.slice(0, 10).forEach((row, i) => {
+    const pos = i + 1;
+    const posClass = pos === 1 ? 'gold' : pos === 2 ? 'silver' : pos === 3 ? 'bronze' : 'other';
+    const posText  = pos === 1 ? '🥇' : pos === 2 ? '🥈' : pos === 3 ? '🥉' : pos;
+    const tr = document.createElement('tr');
+    tr.className = 'rank-row';
+    tr.innerHTML = `
+      <td><span class="rank-pos ${posClass}">${posText}</span></td>
+      <td><span class="rank-name">${row.name}</span></td>
+      <td><span class="rank-pts">${row.pts}</span></td>
+      <td><span class="rank-lvl">Nv. ${row.level}</span></td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  loader.style.display = 'none';
+}
+
+// ============================================================
+// SUPABASE: Guardar y cargar ranking
+// ============================================================
+async function loadSupabaseRanking() {
+  try {
+    const { data, error } = await supabaseClient
+      .from('ranking')
+      .select('*')
+      .order('puntos', { ascending: false })
+      .limit(10);
+
+    if (error) { loadSampleRanking(); return; }
+
+    const tbody  = document.getElementById('rankingBody');
+    const loader = document.getElementById('rankingLoading');
+    tbody.innerHTML = '';
+
+    data.forEach((row, i) => {
+      const pos = i + 1;
+      const posClass = pos === 1 ? 'gold' : pos === 2 ? 'silver' : pos === 3 ? 'bronze' : 'other';
+      const posText  = pos === 1 ? '🥇' : pos === 2 ? '🥈' : pos === 3 ? '🥉' : pos;
+      const tr = document.createElement('tr');
+      tr.className = 'rank-row';
+      tr.innerHTML = `
+        <td><span class="rank-pos ${posClass}">${posText}</span></td>
+        <td><span class="rank-name">${row.usuario}</span></td>
+        <td><span class="rank-pts">${row.puntos}</span></td>
+        <td><span class="rank-lvl">Nv. ${row.nivel}</span></td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    loader.style.display = 'none';
+  } catch(e) {
+    loadSampleRanking();
+  }
+}
+
+async function submitToRanking() {
+  const name  = document.getElementById('playerName').value.trim();
+  const email = document.getElementById('playerEmail').value.trim();
+  const msgEl = document.getElementById('rankingMsg');
+
+  if (!name) {
+    msgEl.className = 'msg-box error';
+    msgEl.textContent = '⚠️ Ingresa un nombre de jugador.';
+    return;
+  }
+
+  localStorage.setItem('pq_player_name', name);
+
+  // Actualizar stats panel
+  updateRankingPanel();
+
+  if (supabaseClient) {
+    try {
+      // Upsert: si existe el nombre, actualiza
+      const { error } = await supabaseClient
+        .from('ranking')
+        .upsert([{
+          usuario: name,
+          email:   email || null,
+          puntos:  gameState.totalPoints,
+          nivel:   gameState.currentLevel,
+          fecha:   new Date().toISOString()
+        }], { onConflict: 'usuario' });
+
+      if (error) throw error;
+
+      msgEl.className = 'msg-box success';
+      msgEl.textContent = '✅ ¡Puntuación guardada en el ranking global!';
+      loadRanking();
+    } catch(e) {
+      msgEl.className = 'msg-box error';
+      msgEl.textContent = '❌ Error al guardar. Verifica la conexión con Supabase.';
+    }
+  } else {
+    msgEl.className = 'msg-box success';
+    msgEl.textContent = '✅ Guardado localmente. Configura Supabase para el ranking global.';
+    loadSampleRanking();
+  }
+}
+
+// Actualizar panel de stats del jugador
+function updateRankingPanel() {
+  document.getElementById('myTotalPts').textContent = gameState.totalPoints;
+  document.getElementById('myLevel').textContent    = gameState.currentLevel;
+  document.getElementById('myAchCount').textContent = `${gameState.achievements.length}/6`;
+
+  const rank = RANKS.find(r => gameState.currentLevel >= r.min && gameState.currentLevel <= r.max);
+  document.getElementById('myRank').textContent = rank ? rank.name : 'Maestro de Prompts';
+}
+
+// ============================================================
+// VICTORIA / OVERLAY
+// ============================================================
+function showVictory(score, isBoss, isFinal) {
+  if(isBoss){
+   playSound("boss");
+}else{
+   playSound("win");
+}
+  const overlay = document.getElementById('victoryOverlay');
+  const box     = document.getElementById('victoryBox');
+
+  document.getElementById('victoryScore').textContent = score.total;
+
+  if (isFinal) {
+    document.getElementById('victoryEmoji').textContent = '👑';
+    document.getElementById('victoryTitle').className   = 'victory-title boss';
+    document.getElementById('victoryTitle').textContent = '¡MAESTRO DE PROMPTS!';
+    document.getElementById('victoryDesc').textContent  = '¡Felicitaciones! Has completado PROMPT QUEST y desbloqueado el rango máximo.';
+    const achEl = document.getElementById('victoryAch');
+    achEl.textContent = '🏆 LOGRO: MAESTRO DE PROMPTS';
+    achEl.style.display = 'inline-block';
+    box.className = 'victory-box boss-defeat-box';
+    createParticles('#ffd700');
+  } else if (isBoss) {
+    document.getElementById('victoryEmoji').textContent = '⚔️';
+    document.getElementById('victoryTitle').className   = 'victory-title boss';
+    document.getElementById('victoryTitle').textContent = '¡JEFE DERROTADO!';
+    document.getElementById('victoryDesc').textContent  = `¡Increíble! Venciste al jefe con ${score.total}/100 puntos.`;
+    document.getElementById('victoryAch').style.display = 'none';
+    box.className = 'victory-box boss-defeat-box';
+    createParticles('#ff3366');
+  } else {
+    document.getElementById('victoryEmoji').textContent = '🎉';
+    document.getElementById('victoryTitle').className   = 'victory-title win';
+    document.getElementById('victoryTitle').textContent = '¡NIVEL COMPLETADO!';
+    document.getElementById('victoryDesc').textContent  = `Obtuviste ${score.total}/100. ¡Sigues avanzando!`;
+    document.getElementById('victoryAch').style.display = 'none';
+    box.className = 'victory-box';
+    createParticles('#00d4ff');
+  }
+
+  overlay.classList.add('active');
+}
+
+function closeVictory() {
+  document.getElementById('victoryOverlay').classList.remove('active');
+  document.getElementById('promptInput').value = '';
+  document.getElementById('scoreBreakdown').classList.remove('visible');
+  document.getElementById('feedbackMsg').classList.remove('visible');
+  renderMap();
+  loadMission();
+}
+
+// Partículas
+function createParticles(color) {
+  for (let i = 0; i < 30; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = Math.random() * 10 + 4;
+    const tx   = (Math.random() - 0.5) * 600;
+    const ty   = (Math.random() - 0.5) * 600;
+    p.style.cssText = `
+      width:${size}px; height:${size}px;
+      background:${color};
+      left:50%; top:50%;
+      --tx:${tx}px; --ty:${ty}px;
+      box-shadow: 0 0 6px ${color};
+      animation-duration: ${Math.random() * 0.8 + 0.8}s;
+    `;
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), 2000);
+  }
+}
+
+// ============================================================
+// UI HELPERS
+// ============================================================
+function showFeedback(id, msg, type) {
+  const el = document.getElementById(id);
+  el.className = `feedback ${type} visible`;
+  el.innerHTML = msg;
+}
+
+function showNotification(msg) {
+  const el = document.getElementById('notification');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 4000);
+}
+
+function updateHeader() {
+  document.getElementById('headerPts').textContent = gameState.totalPoints;
+  document.getElementById('headerLvl').textContent = gameState.currentLevel;
+  document.getElementById('headerAch').textContent = gameState.achievements.length;
+
+  const rank = RANKS.find(r => gameState.currentLevel >= r.min && gameState.currentLevel <= r.max);
+  document.getElementById('headerRank').textContent = rank ? rank.name.toUpperCase() : 'MAESTRO DE PROMPTS';
+
+  updateRankingPanel();
+}
+
+function resetProgress() {
+  if (confirm('¿Seguro que quieres reiniciar todo tu progreso? Esta acción no se puede deshacer.')) {
+    localStorage.removeItem('promptquest_state');
+    gameState = {
+      currentLevel: 1,
+      totalPoints: 0,
+      levelPoints: {},
+      achievements: [],
+      dailyCompleted: false,
+      dailyDate: null
+    };
+    updateHeader();
+    renderMap();
+    loadMission();
+    renderAchievements();
+    showNotification('🔄 Progreso reiniciado. ¡Empieza de nuevo!');
+  }
+}
+
+// ============================================================
+// TABS
+// ============================================================
+function switchTab(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(`screen-${name}`).classList.add('active');
+  event.currentTarget.classList.add('active');
+
+  if (name === 'ranking') {
+    loadRanking();
+    updateRankingPanel();
+  }
+}
+
+// ============================================================
+// INIT
+// ============================================================
+function init() {
+  loadState();
+  updateHeader();
+  renderMap();
+  loadMission();
+  renderAchievements();
+  loadDailyChallenge();
+
+  // Welcome
+  setTimeout(() => {
+    showNotification('⚡ Bienvenido a PROMPT QUEST — ¡Empieza tu entrenamiento!');
+  }, 800);
+}
+
+// Arrancar
+init();
+</script>
+
+<!-- ============================================================
+  NOTA DE INTEGRACIÓN SUPABASE:
+  
+  1. Crea una cuenta en https://supabase.com
+  2. Crea un nuevo proyecto
+  3. Ve a SQL Editor y ejecuta:
+  
+     CREATE TABLE ranking (
+       id      UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+       usuario TEXT UNIQUE NOT NULL,
+       email   TEXT,
+       puntos  INTEGER DEFAULT 0,
+       nivel   INTEGER DEFAULT 1,
+       fecha   TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+     );
+  
+     -- Habilitar acceso público para lectura/escritura:
+     ALTER TABLE ranking ENABLE ROW LEVEL SECURITY;
+     CREATE POLICY "public read"  ON ranking FOR SELECT USING (true);
+     CREATE POLICY "public write" ON ranking FOR INSERT WITH CHECK (true);
+     CREATE POLICY "public update" ON ranking FOR UPDATE USING (true);
+  
+  4. Ve a Settings > API y copia:
+     - Project URL → SUPABASE_URL
+     - anon public key → SUPABASE_KEY
+  
+  5. Reemplaza las constantes al inicio del script.
+  ============================================================ -->
+</body>
+</html>

@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>InfoMática — Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="main.css">
+  <link rel="stylesheet" href="components.css">
+  <link rel="stylesheet" href="layout.css">
+  <link rel="stylesheet" href="components-v2.css">
+</head>
+<body class="app-page">
+
+  <!-- SIDEBAR NAV -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <span class="logo-icon">⚡</span>
+      <span class="logo-text">Info<strong>Mática</strong></span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="#" class="nav-item active" data-section="dashboard">
+        <span class="nav-icon">🏠</span>
+        <span class="nav-label">Inicio</span>
+      </a>
+      <a href="#" class="nav-item" data-section="modules">
+        <span class="nav-icon">📚</span>
+        <span class="nav-label">Módulos</span>
+      </a>
+      <a href="#" class="nav-item" data-section="exercises">
+        <span class="nav-icon">🎯</span>
+        <span class="nav-label">Ejercicios</span>
+      </a>
+      <a href="#" class="nav-item" data-section="simulator">
+        <span class="nav-icon">🖥️</span>
+        <span class="nav-label">Simulador</span>
+      </a>
+      <a href="#" class="nav-item" data-section="achievements">
+        <span class="nav-icon">🏆</span>
+        <span class="nav-label">Logros</span>
+      </a>
+      <a href="#" class="nav-item" data-section="profile">
+        <span class="nav-icon">👤</span>
+        <span class="nav-label">Perfil</span>
+      </a>
+    </nav>
+
+    <!-- User XP Card -->
+    <div class="sidebar-xp">
+      <div class="xp-avatar" id="sidebarAvatar">🧑</div>
+      <div class="xp-info">
+        <span class="xp-name" id="sidebarName">Cargando...</span>
+        <div class="xp-bar-mini">
+          <div class="xp-fill-mini" id="sidebarXpBar" style="width:0%"></div>
+        </div>
+        <span class="xp-label" id="sidebarXp">0 XP</span>
+      </div>
+    </div>
+
+    <button class="btn btn-ghost btn-sm sidebar-logout" id="btnLogout">
+      ← Salir
+    </button>
+  </aside>
+
+  <!-- MOBILE HEADER -->
+  <header class="mobile-header">
+    <button class="menu-toggle" id="menuToggle">☰</button>
+    <span class="logo-text">Info<strong>Mática</strong></span>
+    <div class="mobile-xp" id="mobileXp">0 XP</div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="app-main" id="appMain">
+
+    <!-- ============ SECCIÓN: DASHBOARD ============ -->
+    <section class="app-section active" id="section-dashboard">
+
+      <!-- Saludo -->
+      <div class="section-header">
+        <div>
+          <h1 class="section-title">¡Hola, <span id="userName">Estudiante</span>! 👋</h1>
+          <p class="section-sub">Continúa donde lo dejaste</p>
+        </div>
+        <div class="streak-badge">
+          🔥 <span id="streakCount">0</span> días seguidos
+        </div>
+      </div>
+
+      <!-- XP Card grande -->
+      <div class="xp-card">
+        <div class="xp-card-left">
+          <div class="level-badge" id="levelBadge">Nv. 1</div>
+          <div class="xp-card-info">
+            <span class="xp-card-label">Nivel <span id="levelName">Principiante</span></span>
+            <div class="xp-bar-wrap">
+              <div class="xp-bar">
+                <div class="xp-fill" id="xpFill" style="width:0%"></div>
+              </div>
+              <span class="xp-nums"><span id="currentXp">0</span> / <span id="nextXp">100</span> XP</span>
+            </div>
+          </div>
+        </div>
+        <div class="xp-card-right">
+          <div class="xp-stat">
+            <strong id="totalLessons">0</strong>
+            <span>Lecciones</span>
+          </div>
+          <div class="xp-stat">
+            <strong id="totalAchievements">0</strong>
+            <span>Logros</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Continuar aprendiendo -->
+      <div class="dash-block">
+        <h2 class="block-title">Continuar aprendiendo</h2>
+        <div class="continue-card" id="continueCard">
+          <div class="continue-icon">📄</div>
+          <div class="continue-info">
+            <span class="continue-module">Word Básico</span>
+            <span class="continue-lesson">Lección 1: Interfaz de Word</span>
+            <div class="progress-mini">
+              <div class="progress-fill" style="width: 20%"></div>
+            </div>
+          </div>
+          <!-- <button class="btn btn-primary" onclick="openSection('modules')">Continuar →</button> -->
+          <button class="btn btn-primary" onclick="openModule(Store.getState().currentModule || 'pc_basico')">Continuar →</button>
+        </div>
+      </div>
+
+      <!-- Roadmap de aprendizaje -->
+      <div class="dash-block">
+        <h2 class="block-title">Tu camino de aprendizaje</h2>
+        <div class="roadmap-container" id="roadmapContainer">
+          <!-- Renderizado dinámicamente por JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SECCIÓN: MÓDULOS / LECCIONES ============ -->
+    <section class="app-section hidden" id="section-modules">
+      <div class="section-header">
+        <h1 class="section-title">📄 Word Básico</h1>
+        <p class="section-sub">12 lecciones · ~2 horas estimadas</p>
+      </div>
+
+      <div class="lessons-path" id="lessonsPath">
+        <!-- Generado por JS -->
+        <div class="path-loading">Cargando lecciones...</div>
+      </div>
+    </section>
+
+    <!-- ============ SECCIÓN: EJERCICIOS ============ -->
+    <section class="app-section hidden" id="section-exercises">
+      <div class="section-header">
+        <h1 class="section-title">🎯 Ejercicios</h1>
+        <p class="section-sub">Practica y gana XP</p>
+      </div>
+
+      <!-- Ejercicios (renderizado por exercises.js) -->
+      <div class="exercise-container" id="exerciseContainer"></div>
+    </section>
+
+    <!-- ============ SECCIÓN: SIMULADOR ============ -->
+    <section class="app-section hidden" id="section-simulator">
+      <div class="section-header">
+        <h1 class="section-title">🖥️ Simulador</h1>
+        <p class="section-sub">Practica en un entorno real</p>
+      </div>
+
+      <div class="sim-selector">
+        <button class="sim-btn active" data-sim="word">📄 Word</button>
+        <button class="sim-btn" data-sim="excel">📊 Excel (próx.)</button>
+      </div>
+
+      <!-- Simulador Word -->
+      <div class="word-sim" id="wordSim">
+        <div class="word-ribbon">
+          <div class="ribbon-group">
+            <button onclick="simFormat('bold')" title="Negrita"><strong>N</strong></button>
+            <button onclick="simFormat('italic')" title="Cursiva"><em>I</em></button>
+            <button onclick="simFormat('underline')" title="Subrayado"><u>S</u></button>
+          </div>
+          <div class="ribbon-group">
+            <select onchange="simFontSize(this.value)" class="ribbon-select" title="Tamaño de fuente">
+              <option value="14px">14</option>
+              <option value="16px">16</option>
+              <option value="18px">18</option>
+              <option value="24px">24</option>
+              <option value="32px">32</option>
+            </select>
+          </div>
+          <div class="ribbon-group">
+            <button onclick="simAlign('left')" title="Izquierda">⬅</button>
+            <button onclick="simAlign('center')" title="Centro">↔</button>
+            <button onclick="simAlign('right')" title="Derecha">➡</button>
+          </div>
+          <div class="ribbon-group">
+            <input type="color" id="simColor" onchange="simFontColor(this.value)" title="Color" value="#000000"/>
+          </div>
+          <div class="ribbon-group">
+            <button onclick="checkSimTask()" class="btn btn-primary btn-sm">✅ Verificar tarea</button>
+          </div>
+        </div>
+
+        <!-- Tarea activa -->
+        <div class="sim-task-bar" id="simTaskBar">
+          <span>📋 <strong>Tarea:</strong> Escribe tu nombre completo, ponlo en <strong>negrita</strong> y céntralo.</span>
+          <span class="sim-xp-reward">+30 XP</span>
+        </div>
+
+        <!-- Área de edición -->
+        <div class="word-page">
+          <div
+            class="word-editor"
+            id="wordEditor"
+            contenteditable="true"
+            spellcheck="false"
+            data-placeholder="Haz clic aquí y comienza a escribir..."
+          ></div>
+        </div>
+
+        <!-- Feedback -->
+        <div class="sim-feedback hidden" id="simFeedback"></div>
+      </div>
+    </section>
+
+    <!-- ============ SECCIÓN: LOGROS ============ -->
+    <section class="app-section hidden" id="section-achievements">
+      <div class="section-header">
+        <h1 class="section-title">🏆 Mis Logros</h1>
+        <p class="section-sub">Colecciona insignias y demuestra tu progreso</p>
+      </div>
+
+      <div class="achievements-grid" id="achievementsGrid">
+        <!-- Generado por JS -->
+      </div>
+    </section>
+
+    <!-- ============ SECCIÓN: PERFIL ============ -->
+    <section class="app-section hidden" id="section-profile">
+      <div class="section-header">
+        <h1 class="section-title">👤 Mi Perfil</h1>
+      </div>
+
+      <div class="profile-layout">
+        <div class="profile-card">
+          <div class="profile-avatar" id="profileAvatar">🧑</div>
+          <h2 id="profileName">—</h2>
+          <p id="profileEmail" class="profile-email">—</p>
+          <div class="profile-level-tag" id="profileLevelTag">Principiante</div>
+        </div>
+
+        <div class="profile-stats">
+          <div class="pstat">
+            <span class="pstat-val" id="pXp">0</span>
+            <span class="pstat-label">XP Total</span>
+          </div>
+          <div class="pstat">
+            <span class="pstat-val" id="pLevel">1</span>
+            <span class="pstat-label">Nivel</span>
+          </div>
+          <div class="pstat">
+            <span class="pstat-val" id="pLessons">0</span>
+            <span class="pstat-label">Lecciones</span>
+          </div>
+          <div class="pstat">
+            <span class="pstat-val" id="pStreak">0</span>
+            <span class="pstat-label">Racha días</span>
+          </div>
+        </div>
+
+        <!-- Historial de XP -->
+        <div class="profile-history">
+          <h3>Historial de actividad</h3>
+          <div class="history-list" id="historyList">
+            <p class="empty-state">Aún no hay actividad registrada.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Toast notifications -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Level up modal -->
+  <div class="modal-overlay hidden" id="levelUpModal">
+    <div class="modal levelup-modal">
+      <div class="levelup-stars">⭐⭐⭐</div>
+      <h2>¡Subiste de nivel!</h2>
+      <div class="levelup-badge" id="levelUpBadge">Nv. 2</div>
+      <p id="levelUpName">¡Ahora eres <strong>Explorador</strong>!</p>
+      <p id="levelUpUnlock" class="levelup-unlock"></p>
+      <button class="btn btn-primary" onclick="closeLevelUp()">¡Genial! 🎉</button>
+    </div>
+  </div>
+
+  <!-- SCRIPTS -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-client.js?v=2"></script>
+  <script src="store.js?v=2"></script>
+  <script src="progress.js?v=2"></script>
+  <script src="modules.js?v=2"></script>
+  <script src="lessons.js?v=2"></script>
+  <script src="exercises.js?v=3"></script>
+  <script src="simulator.js?v=2"></script>
+  <script src="desktop-sim.js?v=2"></script>
+  <script src="keyboard.js?v=2"></script>
+  <script src="mouse-games.js?v=2"></script>
+  <script src="achievements.js?v=2"></script>
+  <script src="ui.js?v=2"></script>
+  <script src="app.js?v=3"></script>
+
+  <script>
+    // ---- ALIAS PARA ONCLICK EN HTML ----
+    window.startExercise = Exercises.start;
+    window.Lessons = Lessons;
+    window.Simulator = Simulator;
+    window.Exercises = Exercises;
+
+    // ---- NAVEGACIÓN ----
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('click', e => {
+        e.preventDefault();
+        App.openSection(item.dataset.section);
+      });
+    });
+
+    // Mobile menu
+    document.getElementById('menuToggle').onclick = () => {
+      document.getElementById('sidebar').classList.toggle('open');
+    };
+
+    // Logout
+    document.getElementById('btnLogout').onclick = () => {
+      App.logout();
+    };
+
+    // Simulator buttons
+    document.querySelectorAll('.sim-btn').forEach(btn => {
+      btn.onclick = function() {
+        document.querySelectorAll('.sim-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+      };
+    });
+
+    // Funciones del simulador globales
+    window.simFormat = Simulator.simFormat;
+    window.simFontSize = Simulator.simFontSize;
+    window.simAlign = Simulator.simAlign;
+    window.simFontColor = Simulator.simFontColor;
+    window.checkSimTask = Simulator.checkSimTask;
+
+    // Inicializar App al cargar el DOM
+    document.addEventListener('DOMContentLoaded', () => {
+      App.init();
+    });
+  </script>
+</body>
+</html>

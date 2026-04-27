@@ -1,0 +1,31 @@
+{
+  "gb": [{
+      "id": "homebrew",
+      "title": "Homebrew Demo",
+      "file": "roms/gb/homebrew.gb"
+    },
+    {
+      "id": "2048",
+      "title": "2048 GB",
+      "file": "roms/gb/2048.gb"
+    },
+    {
+      "id": "rhythm-land",
+      "title": "Rhythm Land",
+      "file": "roms/gb/rhythm-land.gb"
+    }
+  ],
+  "gbc": [{
+      "id": "Froggy_Kong_jam",
+      "title": "Froggy_Kong_jam",
+      "file": "roms/gbc/Froggy_Kong_jam.gbc"
+    }
+
+
+  ],
+  "nes": [{
+    "id": "example",
+    "title": "NES Homebrew",
+    "file": "roms/nes/example.nes"
+  }]
+}

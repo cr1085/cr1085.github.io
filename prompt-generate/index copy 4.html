@@ -1,0 +1,1382 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="Generador de prompts para IA: crea prompts claros y efectivos para contenido, marketing y educación. Recursos y plantillas para mejorar tus resultados con inteligencia artificial.">
+  <title>Generador de Prompts para IA — Prompt Lab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Merriweather:wght@700&display=swap"
+    rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #f7fafc;
+      --card: #ffffff;
+      --muted: #6b7280;
+      --accent: #0b5cff;
+      --accent-600: #084abf;
+      --cta: #ff6b35;
+      --success: #16a34a;
+      --danger: #ef4444;
+      --shadow: 0 6px 18px rgba(11, 92, 255, 0.08);
+      --radius: 12px;
+      --max-width: 1100px;
+    }
+
+    html,
+    body {
+      height: 100%;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+      background: var(--bg);
+      color: #0f172a;
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.45;
+      padding: 32px 20px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: var(--max-width);
+    }
+
+    header.site-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 22px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px
+    }
+
+    .logo {
+      width: 56px;
+      height: 56px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--accent), var(--accent-600));
+      color: white;
+      font-weight: 700;
+      font-family: Merriweather, serif;
+      font-size: 20px;
+      box-shadow: var(--shadow)
+    }
+
+    h1 {
+      font-family: Merriweather, serif;
+      margin: 0;
+      font-size: 22px
+    }
+
+    p.lead {
+      margin: 6px 0 0;
+      color: var(--muted)
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center
+    }
+
+    .btn {
+      border: 0;
+      padding: 10px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--accent)
+    }
+
+    .btn-cta {
+      background: var(--cta);
+      color: white
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 28px;
+      align-items: start
+    }
+
+    .card {
+      background: var(--card);
+      padding: 20px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow)
+    }
+
+    form .row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px
+    }
+
+    /* Inputs y layout más robusto */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box
+    }
+
+    label {
+      font-weight: 600;
+      color: #0f172a;
+      font-size: 13px
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid #e6eef8;
+      font-size: 14px;
+      color: #031024;
+      background: linear-gradient(180deg, #ffffff, #fbfdff);
+      box-shadow: 0 4px 10px rgba(2, 6, 23, 0.03)
+    }
+
+    input {
+      height: 44px
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical
+    }
+
+    textarea.output {
+      min-height: 220px;
+      resize: vertical;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Courier New', monospace
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: #94a3b8
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 6px 20px rgba(11, 92, 255, 0.08)
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 13px
+    }
+
+    /* plantillas como chips (sin marcadores) */
+    .plantillas {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 6px 0 14px;
+      align-items: center;
+      list-style: none;
+      padding: 0
+    }
+
+    .plantillas li {
+      list-style: none;
+      margin: 0;
+      padding: 0
+    }
+
+    .plantillas button {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .tpl {
+      background: #ffffff;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(11, 92, 255, 0.12);
+      color: var(--accent);
+      cursor: pointer;
+      transition: transform .16s cubic-bezier(.2, .9, .2, 1), box-shadow .16s ease, background .12s ease;
+      font-weight: 600;
+      font-size: 14px;
+      box-shadow: 0 6px 18px rgba(11, 92, 255, 0.04)
+    }
+
+    .tpl:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 18px 30px rgba(11, 92, 255, 0.08);
+      background: linear-gradient(180deg, #f6fbff, #ffffff)
+    }
+
+    .tpl:focus {
+      outline: 3px solid rgba(11, 92, 255, 0.12);
+      outline-offset: 4px
+    }
+
+    .tpl:active {
+      transform: translateY(-1px) scale(.995)
+    }
+
+    /* Remove default list markers site-wide inside cards to avoid stray bullets */
+    .card ul,
+    .card ol {
+      margin: 0;
+      padding: 0;
+      list-style: none
+    }
+
+    /* Smooth theme transition */
+    body,
+    .card,
+    input,
+    textarea,
+    select,
+    .tpl {
+      transition: background .18s ease, color .18s ease, box-shadow .18s ease, border-color .18s ease
+    }
+
+    .controls {
+      display: flex;
+      gap: 12px;
+      margin-top: 12px;
+      align-items: center
+    }
+
+    .controls .btn-cta {
+      padding: 12px 18px;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(255, 107, 53, 0.12)
+    }
+
+    .controls .btn-cta:hover {
+      transform: translateY(-2px)
+    }
+
+    .result-actions .btn {
+      margin-left: 8px
+    }
+
+    .result-actions .btn-ghost {
+      background: transparent;
+      border: 1px solid rgba(11, 92, 255, 0.06)
+    }
+
+    .badge {
+      font-weight: 700;
+      color: var(--muted);
+      margin-left: auto
+    }
+
+    .result-card .output {
+      min-height: 180px;
+      white-space: pre-wrap;
+      word-break: break-word
+    }
+
+    .error-box {
+      background: #fff1f0;
+      border: 1px solid #fecaca;
+      color: #991b1b;
+      padding: 8px 12px;
+      border-radius: 8px;
+      margin-top: 12px;
+      display: none
+    }
+
+    aside .card h2 {
+      margin-top: 0
+    }
+
+    .links a {
+      display: inline-block;
+      margin: 6px 8px;
+      color: var(--accent);
+      text-decoration: none
+    }
+
+    footer {
+      margin-top: 26px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px
+    }
+
+    @media(max-width:980px) {
+      main {
+        grid-template-columns: 1fr
+      }
+
+      .top-actions {
+        flex-wrap: wrap
+      }
+    }
+
+    @media(max-width:600px) {
+      .controls {
+        flex-direction: column;
+        align-items: stretch
+      }
+
+      .controls .badge {
+        margin-left: 0
+      }
+
+      .result-actions {
+        display: flex;
+        gap: 8px
+      }
+    }
+
+    /* Dark mode support (preserves existing modoOscuro toggle) */
+    body.dark {
+      background: #071226;
+      color: #e6eef8
+    }
+
+    body.dark .card {
+      background: #071426;
+      box-shadow: 0 10px 30px rgba(2, 6, 23, 0.6)
+    }
+
+    body.dark .logo {
+      filter: brightness(1.05)
+    }
+
+    body.dark input,
+    body.dark textarea,
+    body.dark select {
+      background: #0b1a2b;
+      color: #e6eef8;
+      border: 1px solid #123148
+    }
+
+    body.dark .muted {
+      color: #93b3d6
+    }
+
+    body.dark .btn-ghost {
+      color: #a8d1ff
+    }
+
+    body.dark .btn-cta {
+      background: #ff7a4a
+    }
+
+    body.dark .tpl {
+      background: #052033;
+      border: 1px solid #0e3550;
+      color: #cfe8ff;
+      box-shadow: none
+    }
+
+    body.dark .plantillas .tpl:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(2, 8, 40, 0.6)
+    }
+
+    .app-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding: 10px 16px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+    }
+
+    .tools {
+      display: flex;
+      gap: 10px;
+    }
+
+    .tool {
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      background: #f1f5f9;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .tool.active {
+      background: var(--accent);
+      color: white;
+    }
+
+    .profile-box {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      font-weight: 600;
+    }
+
+    .usage-box {
+      display: flex;
+      gap: 30px;
+      margin: 15px 0;
+      padding: 15px;
+      background: #f8fafc;
+      border-radius: 12px;
+    }
+
+    .usage-box strong {
+      font-size: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <header class="site-header">
+      <div class="brand">
+        <div class="logo">PL</div>
+        <div>
+          <h1>Prompt Lab</h1>
+          <p class="lead">Generador práctico de prompts para obtener resultados útiles con IA</p>
+        </div>
+      </div>
+
+      <div class="top-actions">
+        <button class="btn btn-ghost" onclick="modoOscuro()">🌙 Tema</button>
+        <button id="upgradeBtn" class="btn btn-ghost" onclick="authButtonAction()">Acceder</button>
+        <a class="btn btn-cta" href="https://buymeacoffee.com/cristiancua" target="_blank"
+          rel="noopener noreferrer">Apóyame</a>
+        <!--
+        <div id="proBadge"
+          style="display:none;background:#ffedd5;color:#7a2e00;padding:6px 10px;border-radius:999px;font-weight:700">PRO
+        </div>
+        -->
+      </div>
+    </header>
+
+    <div class="app-bar">
+      <div class="tools">
+        <button class="tool active">Generador</button>
+        <button class="tool">Optimizador</button>
+        <button class="tool">Plantillas</button>
+        <button class="tool">Biblioteca</button>
+      </div>
+
+      <div class="profile-box">
+        <span id="planBadge">Plan Free</span>
+        <span id="userEmailMini"></span>
+        <button class="btn btn-cta" style="padding:6px 12px;" onclick="showUpgradeModal()">Mejorar</button>
+
+      </div>
+    </div>
+
+    <!-- Modal de autenticación (login / register) -->
+    <div id="authModal"
+      style="display:none;position:fixed;inset:0;background:rgba(2,6,23,0.6);align-items:center;justify-content:center;padding:20px;z-index:1200">
+      <div
+        style="max-width:420px;width:100%;background:var(--card);padding:18px;border-radius:12px;box-shadow:var(--shadow)">
+        <h3 style="margin:0 0 8px">Acceder / Registrarse</h3>
+        <div style="display:flex;gap:8px;margin-bottom:8px">
+          <input id="authEmail" type="email" placeholder="Email" style="flex:1" />
+          <input id="authPassword" type="password" placeholder="Contraseña" style="flex:1" />
+        </div>
+        <div style="display:flex;gap:8px;justify-content:flex-end">
+          <button class="btn btn-ghost" onclick="hideAuthModal()">Cerrar</button>
+          <button class="btn" onclick="handleRegister()">Registrarse</button>
+          <button class="btn btn-cta" onclick="handleLogin()">Iniciar sesión</button>
+        </div>
+        <div id="authMessage" style="margin-top:8px;color:var(--muted);font-size:13px"></div>
+      </div>
+    </div>
+
+    <div id="upgradeModal"
+      style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);align-items:center;justify-content:center;z-index:1300;">
+      <div style="background:white;padding:30px;border-radius:16px;max-width:420px;width:100%;text-align:center;">
+        <h2>Desbloquea todo el potencial 🚀</h2>
+        <p class="muted">Obtén optimizaciones ilimitadas y herramientas avanzadas por solo $5.000 COP al mes.</p>
+
+        <ul style="text-align:left;margin-top:15px;">
+          <li>✔ Optimización ilimitada</li>
+          <li>✔ 5 variaciones automáticas</li>
+          <li>✔ Plantillas premium</li>
+          <li>✔ Biblioteca privada</li>
+        </ul>
+
+        <div style="margin-top:20px;">
+          <button class="btn btn-ghost" onclick="hideUpgradeModal()">Ahora no</button>
+          <button class="btn btn-cta" onclick="openWompi()">Activar PRO</button>
+        </div>
+      </div>
+    </div>
+    <!--
+    Propuesta de valor destacada (PRO oculto temporalmente)
+    <section style="max-width:1100px;margin:12px auto 18px;">
+      <div class="card" style="display:flex;align-items:center;gap:18px;justify-content:space-between;">
+        <div style="flex:1">
+          <h2 style="margin:0 0 6px">Convierte ideas simples en prompts profesionales</h2>
+          <p class="muted">Convierte ideas simples en prompts profesionales listos para cualquier IA. Optimizado para
+            ChatGPT, Claude y modelos generativos de imágenes y video.</p>
+          <ul style="margin:10px 0 0;padding-left:18px;color:var(--muted)">
+            <li>✔ Optimizado para ChatGPT</li>
+            <li>✔ Adaptado para Claude y Gemini</li>
+            <li>✔ Prompts para imágenes y video IA</li>
+            <li>✔ Estrategias de monetización con IA</li>
+          </ul>
+        </div>
+        <div style="min-width:260px;text-align:right">
+          <p style="margin:0 0 8px;font-weight:700;color:var(--accent)">Usuarios PRO generan resultados 4x más efectivos
+          </p>
+          <p class="muted" style="margin:0 0 12px">Desbloquea optimización avanzada y prompts ilimitados por solo $5.000
+            COP.</p>
+          <button class="btn btn-cta" style="padding:10px 16px;" onclick="openWompi()">Activar PRO por $5.000</button>
+        </div>
+      </div>
+    </section>
+    -->
+
+    <main>
+      <section class="card" aria-labelledby="form-title">
+        <h2 id="form-title">Crea un prompt claro y efectivo</h2>
+        <p class="muted">Rellena las opciones para generar un prompt optimizado para tareas de contenido, marketing y
+          aprendizaje con IA.</p>
+
+        <div class="muted"
+          style="margin:12px 0;padding:12px;border-radius:10px;background:#fff7ed;border:1px solid #ffedd5">💡 Consejo:
+          ser concreto y aportar contexto mejora la calidad de la respuesta.</div>
+
+        <ul class="plantillas" aria-label="Plantillas rápidas">
+          <li><button class="tpl" onclick="plantillaMarketing()">Marketing</button></li>
+          <li><button class="tpl" onclick="plantillaEmprendimiento()">Emprendimiento</button></li>
+          <li><button class="tpl" onclick="plantillaMarca()">Marca personal</button></li>
+          <li><button class="tpl" onclick="plantillaEducacion()">Educación</button></li>
+          <li><button class="tpl" onclick="plantillaMonetizacion()">Monetización</button></li>
+          <li><button class="tpl" onclick="plantillaProductividad()">Productividad</button></li>
+        </ul>
+
+        <div class="usage-box">
+          <div>
+            <strong id="usageNumber">0</strong>
+            <div class="muted">Prompts generados</div>
+          </div>
+          <div>
+            <strong id="optNumber">0</strong>
+            <div class="muted">Optimizaciones</div>
+          </div>
+        </div>
+
+        <form aria-describedby="form-desc" onsubmit="return false;">
+          <div id="form-desc" class="muted">Los campos clave se usan para componer el prompt final. Puedes dejar
+            opcionales si no aplican.</div>
+
+          <div class="row" style="margin-top:12px">
+            <div>
+              <label for="rol">Rol que asumirá la IA</label>
+              <input id="rol" type="text" placeholder="Ej: estratega de contenido, profesor práctico">
+              <div class="muted">Define la identidad profesional de la IA.</div>
+            </div>
+
+            <div>
+              <label for="objetivo">Objetivo principal</label>
+              <input id="objetivo" type="text" placeholder="Ej: crear un guion para video corto con CTA claro">
+              <div class="muted">Qué quieres lograr con este prompt.</div>
+            </div>
+
+            <div>
+              <label for="publico">Público objetivo</label>
+              <input id="publico" type="text" placeholder="Ej: emprendedores, estudiantes, clientes">
+              <div class="muted">Describe a quién va dirigido el resultado.</div>
+            </div>
+
+            <div>
+              <label for="contexto">Contexto o problema</label>
+              <textarea id="contexto" placeholder="Explica la situación, restricciones o contexto"></textarea>
+              <div class="muted">Cuanto más claro, mejor la respuesta.</div>
+            </div>
+
+            <div>
+              <label for="tono">Tono</label>
+              <select id="tono">
+                <option value="">-- Selecciona --</option>
+                <option>Simple</option>
+                <option>Creativo</option>
+                <option>Profesional</option>
+                <option>Cercano</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="lenguaje">Tipo de lenguaje</label>
+              <select id="lenguaje">
+                <option value="">-- Selecciona --</option>
+                <option>Fácil y sin tecnicismos</option>
+                <option>Claro y directo</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="extension">Extensión</label>
+              <select id="extension">
+                <option value="">-- Selecciona --</option>
+                <option>Corto</option>
+                <option>Medio</option>
+                <option>Largo</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="formato">Formato de salida</label>
+              <select id="formato">
+                <option value="">-- Selecciona --</option>
+                <option>Lista</option>
+                <option>Pasos</option>
+                <option>Tabla</option>
+                <option>Guion</option>
+                <option>Texto</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="evitar">Qué evitar</label>
+              <input id="evitar" type="text" placeholder="Ej: tecnicismos, lenguaje formal excesivo">
+            </div>
+
+            <div>
+              <label for="incluir">Qué incluir (opcional)</label>
+              <input id="incluir" type="text" placeholder="Ej: ejemplos, pasos, llamada a la acción">
+            </div>
+
+          </div>
+
+          <div class="controls">
+            <button id="generarBtn" class="btn btn-cta" type="button" onclick="generarPrompt()">Generar mi
+              prompt</button>
+            <div class="badge" id="eficiencia" aria-live="polite"></div>
+            <div id="counter" class="muted" style="margin-left:8px;font-weight:600">Prompts usados hoy: 0 / 5</div>
+            <div id="optCounter" class="muted" style="margin-left:8px">Optimización gratuita restante: 5 / 5</div>
+          </div>
+          <div id="formError" class="error-box" role="alert"></div>
+
+          <div class="result-card card" style="margin-top:14px">
+            <div class="result-header"
+              style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:8px">
+              <div>
+                <label for="resultado">Prompt generado</label>
+                <div class="muted" style="font-size:13px">Listo para usar — copia o descarga rápido</div>
+              </div>
+              <div class="result-actions">
+                <button class="btn btn-ghost" type="button" onclick="copiarPrompt()">Copiar</button>
+                <button class="btn" type="button" onclick="descargarPrompt()">Descargar .txt</button>
+                <button id="optBtn" class="btn" type="button" onclick="optimizarPrompt()"
+                  style="margin-left:8px">Optimizar Prompt</button>
+              </div>
+            </div>
+            <textarea id="resultado" class="output" placeholder="Aquí aparecerá el prompt generado"></textarea>
+          </div>
+
+        </form>
+      </section>
+
+      <aside>
+        <div class="card">
+          <h2>Recursos y comunidad</h2>
+          <p class="muted">Plantillas, ejemplos y un espacio para compartir tus mejores prompts.</p>
+
+          <h3 style="margin-top:12px">Historial</h3>
+          <ul id="historial" class="muted" style="padding-left:18px"></ul>
+
+          <hr style="margin:16px 0">
+
+          <h3>Conecta</h3>
+          <div class="links">
+            <a href="https://github.com/cr1085" target="_blank" rel="noopener noreferrer">GitHub</a>
+            <a href="https://www.instagram.com/3cbsoluciones/" target="_blank" rel="noopener noreferrer">Instagram</a>
+            <a href="https://www.linkedin.com/in/cristian-cuadrado-beltran-983ba126/" target="_blank"
+              rel="noopener noreferrer">LinkedIn</a>
+            <a href="https://x.com/cr1085" target="_blank" rel="noopener noreferrer">X / Twitter</a>
+          </div>
+
+          <div style="margin-top:14px;text-align:center">
+            <a class="btn btn-cta" href="https://whatsapp.com/channel/0029VbAyIhDAjPXUVJr5LE3z" target="_blank"
+              rel="noopener noreferrer">Únete al canal</a>
+          </div>
+        </div>
+
+        <!--
+        <div class="card" style="margin-top:16px">
+          <h2>Planes</h2>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:10px">
+            <div
+              style="flex:1;min-width:220px;padding:12px;border-radius:10px;border:1px solid #e6eef8;background:#f8fafc">
+              <h3 style="margin:0 0 6px">Plan Gratis</h3>
+              <p class="muted" style="margin:0 0 8px">5 prompts/día • 5 optimizaciones gratuitas • Plantillas básicas
+              </p>
+              <ul style="margin:6px 0 0;padding-left:16px;color:var(--muted)">
+                <li>5 prompts diarios</li>
+                <li>Optimización: 5 usos</li>
+                <li>Plantillas básicas</li>
+                <li>Historial limitado</li>
+              </ul>
+            </div>
+
+            <div
+              style="flex:1;min-width:220px;padding:12px;border-radius:10px;border:2px solid var(--cta);background:linear-gradient(180deg,#fff7f0,#fff)">
+              <h3 style="margin:0 0 6px">Plan PRO</h3>
+              <p style="margin:0 0 8px;font-weight:700;color:var(--cta)">$5.000 COP — ilimitado</p>
+              <p class="muted" style="margin:0 0 8px">Prompts ilimitados, optimizaciones avanzadas y plantillas premium.
+              </p>
+              <ul style="margin:6px 0 0;padding-left:16px;color:var(--muted)">
+                <li>Prompts ilimitados</li>
+                <li>Optimización avanzada ilimitada</li>
+                <li>5 variaciones automáticas</li>
+                <li>Plantillas premium: Ventas, YouTube, Funnels</li>
+                <li>Biblioteca privada</li>
+              </ul>
+              <div style="margin-top:10px">
+                <button class="btn"
+                  style="background:var(--cta);color:#fff;padding:10px 12px;border-radius:10px;font-weight:700"
+                  onclick="openWompi()">Activar PRO por $5.000</button>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:12px;color:var(--muted);font-size:13px">Modelos soportados: ChatGPT, Claude, Gemini,
+            DeepSeek, Z.ai, Midjourney (imágenes), Runway/Pika (video)</div>
+        </div>
+        -->
+      </aside>
+    </main>
+
+    <footer>
+      <p>Generador de prompts • Herramienta para creación de prompts y plantillas de IA</p>
+    </footer>
+
+    <hr style="margin-top:18px;border:none">
+
+  </div>
+
+  <script>
+    function showUpgradeModal() {
+      document.getElementById('upgradeModal').style.display = 'flex';
+    }
+
+    function hideUpgradeModal() {
+      document.getElementById('upgradeModal').style.display = 'none';
+    }
+    async function generarPrompt() {
+      // Validación de campos obligatorios
+      const required = [{
+          el: document.getElementById('rol'),
+          name: 'Rol'
+        },
+        {
+          el: document.getElementById('objetivo'),
+          name: 'Objetivo'
+        },
+        {
+          el: document.getElementById('publico'),
+          name: 'Público'
+        },
+        {
+          el: document.getElementById('contexto'),
+          name: 'Contexto'
+        }
+      ];
+      const empty = required.filter(r => !r.el.value || !r.el.value.trim()).map(r => r.name);
+      const errorEl = document.getElementById('formError');
+      if (empty.length) {
+        errorEl.textContent = 'Completa los campos obligatorios: ' + empty.join(', ') + '.';
+        errorEl.style.display = 'block';
+        // enfocar el primer campo vacío
+        required.find(r => !r.el.value || !r.el.value.trim()).el.focus();
+        return;
+      } else {
+        errorEl.style.display = 'none';
+      }
+
+      // Comprobar sesión: se requiere iniciar sesión para generar
+      await initSupabase();
+      //const session = supabase.auth.session();
+      const {
+        data: {
+          session
+        }
+      } = await supabase.auth.getSession();
+      if (!session || !session.user) {
+        showAuthModal();
+        return;
+      }
+      const prompt = `
+Actúa como ${rol.value}.
+
+Ayúdame a ${objetivo.value}.
+
+Contexto:
+Esto es para ${publico.value}.
+La situación es: ${contexto.value}.
+
+Quiero que el resultado sea:
+- Tono: ${tono.value}
+- Lenguaje: ${lenguaje.value}
+- Extensión: ${extension.value}
+
+Formato de respuesta:
+- ${formato.value}
+
+Extra importante:
+- Evita ${evitar.value}
+- Incluye ${incluir.value || "lo necesario"}
+`.trim();
+
+      resultado.value = prompt;
+      guardarHistorial(prompt);
+      calcularEficiencia();
+      // incrementar contador tras generar (DB)
+      try {
+        await incrementUsage();
+      } catch (e) {
+        console.warn('incrementUsage', e);
+      }
+      try {
+        await updateUI();
+      } catch (e) {
+        /* ignore */
+      }
+    }
+
+    function copiarPrompt() {
+      navigator.clipboard.writeText(resultado.value);
+      alert("✅ Prompt copiado al portapapeles");
+    }
+
+    function descargarPrompt() {
+      const blob = new Blob([resultado.value], {
+        type: "text/plain"
+      });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "prompt.txt";
+      link.click();
+    }
+
+    function calcularEficiencia() {
+      let score = 0;
+
+      if (rol.value.length > 10) score += 15;
+      if (objetivo.value.length > 15) score += 20;
+      if (contexto.value.length > 20) score += 20;
+      if (publico.value.length > 5) score += 10;
+      if (tono.value) score += 10;
+      if (lenguaje.value) score += 10;
+      if (formato.value) score += 10;
+      if (evitar.value || incluir.value) score += 5;
+
+      eficiencia.textContent = `📊 Nivel Estratégico del Prompt: ${score}%`;
+    }
+
+
+
+    function guardarHistorial(prompt) {
+      let historial = JSON.parse(localStorage.getItem("historialPrompts")) || [];
+      historial.unshift(prompt);
+      localStorage.setItem("historialPrompts", JSON.stringify(historial));
+      mostrarHistorial();
+    }
+
+    function mostrarHistorial() {
+      let historial = JSON.parse(localStorage.getItem("historialPrompts")) || [];
+      const lista = document.getElementById("historial");
+      lista.innerHTML = "";
+
+      historial.slice(0, 5).forEach(p => {
+        const li = document.createElement("li");
+        li.textContent = p.substring(0, 80) + "...";
+        lista.appendChild(li);
+      });
+    }
+
+    window.onload = mostrarHistorial;
+
+    function modoOscuro() {
+      document.body.classList.toggle("dark");
+    }
+    /* ---------- Supabase integration (Free plan): auth + per-user counters ---------- */
+    const SUPABASE_URL = 'https://rvgaozmexpocgxtlomkh.supabase.co';
+    const SUPABASE_ANON_KEY =
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ2Z2Fvem1leHBvY2d4dGxvbWtoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIwNzMzOTIsImV4cCI6MjA4NzY0OTM5Mn0.SPssPQGYL541QpD7GZv6WHzCSMzmXAFGYHJRsfjfWmQ';
+
+    let supabase = null;
+
+    async function initSupabase() {
+      if (window.supabaseClient) {
+        supabase = window.supabaseClient;
+        return;
+      }
+      const module = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm');
+      supabase = module.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      window.supabaseClient = supabase;
+      supabase.auth.onAuthStateChange((event, session) => {
+        updateAuthState(session && session.user ? session.user : null);
+      });
+    }
+
+    // Auth modal helpers
+    function showAuthModal() {
+      document.getElementById('authModal').style.display = 'flex';
+    }
+
+    function hideAuthModal() {
+      document.getElementById('authModal').style.display = 'none';
+    }
+
+    async function handleRegister() {
+      const email = document.getElementById('authEmail').value;
+      const password = document.getElementById('authPassword').value;
+      const msgEl = document.getElementById('authMessage');
+      msgEl.textContent = '';
+      try {
+        await initSupabase();
+        const {
+          user,
+          error
+        } = await supabase.auth.signUp({
+          email,
+          password
+        });
+        if (error) throw error;
+        msgEl.textContent = 'Revisa tu email para confirmar el registro.';
+      } catch (e) {
+        msgEl.textContent = e.message || String(e);
+      }
+    }
+
+    async function handleLogin() {
+      const email = document.getElementById('authEmail').value;
+      const password = document.getElementById('authPassword').value;
+      const msgEl = document.getElementById('authMessage');
+      msgEl.textContent = '';
+      try {
+        await initSupabase();
+        //const { session, error } = await supabase.auth.signIn({ email, password });
+        const {
+
+          error
+        } = await supabase.auth.signInWithPassword({
+          email,
+          password
+        });
+        if (error) throw error;
+        hideAuthModal();
+      } catch (e) {
+        msgEl.textContent = e.message || String(e);
+      }
+    }
+
+    async function handleLogout() {
+      await initSupabase();
+      await supabase.auth.signOut();
+      updateAuthState(null);
+    }
+
+    async function updateAuthState(user) {
+      if (user) {
+        await ensureUserData(user.id).catch(() => {});
+        hideAuthModal();
+      }
+      await updateUI();
+    }
+
+    // DB helpers: table users_data with fields total_prompts, total_optimizations
+    async function ensureUserData(userId) {
+      const {
+        data,
+        error
+      } = await supabase
+        .from('users_data')
+        .select('*')
+        .eq('id', userId)
+        .single();
+
+      if (data) return data;
+
+      if (error && error.code !== 'PGRST116') {
+        // error diferente a "no rows"
+        console.error(error);
+        return null;
+      }
+
+      const row = {
+        id: userId,
+        total_prompts: 0,
+        total_optimizations: 0,
+        created_at: new Date().toISOString()
+      };
+
+      const {
+        error: insertError
+      } = await supabase
+        .from('users_data')
+        .insert(row);
+
+      if (insertError) {
+        console.error(insertError);
+        return null;
+      }
+
+      return row;
+    }
+
+    async function fetchUserData(userId) {
+      const {
+        data,
+        error
+      } = await supabase.from('users_data').select('*').eq('id', userId).limit(1).single();
+      if (error) return null;
+      return data;
+    }
+
+    async function updateUserData(userId, changes) {
+      const {
+        data,
+        error
+      } = await supabase.from('users_data').update(changes).eq('id', userId);
+      if (error) throw error;
+      return data;
+    }
+
+    async function incrementUsage() {
+      await initSupabase();
+
+      const {
+        data: {
+          session
+        }
+      } = await supabase.auth.getSession();
+
+      if (!session || !session.user) {
+        showAuthModal();
+        throw new Error('Inicia sesión para usar Prompt Lab');
+      }
+
+      const userId = session.user.id;
+
+      // Asegurarse que existe el registro
+      await ensureUserData(userId);
+
+      // Obtener datos actuales
+      const row = await fetchUserData(userId);
+
+      // Actualizar contador
+      await updateUserData(userId, {
+        total_prompts: (row?.total_prompts || 0) + 1
+      });
+    }
+
+    async function getUsage() {
+      await initSupabase();
+      //const session = supabase.auth.session();
+      const {
+        data: {
+          session
+        }
+      } = await supabase.auth.getSession();
+      if (!session || !session.user) return {
+        count: 0
+      };
+      const row = await fetchUserData(session.user.id) || await ensureUserData(session.user.id);
+      return {
+        count: row.total_prompts || 0
+      };
+    }
+
+    async function incrementOptUsage() {
+
+      if (row.plan === 'free' && row.total_optimizations >= 5) {
+        showUpgradeModal();
+        return;
+      }
+
+      await initSupabase();
+
+      const {
+        data: {
+          session
+        }
+      } = await supabase.auth.getSession();
+
+      if (!session || !session.user) {
+        showAuthModal();
+        throw new Error('Inicia sesión para usar Prompt Lab');
+      }
+
+      const userId = session.user.id;
+
+      await ensureUserData(userId);
+
+      const row = await fetchUserData(userId);
+
+      await updateUserData(userId, {
+        total_optimizations: ((row?.total_optimizations) || 0) + 1
+      });
+    }
+
+    async function getOptUsage() {
+      await initSupabase();
+      //const session = supabase.auth.session();
+      const {
+        data: {
+          session
+        }
+      } = await supabase.auth.getSession();
+      if (!session || !session.user) return {
+        count: 0
+      };
+      const row = await fetchUserData(session.user.id) || await ensureUserData(session.user.id);
+      return {
+        count: row.total_optimizations || 0
+      };
+    }
+
+    // Auth button behavior (login/logout)
+    async function authButtonAction() {
+      await initSupabase();
+      const {
+        data: {
+          session
+        }
+      } = await supabase.auth.getSession();
+
+      if (!session || !session.user) {
+        showAuthModal();
+      } else {
+        await handleLogout();
+      }
+    }
+
+    async function updateUI() {
+
+        await initSupabase();
+
+        const {
+          data: {
+            session
+          }
+        } = await supabase.auth.getSession();
+
+        const planBadge = document.getElementById('planBadge');
+        const counterEl = document.getElementById('counter');
+        const generarBtn = document.getElementById('generarBtn');
+        const upgradeBtn = document.getElementById('upgradeBtn');
+        const optBtn = document.getElementById('optBtn');
+        const optCounterEl = document.getElementById('optCounter');
+
+        if (!session || !session.user) {
+
+          planBadge.textContent = 'Plan Free';
+          planBadge.style.background = '#e2e8f0';
+          planBadge.style.color = '#334155';
+
+          counterEl.textContent = 'Inicia sesión para usar Prompt Lab';
+          generarBtn.disabled = true;
+          optBtn.disabled = true;
+          upgradeBtn.textContent = 'Acceder';
+
+          document.getElementById('usageNumber').textContent = 0;
+          document.getElementById('optNumber').textContent = 0;
+
+          return;
+        }
+
+        // 👇 AHORA SÍ obtenemos row
+        const row = await fetchUserData(session.user.id) ||
+          await ensureUserData(session.user.id);
+
+        const plan = row.plan || 'free';
+
+        if (plan === 'pro') {
+          planBadge.textContent = 'PRO';
+          planBadge.style.background = '#ffedd5';
+          planBadge.style.color = '#7a2e00';
+        } else {
+          planBadge.textContent = 'Plan Free';
+          planBadge.style.background = '#e2e8f0';
+          planBadge.style.color = '#334155';
+        }
+
+        counterEl.textContent = `Prompts totales: ${row.total_prompts || 0}`;
+        optCounterEl.textContent = `Optimizaciones totales: ${row.total_optimizations || 0}`;
+
+        document.getElementById('usageNumber').textContent = row.total_prompts || 0;
+        document.getElementById('optNumber').textContent = row.total_optimizations || 0;
+
+        generarBtn.disabled = false;
+        optBtn.disabled = false;
+        upgradeBtn.textContent = 'Cerrar sesión';
+      }
+
+
+    // inicializar UI al cargar
+    window.addEventListener('load', function () {
+      // asegurarse que historial se muestra
+      mostrarHistorial();
+      updateUI();
+      // limpiar errores al tipear en inputs
+      ['rol', 'objetivo', 'publico', 'contexto', 'tono', 'lenguaje', 'extension', 'formato', 'evitar', 'incluir']
+      .forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.addEventListener('input', () => {
+            const fe = document.getElementById('formError');
+            if (fe) fe.style.display = 'none';
+          });
+        }
+      });
+    });
+
+    function plantillaMarketing() {
+      rol.value = "estratega experto en marketing digital";
+      objetivo.value = "crear una estrategia de contenido que genere clientes";
+      publico.value = "emprendedores y pequeñas empresas";
+      contexto.value = "quiero aumentar ventas usando redes sociales";
+      tono.value = "Profesional";
+      lenguaje.value = "Claro y directo";
+      extension.value = "Medio";
+      formato.value = "Pasos";
+    }
+
+    function plantillaEmprendimiento() {
+      rol.value = "consultor experto en emprendimiento y modelos de negocio";
+      objetivo.value = "diseñar una idea de negocio rentable";
+      publico.value = "personas que quieren iniciar un emprendimiento";
+      contexto.value = "busco oportunidades digitales con bajo presupuesto";
+      tono.value = "Creativo";
+      lenguaje.value = "Claro y directo";
+      extension.value = "Medio";
+      formato.value = "Lista";
+    }
+
+    function plantillaMarca() {
+      rol.value = "estratega en marca personal y posicionamiento profesional";
+      objetivo.value = "optimizar mi perfil profesional en redes sociales";
+      publico.value = "reclutadores y clientes potenciales";
+      contexto.value = "quiero mejorar mi presencia digital";
+      tono.value = "Profesional";
+      lenguaje.value = "Claro y directo";
+      extension.value = "Corto";
+      formato.value = "Pasos";
+    }
+
+    function plantillaEducacion() {
+      rol.value = "profesor experto en enseñanza práctica";
+      objetivo.value = "explicar un tema complejo de forma sencilla";
+      publico.value = "estudiantes principiantes";
+      contexto.value = "necesito simplificar un concepto técnico";
+      tono.value = "Simple";
+      lenguaje.value = "Fácil y sin tecnicismos";
+      extension.value = "Medio";
+      formato.value = "Lista";
+    }
+
+    function plantillaMonetizacion() {
+      rol.value = "asesor experto en monetización digital";
+      objetivo.value = "identificar oportunidades reales para generar ingresos";
+      publico.value = "personas que quieren ganar dinero online";
+      contexto.value = "quiero usar inteligencia artificial para crear ingresos";
+      tono.value = "Profesional";
+      lenguaje.value = "Claro y directo";
+      extension.value = "Medio";
+      formato.value = "Pasos";
+    }
+
+    function plantillaMarketing() {
+      rol.value = "estratega experto en marketing digital";
+      objetivo.value = "crear una estrategia de contenido que genere clientes";
+      publico.value = "emprendedores y pequeñas empresas";
+      contexto.value = "quiero aumentar ventas usando redes sociales";
+      tono.value = "Profesional";
+      lenguaje.value = "Claro y directo";
+      extension.value = "Medio";
+      formato.value = "Pasos";
+    }
+
+    function plantillaEmprendimiento() {
+      rol.value = "consultor experto en emprendimiento y modelos de negocio";
+      objetivo.value = "diseñar una idea de negocio rentable";
+      publico.value = "personas que quieren iniciar un emprendimiento";
+      contexto.value = "busco oportunidades digitales con bajo presupuesto";
+      tono.value = "Creativo";
+      lenguaje.value = "Claro y directo";
+      extension.value = "Medio";
+      formato.value = "Lista";
+    }
+
+    function plantillaMarca() {
+      rol.value = "estratega en marca personal y posicionamiento profesional";
+      objetivo.value = "optimizar mi perfil profesional en redes sociales";
+      publico.value = "reclutadores y clientes potenciales";
+      contexto.value = "quiero mejorar mi presencia digital";
+      tono.value = "Profesional";
+      lenguaje.value = "Claro y directo";
+      extension.value = "Corto";
+      formato.value = "Pasos";
+    }
+
+    function plantillaEducacion() {
+      rol.value = "profesor experto en enseñanza práctica";
+      objetivo.value = "explicar un tema complejo de forma sencilla";
+      publico.value = "estudiantes principiantes";
+      contexto.value = "necesito simplificar un concepto técnico";
+      tono.value = "Simple";
+      lenguaje.value = "Fácil y sin tecnicismos";
+      extension.value = "Medio";
+      formato.value = "Lista";
+    }
+
+    function plantillaMonetizacion() {
+      rol.value = "asesor experto en monetización digital";
+      objetivo.value = "identificar oportunidades reales para generar ingresos";
+      publico.value = "personas que quieren ganar dinero online";
+      contexto.value = "quiero usar inteligencia artificial para crear ingresos";
+      tono.value = "Profesional";
+      lenguaje.value = "Claro y directo";
+      extension.value = "Medio";
+      formato.value = "Pasos";
+    }
+
+    function plantillaProductividad() {
+      rol.value = "consultor experto en productividad y automatización";
+      objetivo.value = "crear un sistema eficiente para organizar mi trabajo";
+      publico.value = "profesionales ocupados";
+      contexto.value = "quiero optimizar tiempo usando IA";
+      tono.value = "Cercano";
+      lenguaje.value = "Claro y directo";
+      extension.value = "Corto";
+      formato.value = "Lista";
+    }
+  </script>
+
+</body>
+
+</html>

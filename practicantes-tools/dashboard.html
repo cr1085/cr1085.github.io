@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard 3CB</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script src="js/supabase.js"></script>
+</head>
+<body>
+
+<h2>Dashboard</h2>
+<div id="user"></div>
+<div id="tareas"></div>
+
+<button onclick="logout()">Cerrar sesión</button>
+
+<script>
+
+async function checkUser() {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    window.location.href = "index.html";
+  } else {
+    document.getElementById("user").innerText = "Usuario: " + user.email;
+    loadTareas();
+  }
+}
+
+async function loadTareas() {
+  const { data, error } = await supabase.from("tareas").select("*");
+  
+  let html = "<h3>Tareas</h3>";
+  data.forEach(t => {
+    html += `<p>${t.titulo} - ${t.estado}</p>`;
+  });
+
+  document.getElementById("tareas").innerHTML = html;
+}
+
+async function logout() {
+  await supabase.auth.signOut();
+  window.location.href = "index.html";
+}
+
+checkUser();
+
+</script>
+
+</body>
+</html>

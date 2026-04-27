@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ShortScript Studio — Generador de Contenido Viral</title>
+  <meta name="description" content="Genera guiones, subtítulos y audios optimizados para TikTok, Reels y YouTube Shorts." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+
+  <!-- TailwindCSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['Bebas Neue', 'sans-serif'],
+            body: ['DM Sans', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            neon: { DEFAULT: '#00FF94', dim: '#00cc76' },
+            ink:  { DEFAULT: '#0A0A0F', mid: '#12121A', light: '#1C1C28' },
+            ash:  { DEFAULT: '#8888AA', light: '#CCCCDD' },
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Libs -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="bg-ink text-white font-body min-h-screen">
+
+  <!-- ── HEADER ── -->
+  <header class="border-b border-white/5 px-4 md:px-6 py-3 md:py-4 flex items-center justify-between sticky top-0 z-50 backdrop-blur-md bg-ink/80">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 bg-neon rounded-sm flex items-center justify-center">
+        <span class="text-ink font-display text-lg leading-none">S</span>
+      </div>
+      <span class="font-display text-lg md:text-xl tracking-widest">SHORTSCRIPT <span class="text-neon">STUDIO</span></span>
+    </div>
+    
+    <!-- Mobile Menu Button -->
+    <button id="btn-mobile-menu" aria-label="Abrir menú" class="md:hidden flex items-center justify-center w-10 h-10 rounded-lg hover:bg-white/10 transition-colors">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
+    </>
+
+    <!-- Desktop Nav -->
+    <nav class="hidden md:flex items-center gap-6 text-sm text-ash">
+<button onclick="goBack()" class="btn-back">
+  ← Volver a PromptLabs
+</button>
+
+<script>
+function goBack() {
+  const url = localStorage.getItem("returnToPromptLabs");
+  window.location.href = url || "../index.html";
+}
+</script>
+      <a href="#generator" class="hover:text-neon transition-colors">Generador</a>
+      <a href="#templates" class="hover:text-neon transition-colors">Plantillas</a>
+      <a href="#community" class="hover:text-neon transition-colors">Comunidad</a>
+    </nav>
+  </header>
+
+  <!-- Mobile Menu Overlay -->
+  <div id="mobile-menu" class="fixed inset-0 z-40 hidden">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" id="mobile-menu-backdrop"></div>
+    <div class="absolute top-0 right-0 w-72 max-w-[85vw] h-full bg-ink-mid border-l border-white/10 p-6 transform translate-x-full transition-transform duration-300" id="mobile-menu-panel">
+      <div class="flex items-center justify-between mb-6">
+        <span class="font-display text-lg tracking-widest text-neon">MENU</span>
+        <button id="btn-close-mobile-menu" aria-label="Cerrar menú" class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-white/10 transition-colors">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <nav class="space-y-2">
+        <button onclick="goBack()" class="w-full text-left px-4 py-3 rounded-lg hover:bg-white/5 transition-colors text-ash hover:text-white">
+          ← Volver a PromptLabs
+        </button>
+        <a href="#generator" class="block px-4 py-3 rounded-lg hover:bg-white/5 transition-colors text-ash hover:text-white">
+          Generador
+        </a>
+        <a href="#community" class="block px-4 py-3 rounded-lg hover:bg-white/5 transition-colors text-ash hover:text-white">
+          Comunidad
+        </a>
+      </nav>
+    </div>
+  </div>
+
+  <!-- ── HERO ── -->
+  <section class="px-4 md:px-6 py-12 md:py-20 text-center relative overflow-hidden">
+    <div class="hero-glow"></div>
+    <p class="text-neon font-mono text-xs tracking-[0.3em] mb-4 uppercase">TikTok · Reels · Shorts</p>
+    <h1 class="font-display text-6xl md:text-8xl tracking-wider mb-6 leading-none">
+      GENERA CONTENIDO<br/><span class="text-neon">VIRAL</span> EN SEGUNDOS
+    </h1>
+    <p class="text-ash max-w-xl mx-auto text-lg mb-10">
+      Escribe un tema. Define la estructura. Obtén guiones, subtítulos y audios listos para producir.
+    </p>
+    <a href="#generator" class="inline-flex items-center gap-2 bg-neon text-ink font-semibold px-8 py-3 rounded hover:bg-neon/90 transition-all hover:scale-105">
+      Empezar gratis
+      <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </section>
+
+  <!-- ── MAIN GENERATOR ── -->
+  <main id="generator" class="max-w-6xl mx-auto px-4 md:px-6 py-8 md:py-12 grid lg:grid-cols-[1fr_360px] gap-6 md:gap-8">
+
+    <!-- LEFT: Input Panel -->
+    <div class="space-y-6">
+
+      <!-- Step 1: Topic -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="step-badge">01</span>
+          <h2 class="panel-title">Tema y Nicho</h2>
+        </div>
+        <div class="panel-body space-y-4">
+          <div>
+            <label class="field-label">Tema principal *</label>
+            <input id="input-topic" type="text" placeholder="ej. One Piece, finanzas personales, recetas rápidas…"
+              class="field-input" />
+          </div>
+          <div>
+            <label class="field-label">Nicho / Audiencia</label>
+            <input id="input-niche" type="text" placeholder="ej. fans de anime, jóvenes 18-25, emprendedores…"
+              class="field-input" />
+          </div>
+          <!-- Quick niches -->
+          <div>
+            <p class="text-xs text-ash mb-2">Nichos rápidos:</p>
+            <div class="flex flex-wrap gap-2" id="quick-niches">
+              <!-- injected by JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2: Script Conditions -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="step-badge">02</span>
+          <h2 class="panel-title">Condiciones del Guion</h2>
+        </div>
+        <div class="panel-body space-y-4">
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="field-label">Cantidad de guiones</label>
+              <select id="input-count" class="field-input" title="Cantidad de guiones a generar">
+                <option value="1">1 guion</option>
+                <option value="3">3 guiones</option>
+                <option value="5" selected>5 guiones</option>
+                <option value="10">10 guiones</option>
+              </>
+            </div>
+            <div>
+              <label class="field-label">Duración del video</label>
+              <select id="input-duration" class="field-input" title="Duración del video">
+                <option value="15">~15 segundos</option>
+                <option value="30" selected>~30 segundos</option>
+                <option value="60">~60 segundos</option>
+                <option value="90">~90 segundos</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label class="field-label">Estructura del guion</label>
+            <select id="input-structure" class="field-input" title="Estructura del guion">
+              <option value="hook-fact-cta">Hook → Dato/Info → CTA</option>
+              <option value="hook-story-cta">Hook → Historia → CTA</option>
+              <option value="hook-tips-cta">Hook → 3 Tips → CTA</option>
+              <option value="hook-question-answer-cta">Hook → Pregunta → Respuesta → CTA</option>
+              <option value="hook-controversy-cta">Hook → Controversia → CTA</option>
+              <option value="custom">Personalizado…</option>
+            </select>
+          </div>
+          <div id="custom-structure-wrap" class="hidden">
+            <label class="field-label">Define tu estructura</label>
+            <textarea id="input-custom-structure" rows="3"
+              placeholder="ej: 1. Pregunta impactante&#10;2. Historia de 3 líneas&#10;3. Giro sorpresa&#10;4. CTA"
+              class="field-input resize-none"></textarea>
+          </div>
+          <div>
+            <label class="field-label">Tono / Estilo</label>
+            <div class="flex flex-wrap gap-2" id="tone-chips">
+              <!-- injected by JS -->
+            </div>
+          </div>
+          <div>
+            <label class="field-label">Idioma</label>
+            <select id="input-language" class="field-input" title="Idioma">
+              <option value="es" selected>Español</option>
+              <option value="en">English</option>
+              <option value="pt">Português</option>
+            </>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3: Advanced Options -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="step-badge">03</span>
+          <h2 class="panel-title">Opciones Avanzadas</h2>
+          <button id="btn-toggle-advanced" class="ml-auto text-ash hover:text-neon text-xs transition-colors">Mostrar ▾</button>
+        </div>
+        <div id="advanced-options" class="hidden panel-body space-y-4">
+          <div>
+            <label class="field-label">Hook personalizado (opcional)</label>
+            <input id="input-custom-hook" type="text" placeholder="ej. ¿Sabías que Luffy…?"
+              class="field-input" />
+          </div>
+          <div>
+            <label class="field-label">CTA personalizado (opcional)</label>
+            <input id="input-custom-cta" type="text" placeholder="ej. Comenta cuál es tu personaje favorito"
+              class="field-input" />
+          </div>
+          <div>
+            <label class="field-label">Palabras a evitar</label>
+            <input id="input-avoid-words" type="text" placeholder="ej. spoiler, muerte, separados por comas"
+              class="field-input" />
+          </div>
+          <div>
+            <label class="field-label">Contexto extra (para la IA)</label>
+            <textarea id="input-extra-context" rows="2"
+              placeholder="Cualquier información adicional que quieres que se considere…"
+              class="field-input resize-none"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Generate Button -->
+      <button id="btn-generate"
+        class="w-full bg-neon text-ink font-display text-2xl tracking-widest py-4 rounded hover:bg-neon/90 transition-all hover:scale-[1.02] active:scale-100 flex items-center justify-center gap-3">
+        <svg id="btn-icon-spark" aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        <span id="btn-label">GENERAR GUIONES</span>
+      </button>
+    </div>
+
+    <!-- RIGHT: Sidebar -->
+    <aside class="space-y-6">
+
+      <!-- Hook Library -->
+      <div class="panel">
+        <div class="panel-header">
+          <h3 class="panel-title text-base">🔥 Biblioteca de Hooks</h3>
+          <button id="btn-refresh-hooks" class="ml-auto text-ash hover:text-neon text-xs transition-colors">↻ Refresh</button>
+        </div>
+        <div id="hook-library" class="panel-body space-y-2 max-h-64 overflow-y-auto scrollbar-thin">
+          <!-- injected -->
+        </div>
+      </div>
+
+      <!-- Viral Templates -->
+      <div class="panel">
+        <div class="panel-header">
+          <h3 class="panel-title text-base">📐 Plantillas Virales</h3>
+        </div>
+        <div id="template-list" class="panel-body space-y-2">
+          <!-- injected -->
+        </div>
+      </div>
+
+      <!-- Stats / Info -->
+      <div class="panel bg-neon/5 border-neon/20">
+        <div class="panel-body text-sm space-y-2">
+          <p class="text-ash">Guiones generados hoy: <span class="text-white font-semibold" id="session-count">0</span></p>
+        </div>
+      </div>
+
+    </aside>
+  </main>
+
+  <!-- ── RESULTS SECTION ── -->
+  <section id="results-section" class="max-w-6xl mx-auto px-4 md:px-6 pb-12 md:pb-20 hidden">
+
+    <!-- Toolbar -->
+    <div class="flex flex-wrap items-center justify-between gap-4 mb-8">
+      <h2 class="font-display text-4xl tracking-wider">GUIONES <span class="text-neon">GENERADOS</span></h2>
+      <div class="flex gap-3">
+        <button id="btn-regen" class="btn-secondary">↻ Regenerar</button>
+        <button id="btn-gen-audio" class="btn-secondary">🔊 Generar Audios</button>
+        <button id="btn-download-zip" class="btn-primary">
+          <span aria-hidden="true">⬇</span> Descargar ZIP
+        </button>
+      </div>
+    </div>
+
+    <!-- Scripts Grid -->
+    <div id="scripts-grid" class="space-y-6">
+      <!-- Script cards injected here -->
+    </div>
+
+    <!-- Audio Progress -->
+    <div id="audio-progress" class="hidden mt-8 panel">
+      <div class="panel-body">
+        <p class="text-ash text-sm mb-3">Generando audios…</p>
+        <div class="w-full bg-white/5 rounded-full h-2">
+          <div id="audio-progress-bar" class="bg-neon h-2 rounded-full transition-all" style="width:0%"></div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ── COMMUNITY SECTION ── -->
+  <section id="community" class="max-w-6xl mx-auto px-4 md:px-6 pb-12 md:pb-20">
+    <div class="border-t border-white/5 pt-16">
+      <h2 class="font-display text-4xl tracking-wider mb-2">PROMPTS DE LA <span class="text-neon">COMUNIDAD</span></h2>
+      <p class="text-ash text-sm mb-8">Prompts compartidos por otros creadores. Úsalos como base.</p>
+      <div id="community-prompts" class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- injected -->
+      </div>
+      <div class="mt-8">
+        <button id="btn-share-prompt" class="btn-secondary">+ Compartir mi Prompt</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── MODALS ── -->
+
+<!-- Share Prompt Modal -->
+  <div id="modal-share" class="modal-backdrop hidden">
+    <div class="modal-box">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="font-display text-2xl tracking-wider">COMPARTIR PROMPT</h3>
+        <button aria-label="Cerrar" class="modal-close text-ash hover:text-white">✕</button>
+      </div>
+      <div class="space-y-4">
+        <div>
+          <label class="field-label">Nombre del prompt</label>
+          <input id="share-name" type="text" placeholder="ej. Hook killer para fitness…" class="field-input" />
+        </div>
+        <div>
+          <label class="field-label">Nicho</label>
+          <input id="share-niche" type="text" placeholder="ej. fitness, crypto, anime…" class="field-input" />
+        </div>
+        <div>
+          <label class="field-label">Tu prompt</label>
+          <textarea id="share-prompt-text" rows="5" class="field-input resize-none"
+            placeholder="Escribe el prompt que quieres compartir…"></textarea>
+        </div>
+        <button id="btn-submit-share" class="btn-primary w-full">Publicar en la comunidad</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 hidden">
+    <div id="toast-inner" class="bg-ink-light border border-white/10 text-sm px-5 py-3 rounded-lg shadow-2xl flex items-center gap-3">
+      <span id="toast-icon">✓</span>
+      <span id="toast-msg">Mensaje</span>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script type="module" src="js/app.js"></script>
+  
+  <!-- Mobile Menu -->
+  <script>
+    const mobileMenu = document.getElementById('mobile-menu');
+    const mobileMenuPanel = document.getElementById('mobile-menu-panel');
+    const mobileMenuBackdrop = document.getElementById('mobile-menu-backdrop');
+    const btnMobileMenu = document.getElementById('btn-mobile-menu');
+    const btnCloseMobileMenu = document.getElementById('btn-close-mobile-menu');
+
+    function openMobileMenu() {
+      mobileMenu.classList.remove('hidden');
+      setTimeout(() => mobileMenuPanel.classList.remove('translate-x-full'), 10);
+    }
+
+    function closeMobileMenu() {
+      mobileMenuPanel.classList.add('translate-x-full');
+      setTimeout(() => mobileMenu.classList.add('hidden'), 300);
+    }
+
+    btnMobileMenu.addEventListener('click', openMobileMenu);
+    btnCloseMobileMenu.addEventListener('click', closeMobileMenu);
+    mobileMenuBackdrop.addEventListener('click', closeMobileMenu);
+
+    // Close menu on link click
+    mobileMenu.querySelectorAll('a[href^="#"]').forEach(link => {
+      link.addEventListener('click', closeMobileMenu);
+    });
+  </script>
+</body>
+</html>

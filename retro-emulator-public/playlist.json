@@ -1,0 +1,36 @@
+{
+  "gb": [
+    {
+      "id": "2048",
+      "title": "2048 GB",
+      "file": "roms/gb/2048.gb"
+    },
+    {
+      "id": "rhythm-land",
+      "title": "Rhythm Land",
+      "file": "roms/gb/rhythm-land.gb"
+    },
+    {
+      "id": "Pocket-Aquarium-2_5_jam",
+      "title": "Pocket Aquarium 2.5_jam",
+      "file": "roms/gb/Pocket Aquarium 2.5_jam.gb"
+    }
+    
+  ],
+  "gbc": [
+    {
+      "id": "Froggy_Kong_jam",
+      "title": "Froggy_Kong_jam",
+      "file": "roms/gbc/Froggy_Kong_jam.gbc"
+    }
+    
+    
+  ],
+  "nes": [
+    {
+      "id": "example",
+      "title": "NES Homebrew",
+      "file": "roms/nes/example.nes"
+    }
+  ]
+}

@@ -1,0 +1,996 @@
+/* ================================================
+   assistant.css — Asistente Viviente
+   Pensamientos emergentes · UX orgánica
+   InfoMática Platform
+   ================================================ */
+
+/* ---- WIDGET CONTAINER ---- */
+#assistant-widget {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  z-index: 9999;
+  font-family: 'DM Sans', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ============================================
+   ENTIDAD VIVA — El asistente como ser vivo
+   ============================================ */
+
+/* Aura de partículas */
+.assistant-aura {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 120px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.aura-particle {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.8), rgba(99, 102, 241, 0.2));
+  animation: auraFloat 2.5s ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes auraFloat {
+  0% {
+    opacity: 0.8;
+    transform: scale(1) translate(0, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.2) translate(var(--dx, 10px), var(--dy, -40px));
+  }
+}
+
+/* Entidad principal */
+.assistant-entity {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  cursor: pointer;
+  z-index: 2;
+  transition: filter 0.4s ease;
+  will-change: transform;
+  transform-style: preserve-3d;
+}
+
+.assistant-entity:hover {
+  filter: brightness(1.1);
+}
+
+.assistant-entity:hover .assistant-entity-ring {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Anillo orbital */
+.assistant-entity-ring {
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  border: 2px solid rgba(139, 92, 246, 0.3);
+  opacity: 0;
+  transform: scale(0.85);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: ringOrbit 8s linear infinite;
+}
+
+@keyframes ringOrbit {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.assistant-entity:hover .assistant-entity-ring {
+  border-color: rgba(139, 92, 246, 0.6);
+}
+
+/* Glow pulsante */
+.assistant-entity-glow {
+  position: absolute;
+  inset: -16px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.25) 0%, transparent 70%);
+  pointer-events: none;
+  transition: opacity 0.3s;
+  z-index: -1;
+}
+
+/* Imagen del asistente */
+.assistant-entity-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 50%;
+  position: relative;
+  z-index: 1;
+  filter: drop-shadow(0 4px 16px rgba(99, 102, 241, 0.35));
+  transition: all 0.3s;
+  pointer-events: none;
+}
+
+/* Sombra orgánica */
+.assistant-entity-shadow {
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(99, 102, 241, 0.2);
+  filter: blur(4px);
+  animation: shadowBreath 3s ease-in-out infinite;
+}
+
+@keyframes shadowBreath {
+  0%, 100% { transform: translateX(-50%) scaleX(1); opacity: 0.2; }
+  50% { transform: translateX(-50%) scaleX(1.2); opacity: 0.35; }
+}
+
+/* Badge */
+.assistant-badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  min-width: 22px;
+  height: 22px;
+  border-radius: 11px;
+  background: linear-gradient(135deg, #EF4444, #F43F5E);
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 6px;
+  border: 2px solid var(--bg-primary, #0f0f23);
+  animation: badgePop 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 3;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
+}
+
+@keyframes badgePop {
+  0% { transform: scale(0); }
+  60% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+
+/* ---- ESTADOS DE LA ENTIDAD ---- */
+
+/* Estado: Activo (chat abierto) */
+.assistant-entity.active {
+  animation: entityActive 2s ease-in-out infinite;
+}
+
+@keyframes entityActive {
+  0%, 100% { filter: brightness(1) drop-shadow(0 0 12px rgba(99, 102, 241, 0.3)); }
+  50% { filter: brightness(1.08) drop-shadow(0 0 20px rgba(99, 102, 241, 0.5)); }
+}
+
+.assistant-entity.active .assistant-entity-ring {
+  opacity: 0.6;
+  transform: scale(1);
+  border-color: rgba(139, 92, 246, 0.5);
+}
+
+/* Estado: Pensando */
+.assistant-entity.state-thinking {
+  animation: entityThinking 1.2s ease-in-out infinite;
+}
+
+@keyframes entityThinking {
+  0%, 100% { filter: brightness(1) hue-rotate(0deg); }
+  25% { filter: brightness(1.1) hue-rotate(10deg); }
+  50% { filter: brightness(1.15) hue-rotate(-5deg); }
+  75% { filter: brightness(1.05) hue-rotate(8deg); }
+}
+
+.assistant-entity.state-thinking .assistant-entity-glow {
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.4) 0%, rgba(99, 102, 241, 0.1) 50%, transparent 70%);
+  animation: glowThinking 0.8s ease-in-out infinite;
+}
+
+@keyframes glowThinking {
+  0%, 100% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.3); opacity: 1; }
+}
+
+/* Estado: Hablando */
+.assistant-entity.state-speaking {
+  animation: entitySpeaking 0.6s ease-in-out infinite alternate;
+}
+
+@keyframes entitySpeaking {
+  0% { filter: brightness(1) saturate(1); }
+  100% { filter: brightness(1.12) saturate(1.2); }
+}
+
+.assistant-entity.state-speaking .assistant-entity-glow {
+  background: radial-gradient(circle, rgba(34, 197, 94, 0.25) 0%, transparent 70%);
+  animation: glowSpeaking 1s ease-in-out infinite;
+}
+
+@keyframes glowSpeaking {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}
+
+/* Estado: Notificación */
+.assistant-entity.notif-pulse {
+  animation: notifPulse 0.5s ease-out 4;
+}
+
+@keyframes notifPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.12); }
+  100% { transform: scale(1); }
+}
+
+/* ============================================
+   BURBUJAS DE PENSAMIENTO (pre-apertura)
+   ============================================ */
+.assistant-thought-bubbles {
+  position: absolute;
+  bottom: 80px;
+  right: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  pointer-events: none;
+  animation: bubblesIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes bubblesIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.thought-bubble {
+  background: rgba(99, 102, 241, 0.12);
+  border: 1px solid rgba(99, 102, 241, 0.15);
+  border-radius: 16px;
+  padding: 8px 14px;
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  animation: thoughtRise 0.5s cubic-bezier(0.4, 0, 0.2, 1) backwards;
+}
+
+.tb-1 { animation-delay: 0s; }
+.tb-2 { animation-delay: 0.15s; }
+.tb-3 { animation-delay: 0.3s; }
+
+@keyframes thoughtRise {
+  from { opacity: 0; transform: translateY(15px) scale(0.8); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.thought-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(139, 92, 246, 0.6);
+  animation: dotPulse 1.2s ease-in-out infinite;
+}
+
+.thought-dot:nth-child(2) { animation-delay: 0.2s; }
+
+@keyframes dotPulse {
+  0%, 100% { transform: scale(0.7); opacity: 0.4; }
+  50% { transform: scale(1.2); opacity: 1; }
+}
+
+.thought-bubble span:not(.thought-dot) {
+  font-size: 0.72rem;
+  color: rgba(139, 92, 246, 0.7);
+  font-style: italic;
+}
+
+/* ============================================
+   PANEL MENTAL — La mente del asistente
+   ============================================ */
+.assistant-mind {
+  position: absolute;
+  bottom: 84px;
+  right: -8px;
+  width: 400px;
+  height: 560px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  /* Forma orgánica */
+  border-radius: 28px;
+  background: linear-gradient(
+    170deg,
+    rgba(15, 15, 35, 0.97) 0%,
+    rgba(20, 20, 45, 0.98) 50%,
+    rgba(15, 15, 35, 0.97) 100%
+  );
+  border: 1px solid rgba(139, 92, 246, 0.12);
+
+  /* Backdrop */
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+
+  /* Sombra etérea */
+  box-shadow:
+    0 24px 80px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(139, 92, 246, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+
+  /* Animación de emergencia desde la entidad */
+  transform: scale(0.3) translateY(60px);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-origin: bottom right;
+}
+
+.assistant-mind.open {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* Fondo con textura sutil */
+.assistant-mind::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 28px;
+  background:
+    radial-gradient(ellipse at 20% 0%, rgba(99, 102, 241, 0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 100%, rgba(139, 92, 246, 0.04) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.assistant-mind > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---- HEADER MENTAL ---- */
+.mind-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: linear-gradient(180deg, rgba(99, 102, 241, 0.08) 0%, transparent 100%);
+  border-bottom: 1px solid rgba(139, 92, 246, 0.08);
+  flex-shrink: 0;
+}
+
+.mind-header-inner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mind-avatar-wrap {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+}
+
+.mind-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 8px rgba(99, 102, 241, 0.3));
+}
+
+.mind-avatar-pulse {
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 2px solid rgba(99, 102, 241, 0.2);
+  animation: avatarPulse 3s ease-in-out infinite;
+}
+
+@keyframes avatarPulse {
+  0%, 100% { transform: scale(1); opacity: 0.3; }
+  50% { transform: scale(1.15); opacity: 0; }
+}
+
+.mind-title {
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: var(--text-primary, #e2e2f0);
+  font-family: 'Syne', sans-serif;
+  letter-spacing: -0.01em;
+}
+
+.mind-status {
+  font-size: 0.7rem;
+  color: var(--text-secondary, #888);
+  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mind-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #22C55E;
+  display: inline-block;
+  animation: statusGlow 2s ease-in-out infinite;
+}
+
+.mind-status-dot.thinking {
+  background: #F59E0B;
+  animation: statusBlink 0.6s ease-in-out infinite;
+}
+
+.mind-status-dot.speaking {
+  background: #6366F1;
+  animation: statusBlink 0.4s ease-in-out infinite;
+}
+
+@keyframes statusGlow {
+  0%, 100% { box-shadow: 0 0 4px rgba(34, 197, 94, 0.4); }
+  50% { box-shadow: 0 0 8px rgba(34, 197, 94, 0.7); }
+}
+
+@keyframes statusBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.mind-header-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.mind-action-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  border: none;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-secondary, #888);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s;
+}
+
+.mind-action-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-primary, #e2e2f0);
+  transform: scale(1.08);
+}
+
+.mind-action-btn:active {
+  transform: scale(0.95);
+}
+
+/* ---- STREAM DE PENSAMIENTOS ---- */
+.mind-stream {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  scroll-behavior: smooth;
+  position: relative;
+}
+
+.mind-stream::-webkit-scrollbar {
+  width: 3px;
+}
+
+.mind-stream::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.mind-stream::-webkit-scrollbar-thumb {
+  background: rgba(139, 92, 246, 0.15);
+  border-radius: 3px;
+}
+
+.mind-stream::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 92, 246, 0.3);
+}
+
+/* Origen del stream (punto de conexión) */
+.mind-stream-origin {
+  display: flex;
+  justify-content: center;
+  padding: 8px 0;
+}
+
+.origin-pulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(99, 102, 241, 0.4);
+  animation: originPulse 3s ease-in-out infinite;
+}
+
+@keyframes originPulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.3); }
+  50% { transform: scale(1.2); box-shadow: 0 0 0 8px rgba(99, 102, 241, 0); }
+}
+
+/* ---- PENSAMIENTO (mensaje individual) ---- */
+.mind-thought {
+  display: flex;
+  flex-direction: column;
+  max-width: 85%;
+  animation: thoughtAppear 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.mind-thought.assistant {
+  align-self: flex-start;
+  padding-left: 20px;
+}
+
+.mind-thought.user {
+  align-self: flex-end;
+}
+
+/* Indicador de origen (conexión visual con el punto de origen) */
+.thought-origin-indicator {
+  position: absolute;
+  left: 6px;
+  top: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.origin-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(99, 102, 241, 0.3);
+  border: 1.5px solid rgba(99, 102, 241, 0.4);
+  transition: all 0.3s;
+}
+
+.origin-dot.pulsing {
+  animation: originDotPulse 0.8s ease-in-out infinite;
+}
+
+@keyframes originDotPulse {
+  0%, 100% { transform: scale(1); background: rgba(99, 102, 241, 0.3); }
+  50% { transform: scale(1.4); background: rgba(139, 92, 246, 0.6); }
+}
+
+/* Core del pensamiento */
+.thought-core {
+  padding: 12px 16px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  word-wrap: break-word;
+  position: relative;
+}
+
+.mind-thought.assistant .thought-core {
+  background: linear-gradient(
+    135deg,
+    rgba(99, 102, 241, 0.1) 0%,
+    rgba(139, 92, 246, 0.06) 100%
+  );
+  color: var(--text-primary, #e2e2f0);
+  border: 1px solid rgba(99, 102, 241, 0.08);
+  border-bottom-left-radius: 6px;
+}
+
+.mind-thought.user .thought-core {
+  background: linear-gradient(135deg, #6366F1, #7C3AED);
+  color: white;
+  border-bottom-right-radius: 6px;
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.25);
+}
+
+/* Animación de revelación */
+.thought-reveal {
+  animation: revealThought 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes revealThought {
+  0% { opacity: 0.6; filter: blur(2px); }
+  100% { opacity: 1; filter: blur(0); }
+}
+
+@keyframes thoughtAppear {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Timestamp */
+.thought-time {
+  font-size: 0.62rem;
+  color: var(--text-tertiary, #555);
+  margin-top: 5px;
+  padding: 0 4px;
+}
+
+.mind-thought.user .thought-time {
+  text-align: right;
+}
+
+/* ---- INDICADOR DE PENSAMIENTO ---- */
+.thought-thinking {
+  background: linear-gradient(
+    135deg,
+    rgba(99, 102, 241, 0.08) 0%,
+    rgba(139, 92, 246, 0.04) 100%
+  ) !important;
+  border: 1px solid rgba(99, 102, 241, 0.06) !important;
+  padding: 16px 20px !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.thinking-waves {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 20px;
+}
+
+.thinking-waves span {
+  width: 3px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, rgba(139, 92, 246, 0.8), rgba(99, 102, 241, 0.3));
+  animation: waveBar 1.2s ease-in-out infinite;
+}
+
+.thinking-waves span:nth-child(1) { height: 8px; animation-delay: 0s; }
+.thinking-waves span:nth-child(2) { height: 14px; animation-delay: 0.1s; }
+.thinking-waves span:nth-child(3) { height: 20px; animation-delay: 0.2s; }
+.thinking-waves span:nth-child(4) { height: 14px; animation-delay: 0.3s; }
+.thinking-waves span:nth-child(5) { height: 8px; animation-delay: 0.4s; }
+
+@keyframes waveBar {
+  0%, 100% { transform: scaleY(0.5); opacity: 0.4; }
+  50% { transform: scaleY(1); opacity: 1; }
+}
+
+.thinking-text {
+  font-size: 0.72rem;
+  color: rgba(139, 92, 246, 0.6);
+  font-style: italic;
+}
+
+/* Fade out del pensamiento */
+.thought-fade-out {
+  animation: thoughtFadeOut 0.3s ease-out forwards;
+}
+
+@keyframes thoughtFadeOut {
+  to { opacity: 0; transform: translateY(-8px) scale(0.95); }
+}
+
+/* ============================================
+   IMPULSOS (sugerencias)
+   ============================================ */
+.mind-impulses {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 10px 20px;
+  border-top: 1px solid rgba(139, 92, 246, 0.06);
+  flex-shrink: 0;
+}
+
+.mind-impulse {
+  position: relative;
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  background: rgba(99, 102, 241, 0.06);
+  color: #A5B4FC;
+  font-size: 0.76rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+  font-family: 'DM Sans', sans-serif;
+  overflow: hidden;
+  animation: impulseIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) backwards;
+}
+
+@keyframes impulseIn {
+  from { opacity: 0; transform: translateY(8px) scale(0.9); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.impulse-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  background: radial-gradient(circle at center, rgba(139, 92, 246, 0.15), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+
+.mind-impulse:hover {
+  background: rgba(99, 102, 241, 0.15);
+  border-color: rgba(139, 92, 246, 0.4);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.2);
+}
+
+.mind-impulse:hover .impulse-glow {
+  opacity: 1;
+}
+
+.mind-impulse:active {
+  transform: translateY(0) scale(0.97);
+}
+
+/* ============================================
+   INPUT DE PENSAMIENTO
+   ============================================ */
+.mind-input-area {
+  padding: 12px 16px 16px;
+  border-top: 1px solid rgba(139, 92, 246, 0.06);
+  flex-shrink: 0;
+}
+
+.mind-input-wrap {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(139, 92, 246, 0.1);
+  border-radius: 18px;
+  padding: 6px 6px 6px 16px;
+  transition: all 0.3s;
+}
+
+.mind-input-wrap:focus-within {
+  border-color: rgba(99, 102, 241, 0.3);
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.08);
+}
+
+.mind-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 8px 0;
+  font-size: 0.85rem;
+  color: var(--text-primary, #e2e2f0);
+  resize: none;
+  outline: none;
+  font-family: 'DM Sans', sans-serif;
+  max-height: 100px;
+  line-height: 1.4;
+}
+
+.mind-input::placeholder {
+  color: rgba(139, 92, 246, 0.35);
+  font-style: italic;
+}
+
+.mind-send {
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  border: none;
+  background: linear-gradient(135deg, #6366F1, #7C3AED);
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 12px rgba(99, 102, 241, 0.3);
+}
+
+.mind-send:hover {
+  transform: scale(1.08) translateY(-1px);
+  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.45);
+}
+
+.mind-send:active {
+  transform: scale(0.95);
+}
+
+.mind-send svg {
+  transition: transform 0.2s;
+}
+
+.mind-send:hover svg {
+  transform: translateY(-1px);
+}
+
+/* ============================================
+   TOAST (notificación proactiva)
+   ============================================ */
+.mind-toast {
+  position: fixed;
+  bottom: 110px;
+  right: 28px;
+  z-index: 9998;
+  max-width: 320px;
+  cursor: pointer;
+  animation: toastIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: opacity 0.4s, transform 0.4s;
+}
+
+.mind-toast.fade-out {
+  opacity: 0;
+  transform: translateY(12px) scale(0.95);
+}
+
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.mind-toast-inner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: rgba(15, 15, 35, 0.95);
+  border: 1px solid rgba(99, 102, 241, 0.15);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(12px);
+  font-size: 0.8rem;
+  color: var(--text-primary, #e2e2f0);
+  transition: all 0.2s;
+}
+
+.mind-toast:hover .mind-toast-inner {
+  border-color: rgba(99, 102, 241, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 0 2px rgba(99, 102, 241, 0.08);
+}
+
+.mind-toast-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(99, 102, 241, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.toast-thought-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #6366F1;
+  animation: dotPulse 1.2s ease-in-out infinite;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 480px) {
+  #assistant-widget {
+    bottom: 18px;
+    right: 18px;
+  }
+
+  .assistant-entity {
+    width: 60px;
+    height: 60px;
+  }
+
+  .assistant-mind {
+    width: calc(100vw - 24px);
+    height: calc(100vh - 100px);
+    max-height: 580px;
+    bottom: 74px;
+    right: -6px;
+    border-radius: 22px;
+  }
+
+  .mind-toast {
+    right: 18px;
+    bottom: 88px;
+    max-width: calc(100vw - 36px);
+  }
+
+  .mind-stream {
+    padding: 14px;
+  }
+
+  .mind-input-area {
+    padding: 10px 12px 14px;
+  }
+}
+
+@media (max-width: 768px) {
+  .assistant-mind {
+    width: 360px;
+    height: 480px;
+  }
+}
+
+/* ============================================
+   DARK THEME VARS (fallback)
+   ============================================ */
+:root {
+  --bg-primary: #0f0f23;
+  --bg-secondary: #16162a;
+  --border-color: rgba(255, 255, 255, 0.08);
+  --text-primary: #e2e2f0;
+  --text-secondary: #888;
+  --text-tertiary: #555;
+}
+
+/* ============================================
+   ACCESIBILIDAD
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  .assistant-entity,
+  .assistant-entity-glow,
+  .assistant-entity-ring,
+  .assistant-entity-shadow,
+  .assistant-mind,
+  .mind-thought,
+  .mind-impulse,
+  .mind-toast,
+  .aura-particle,
+  .thought-bubble,
+  .mind-avatar-pulse,
+  .origin-pulse,
+  .mind-status-dot,
+  .thinking-waves span,
+  .origin-dot {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* Focus visible */
+.assistant-entity:focus-visible,
+.mind-send:focus-visible,
+.mind-impulse:focus-visible,
+.mind-action-btn:focus-visible {
+  outline: 2px solid #6366F1;
+  outline-offset: 3px;
+}
+
+/* ---- PRINT: Ocultar ---- */
+@media print {
+  #assistant-widget {
+    display: none !important;
+  }
+}

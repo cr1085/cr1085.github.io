@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Sym Foto Digital | Experiencia Visual</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Fuente elegante -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --vinotinto: #6b0f3f;
+            --naranja: #f59e0b;
+            --texto: #333;
+            --blanco: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--texto);
+            background: var(--blanco);
+        }
+
+        header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 25px 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+        }
+
+        header img {
+            height: 55px;
+        }
+
+        nav a {
+            margin-left: 25px;
+            color: white;
+            font-weight: 500;
+        }
+
+        .hero {
+            height: 100vh;
+            background: linear-gradient(
+                rgba(0,0,0,0.45),
+                rgba(0,0,0,0.45)
+            ),
+            url('assets/images/hero.png') center/cover no-repeat;
+            display: flex;
+            align-items: center;
+            padding: 0 60px;
+        }
+
+        .hero-content {
+            max-width: 600px;
+            color: white;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 52px;
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 14px 32px;
+            border-radius: 30px;
+            background: var(--vinotinto);
+            color: white;
+            font-weight: 500;
+            margin-right: 15px;
+        }
+
+        .section {
+            padding: 100px 60px;
+        }
+
+        .section h2 {
+            text-align: center;
+            font-family: 'Playfair Display', serif;
+            font-size: 36px;
+            margin-bottom: 60px;
+            color: var(--vinotinto);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+        }
+
+        .box {
+            text-align: center;
+        }
+
+        .box h3 {
+            margin-top: 20px;
+            color: var(--vinotinto);
+        }
+
+        .cta {
+            background: var(--vinotinto);
+            color: white;
+            text-align: center;
+            padding: 100px 40px;
+        }
+
+        .cta h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 38px;
+            margin-bottom: 20px;
+        }
+
+        footer {
+            padding: 40px 60px;
+            background: #f9f9f9;
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <img src="assets/images/logo.jpeg" alt="Sym Foto Digital">
+
+    <nav>
+        <a href="index.html">Inicio</a>
+        <a href="#">Servicios</a>
+        <a href="#">Reservas</a>
+        <a href="#">Contacto</a>
+        <a href="#" class="btn">Reservar</a>
+    </nav>
+</header>
+
+<section class="hero">
+    <div class="hero-content">
+        <h1>Capturamos historias<br>que merecen ser recordadas</h1>
+        <p>
+            Fotografía profesional y experiencias visuales que conectan
+            emociones, personas y marcas.
+        </p>
+
+        <a href="reservas.html" class="btn">Agendar sesión</a>
+        <a href="servicios.html" class="btn" style="background: transparent; border: 1px solid white;">Ver servicios</a>
+    </div>
+</section>
+
+<section class="section">
+    <h2>Nuestras especialidades</h2>
+
+    <div class="grid">
+        <div class="box">
+            <h3>Fotografía de Estudio</h3>
+            <p>Bebés, familia y sesiones personalizadas.</p>
+        </div>
+
+        <div class="box">
+            <h3>Eventos</h3>
+            <p>Bodas, celebraciones y momentos especiales.</p>
+        </div>
+
+        <div class="box">
+            <h3>Marketing Visual</h3>
+            <p>Contenido creativo para marcas.</p>
+        </div>
+    </div>
+</section>
+
+<section class="cta">
+    <h2>Reserva tu sesión hoy</h2>
+    <p>Consulta disponibilidad y asegura tu fecha.</p>
+    <br>
+    <a href="reservas.html" class="btn">Ir a reservas</a>
+</section>
+
+<footer>
+    <p>© 2026 Sym Foto Digital</p>
+    <p>Fotografía · Marketing · Experiencias visuales</p>
+</footer>
+
+</body>
+</html>

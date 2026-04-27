@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catálogo FuXion 2026</title>
+
+<!-- ============================================================
+  PARA QUE FUNCIONE EN GITHUB PAGES:
+  
+  Tu carpeta debe quedar así:
+  📁 catalogo-fuxion/
+     📄 index.html              ← este archivo
+     📄 catalogo.pdf            ← tu PDF (nombre exacto)
+     🖼️ foto1.jpg               ← tu foto (opcional)
+     🖼️ foto2.jpg               ← foto de tu esposa (opcional)
+
+  SOLO TIENES QUE CAMBIAR:
+  1. PDF_FILENAME → el nombre de tu archivo PDF
+  2. Los datos de los asesores (nombres, WhatsApp, tienda, fotos)
+============================================================ -->
+
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --gold: #c9a84c;
+  --gold-light: #e8cb7a;
+  --dark: #07070f;
+  --panel-bg: rgba(255,255,255,0.04);
+  --panel-border: rgba(201,168,76,0.18);
+  --white: #f0f0f5;
+  --muted: rgba(240,240,245,0.4);
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  background: var(--dark);
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  color: var(--white);
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 15% 40%, rgba(80,20,120,0.25) 0%, transparent 55%),
+    radial-gradient(ellipse at 85% 15%, rgba(20,50,130,0.2) 0%, transparent 55%),
+    radial-gradient(ellipse at 50% 95%, rgba(10,80,40,0.15) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ======================== LAYOUT ======================== */
+#app {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-rows: auto 1fr auto auto;
+  height: 100vh;
+  padding: 8px 12px;
+  gap: 8px;
+}
+
+/* ======================== HEADER ======================== */
+#header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 4px 0;
+}
+
+#header h1 {
+  font-size: clamp(15px, 2.8vw, 24px);
+  font-weight: 700;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 50%, var(--gold) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hdivider {
+  width: 1px;
+  height: 24px;
+  background: linear-gradient(to bottom, transparent, var(--gold), transparent);
+}
+
+#header span {
+  font-size: clamp(9px, 1.2vw, 12px);
+  color: var(--muted);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* ======================== FLIPBOOK AREA ======================== */
+#book-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+}
+
+#book-wrapper::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70%;
+  height: 30px;
+  background: radial-gradient(ellipse, rgba(201,168,76,0.25) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+#book-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+#flipbook { position: relative; }
+
+.page-spread {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  display: flex;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.page-spread.active { opacity: 1; pointer-events: auto; }
+
+.page {
+  position: relative;
+  width: 50%;
+  height: 100%;
+  overflow: hidden;
+  background: #181830;
+  flex-shrink: 0;
+}
+
+.page:first-child { border-radius: 4px 0 0 4px; border-right: 1px solid rgba(201,168,76,0.15); }
+.page:last-child  { border-radius: 0 4px 4px 0; }
+.page-spread.single .page { width: 100%; border-radius: 4px; }
+
+.page canvas {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  pointer-events: none;
+}
+
+.page-num {
+  position: absolute;
+  bottom: 6px;
+  font-size: 10px;
+  color: rgba(201,168,76,0.4);
+  letter-spacing: 1px;
+  z-index: 2;
+}
+
+.page:first-child .page-num { right: 10px; }
+.page:last-child  .page-num { left: 10px; }
+
+#flipbook::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 6px;
+  border: 1px solid rgba(201,168,76,0.2);
+  pointer-events: none;
+  z-index: 10;
+}
+
+.spine {
+  position: absolute;
+  top: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 3px;
+  height: 100%;
+  background: linear-gradient(to right, rgba(0,0,0,0.6), rgba(201,168,76,0.35), rgba(0,0,0,0.6));
+  z-index: 5;
+  pointer-events: none;
+}
+
+@keyframes flipOut { from { transform: scaleX(1); opacity: 1; } to { transform: scaleX(0); opacity: 0; } }
+@keyframes flipIn  { from { transform: scaleX(0); opacity: 0; } to { transform: scaleX(1); opacity: 1; } }
+
+.anim-out { animation: flipOut 0.25s ease-in  forwards; }
+.anim-in  { animation: flipIn  0.25s ease-out forwards; }
+
+/* ======================== NAV BUTTONS ======================== */
+.nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: clamp(32px, 4.5vw, 46px);
+  height: clamp(32px, 4.5vw, 46px);
+  border-radius: 50%;
+  border: 1px solid rgba(201,168,76,0.35);
+  background: rgba(7,7,15,0.82);
+  color: var(--gold);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  z-index: 20;
+  backdrop-filter: blur(6px);
+}
+
+.nav-btn:hover   { background: rgba(201,168,76,0.12); border-color: var(--gold); transform: translateY(-50%) scale(1.07); }
+.nav-btn:active  { transform: translateY(-50%) scale(0.94); }
+.nav-btn:disabled { opacity: 0.18; cursor: not-allowed; transform: translateY(-50%); }
+
+#btn-prev { left: -28px; }
+#btn-next { right: -28px; }
+
+@media (max-width: 500px) {
+  #btn-prev { left: 2px; }
+  #btn-next { right: 2px; }
+}
+
+/* ======================== FOOTER ======================== */
+#footer-pages {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+#page-indicator { font-size: 11px; color: var(--muted); letter-spacing: 1.5px; }
+#page-indicator b { color: var(--gold); font-weight: 600; }
+
+#dots {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: min(88vw, 420px);
+}
+
+.dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.13);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.dot.active  { background: var(--gold); transform: scale(1.35); }
+.dot:hover   { background: rgba(201,168,76,0.45); }
+
+/* ======================== ASESORES ======================== */
+#advisors-section {
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 14px;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+#advisors-title {
+  text-align: center;
+  font-size: clamp(10px, 1.5vw, 13px);
+  color: var(--gold);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+#advisors-title span { color: var(--muted); font-weight: 400; }
+
+#advisors-cards {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.advisor-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(201,168,76,0.2);
+  border-radius: 12px;
+  padding: 8px 14px 8px 8px;
+  transition: border-color 0.2s, background 0.2s;
+  flex: 1;
+  min-width: 180px;
+  max-width: 300px;
+}
+
+.advisor-card:hover { border-color: rgba(201,168,76,0.5); background: rgba(255,255,255,0.08); }
+
+.advisor-photo {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--gold);
+  flex-shrink: 0;
+  -webkit-user-drag: none;
+  pointer-events: none;
+}
+
+.advisor-initials {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  border: 2px solid var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--gold-light);
+  flex-shrink: 0;
+}
+
+.advisor-info { flex: 1; min-width: 0; }
+
+.advisor-name {
+  font-size: clamp(12px, 1.6vw, 14px);
+  font-weight: 600;
+  color: var(--white);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.advisor-role {
+  font-size: 10px;
+  color: var(--gold);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-top: 1px;
+}
+
+.advisor-links { display: flex; gap: 6px; margin-top: 5px; flex-wrap: wrap; }
+
+.advisor-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+  transition: transform 0.15s, opacity 0.15s;
+  white-space: nowrap;
+}
+
+.advisor-btn:hover  { transform: scale(1.05); opacity: 0.9; }
+.advisor-btn:active { transform: scale(0.96); }
+.btn-wa    { background: #25D366; color: #fff; }
+.btn-store { background: linear-gradient(135deg, var(--gold), #a07020); color: #fff; }
+.advisor-btn svg { width: 11px; height: 11px; fill: white; flex-shrink: 0; }
+
+/* ======================== PANTALLA DE CARGA ======================== */
+#loading-screen {
+  position: fixed;
+  inset: 0;
+  background: var(--dark);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  gap: 18px;
+  transition: opacity 0.6s;
+}
+
+#loading-screen.fade { opacity: 0; pointer-events: none; }
+#loading-screen.hidden { display: none; }
+
+.load-logo {
+  font-size: clamp(24px, 4vw, 36px);
+  font-weight: 800;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.load-sub {
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-top: -10px;
+}
+
+.load-bar-wrap {
+  width: 220px;
+  height: 3px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.load-bar {
+  height: 100%;
+  background: linear-gradient(to right, var(--gold), var(--gold-light));
+  width: 0%;
+  transition: width 0.3s ease;
+  border-radius: 3px;
+}
+
+.load-txt {
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 2px;
+}
+
+/* ======================== PANTALLA ERROR ======================== */
+#error-screen {
+  position: fixed;
+  inset: 0;
+  background: var(--dark);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9998;
+  gap: 16px;
+  padding: 30px;
+  text-align: center;
+}
+
+#error-screen.show { display: flex; }
+
+.error-icon { font-size: 48px; }
+
+.error-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--gold-light);
+}
+
+.error-msg {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.7;
+  max-width: 420px;
+}
+
+.error-code {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(201,168,76,0.2);
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 13px;
+  color: var(--gold);
+  font-family: monospace;
+  letter-spacing: 1px;
+}
+
+.error-steps {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(201,168,76,0.15);
+  border-radius: 12px;
+  padding: 16px 20px;
+  font-size: 12px;
+  color: rgba(240,240,245,0.5);
+  line-height: 2;
+  text-align: left;
+  max-width: 380px;
+}
+
+.error-steps b { color: var(--gold-light); }
+
+/* ======================== ZOOM BAR ======================== */
+#zoom-bar {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  z-index: 5000;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  background: rgba(7,7,15,0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(201,168,76,0.25);
+  border-radius: 999px;
+  padding: 5px;
+  box-shadow: 0 6px 28px rgba(0,0,0,0.5);
+}
+
+#zoom-bar button {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: var(--gold);
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s;
+  user-select: none;
+  -webkit-user-select: none;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+#zoom-bar button:hover { background: rgba(201,168,76,0.15); }
+#zoom-bar button:active { transform: scale(0.88); }
+
+#zoom-pct {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--gold-light);
+  min-width: 42px;
+  text-align: center;
+  letter-spacing: 0.5px;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+.zoom-div {
+  width: 1px;
+  height: 22px;
+  background: rgba(201,168,76,0.2);
+  margin: 0 3px;
+}
+
+/* Zoom overlay for magnifier mode */
+#zoom-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 6000;
+  background: rgba(7,7,15,0.96);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  overflow: hidden;
+}
+
+#zoom-overlay.open { display: flex; }
+#zoom-overlay.grabbing { cursor: grabbing; }
+
+#zoom-overlay canvas {
+  max-width: none;
+  max-height: none;
+  transition: none;
+}
+
+#zoom-close {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 6100;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid rgba(201,168,76,0.3);
+  background: rgba(7,7,15,0.85);
+  color: var(--gold);
+  font-size: 20px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  transition: all 0.15s;
+}
+
+#zoom-close:hover { background: rgba(201,168,76,0.15); }
+#zoom-close.show { display: flex; }
+
+#zoom-hint {
+  position: fixed;
+  bottom: 70px;
+  right: 16px;
+  z-index: 6100;
+  background: rgba(7,7,15,0.85);
+  border: 1px solid rgba(201,168,76,0.2);
+  border-radius: 10px;
+  padding: 8px 14px;
+  color: rgba(240,240,245,0.6);
+  font-size: 11px;
+  display: none;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+#zoom-hint.show { display: block; }
+
+/* Responsive */
+@media (max-width: 500px) {
+  #zoom-bar {
+    bottom: 10px;
+    right: 10px;
+    padding: 4px;
+  }
+  #zoom-bar button { width: 32px; height: 32px; font-size: 16px; }
+  #zoom-pct { font-size: 11px; min-width: 36px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+  PANTALLA DE CARGA AUTOMÁTICA
+============================================================ -->
+<div id="loading-screen">
+  <div class="load-logo">FuXion</div>
+  <div class="load-sub">Catálogo Digital 2026</div>
+  <div class="load-bar-wrap">
+    <div class="load-bar" id="loader-bar"></div>
+  </div>
+  <div class="load-txt" id="loader-txt">Cargando catálogo...</div>
+</div>
+
+<!-- ============================================================
+  PANTALLA DE ERROR (si el PDF no se encuentra)
+============================================================ -->
+<div id="error-screen">
+  <div class="error-icon">📄</div>
+  <div class="error-title">PDF no encontrado</div>
+  <div class="error-msg">
+    El catálogo no pudo cargarse. Asegúrate de que el archivo PDF
+    esté en la misma carpeta que este archivo HTML con el nombre correcto.
+  </div>
+  <div class="error-code" id="error-filename">catalogo.pdf</div>
+  <div class="error-steps">
+    <b>¿Cómo solucionarlo?</b><br>
+    1. Verifica que subiste el PDF a GitHub<br>
+    2. Confirma que el nombre del archivo es exacto<br>
+    3. Espera 2-3 minutos y recarga la página<br>
+    4. El nombre no debe tener espacios ni tildes
+  </div>
+</div>
+
+<!-- ============================================================
+  APP PRINCIPAL
+============================================================ -->
+<div id="app" style="visibility:hidden">
+
+  <div id="header">
+    <h1>FuXion</h1>
+    <div class="hdivider"></div>
+    <span>Catálogo 2026</span>
+  </div>
+
+  <div id="book-wrapper">
+    <div id="book-container">
+
+      <button class="nav-btn" id="btn-prev" aria-label="Anterior">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+
+      <div id="flipbook">
+        <div class="spine"></div>
+      </div>
+
+      <button class="nav-btn" id="btn-next" aria-label="Siguiente">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+
+    </div>
+  </div>
+
+  <div id="footer-pages">
+    <div id="page-indicator">Páginas <b id="curr-lbl">1</b> de <b id="total-lbl">—</b></div>
+    <div id="dots"></div>
+  </div>
+
+  <!-- ============================================================
+    👇 EDITA AQUÍ TUS DATOS — ASESORES
+    
+    PARA AGREGAR TU FOTO:
+    - Sube tu foto a GitHub en la misma carpeta (ej: foto1.jpg)
+    - Descomenta la línea <img> y borra el div .advisor-initials
+    - Escribe el nombre exacto del archivo en src=""
+    
+    WHATSAPP: formato 57XXXXXXXXXX (57 = Colombia, luego tu número)
+    TIENDA: la URL completa de tu tienda FuXion
+  ============================================================ -->
+  <div id="advisors-section">
+    <div id="advisors-title">¿Te interesa algún producto? <span>Contáctanos directamente</span></div>
+
+    <div id="advisors-cards">
+
+      <!-- ── ASESOR 1 ─────────────────────────────────────── -->
+      <div class="advisor-card">
+
+        <!-- Con foto: descomenta esta línea y sube foto1.jpg a GitHub -->
+        <!-- <img class="advisor-photo" src="foto1.jpg" alt="Tu nombre"> -->
+
+        <!-- Sin foto: cambia la letra por tu inicial -->
+        <div class="advisor-initials" style="background:linear-gradient(135deg,#2a1a5e,#1a3a5e);">
+          C <!-- ← Cambia por tu inicial -->
+        </div>
+
+        <div class="advisor-info">
+          <div class="advisor-name">Cristian Cuadrado</div> <!-- ← Tu nombre -->
+          <div class="advisor-role">Asesor FuXion</div>
+          <div class="advisor-links">
+
+            <!-- WHATSAPP — cambia el número -->
+            <a class="advisor-btn btn-wa"
+               href="https://wa.me/573170582873?text=Hola%20Cristian%2C%20vi%20el%20cat%C3%A1logo%20FuXion%20y%20quiero%20informaci%C3%B3n"
+               target="_blank" rel="noopener">
+              <svg viewBox="0 0 32 32"><path d="M16 2C8.268 2 2 8.268 2 16c0 2.492.672 4.83 1.843 6.84L2 30l7.344-1.81A13.94 13.94 0 0 0 16 30c7.732 0 14-6.268 14-14S23.732 2 16 2zm6.373 19.313c-.35-.175-2.068-1.02-2.389-1.138-.321-.117-.555-.175-.789.175-.233.35-.904 1.138-1.108 1.371-.204.234-.408.263-.758.088-.35-.175-1.478-.545-2.815-1.737-1.04-.928-1.743-2.075-1.947-2.425-.204-.35-.022-.54.153-.714.157-.157.35-.409.524-.613.175-.204.233-.35.35-.584.117-.233.058-.438-.029-.613-.088-.175-.789-1.9-1.08-2.6-.284-.685-.573-.593-.789-.604l-.672-.013c-.234 0-.613.088-.934.438-.321.35-1.225 1.197-1.225 2.918 0 1.72 1.254 3.383 1.428 3.616.175.233 2.468 3.768 5.982 5.283.836.36 1.488.576 1.996.737.838.267 1.602.229 2.205.139.672-.1 2.068-.845 2.36-1.661.293-.817.293-1.517.205-1.661-.088-.146-.321-.233-.671-.409z"/></svg>
+              WhatsApp
+            </a>
+
+            <!-- TIENDA — cambia la URL -->
+            <a class="advisor-btn btn-store"
+               href="http://ifuxion.com/Camilocuadrado"
+               target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="white" stroke="none"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22" fill="white"/></svg>
+              Mi Tienda
+            </a>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- ── ASESOR 2 (esposa) ─────────────────────────────── -->
+      <div class="advisor-card">
+
+        <!-- Con foto: descomenta y sube foto2.jpg a GitHub -->
+        <!-- <img class="advisor-photo" src="foto2.jpg" alt="Nombre esposa"> -->
+
+        <!-- Sin foto: cambia la letra por la inicial de tu esposa -->
+        <div class="advisor-initials" style="background:linear-gradient(135deg,#5e1a3a,#3a1a5e);">
+          O <!-- ← Cambia por su inicial -->
+        </div>
+
+        <div class="advisor-info">
+          <div class="advisor-name">Olga Díaz</div> <!-- ← Nombre de tu esposa -->
+          <div class="advisor-role">Asesora FuXion</div>
+          <div class="advisor-links">
+
+            <!-- WHATSAPP de tu esposa -->
+            <a class="advisor-btn btn-wa"
+               href="https://wa.me/573507680080?text=Hola%20Olga%2C%20vi%20el%20cat%C3%A1logo%20FuXion%20y%20quiero%20informaci%C3%B3n"
+               target="_blank" rel="noopener">
+              <svg viewBox="0 0 32 32"><path d="M16 2C8.268 2 2 8.268 2 16c0 2.492.672 4.83 1.843 6.84L2 30l7.344-1.81A13.94 13.94 0 0 0 16 30c7.732 0 14-6.268 14-14S23.732 2 16 2zm6.373 19.313c-.35-.175-2.068-1.02-2.389-1.138-.321-.117-.555-.175-.789.175-.233.35-.904 1.138-1.108 1.371-.204.234-.408.263-.758.088-.35-.175-1.478-.545-2.815-1.737-1.04-.928-1.743-2.075-1.947-2.425-.204-.35-.022-.54.153-.714.157-.157.35-.409.524-.613.175-.204.233-.35.35-.584.117-.233.058-.438-.029-.613-.088-.175-.789-1.9-1.08-2.6-.284-.685-.573-.593-.789-.604l-.672-.013c-.234 0-.613.088-.934.438-.321.35-1.225 1.197-1.225 2.918 0 1.72 1.254 3.383 1.428 3.616.175.233 2.468 3.768 5.982 5.283.836.36 1.488.576 1.996.737.838.267 1.602.229 2.205.139.672-.1 2.068-.845 2.36-1.661.293-.817.293-1.517.205-1.661-.088-.146-.321-.233-.671-.409z"/></svg>
+              WhatsApp
+            </a>
+
+            <!-- TIENDA de tu esposa -->
+            <a class="advisor-btn btn-store"
+               href="http://ifuxion.com/Camilocuadrado"
+               target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="white" stroke="none"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22" fill="white"/></svg>
+              Mi Tienda
+            </a>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- /app -->
+
+<!-- Zoom bar -->
+<div id="zoom-bar">
+  <button onclick="zoomOut()" title="Reducir">−</button>
+  <span id="zoom-pct">100%</span>
+  <button onclick="zoomIn()" title="Ampliar">+</button>
+  <div class="zoom-div"></div>
+  <button onclick="zoomFit()" title="Ajustar a pantalla">⊞</button>
+  <button onclick="openMagnifier()" title="Lupa — ver página completa">🔍</button>
+</div>
+
+<!-- Magnifier overlay -->
+<div id="zoom-overlay"></div>
+<button id="zoom-close" onclick="closeMagnifier()">✕</button>
+<div id="zoom-hint">🖱️ Arrastra para mover · Scroll para zoom</div>
+
+<!-- PDF.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+<script>
+// ============================================================
+//  ⚙️  ÚNICA CONFIGURACIÓN QUE DEBES CAMBIAR
+//  Pon aquí el nombre exacto de tu archivo PDF
+//  El archivo debe estar en la MISMA carpeta que index.html
+// ============================================================
+const PDF_FILENAME = 'catalogo.pdf';
+
+// ============================================================
+//  ESTADO
+// ============================================================
+let currentSpread = 0;
+let isAnimating   = false;
+let SPREADS       = [];
+let spreadEls     = [];
+let pdfPages      = [];   // canvas renderizados
+let touchStartX   = 0;
+let mouseStartX   = 0;
+let isDragging    = false;
+
+const loaderBar = document.getElementById('loader-bar');
+const loaderTxt = document.getElementById('loader-txt');
+
+// ============================================================
+//  ZOOM
+// ============================================================
+let zoomLevel = 1;
+const ZOOM_MIN = 0.5;
+const ZOOM_MAX = 3;
+const ZOOM_STEP = 0.15;
+
+function applyZoom() {
+  const fb = document.getElementById('flipbook');
+  fb.style.transform = `scale(${zoomLevel})`;
+  fb.style.transformOrigin = 'center center';
+  document.getElementById('zoom-pct').textContent = Math.round(zoomLevel * 100) + '%';
+}
+
+function zoomIn()  { zoomLevel = Math.min(ZOOM_MAX, +(zoomLevel + ZOOM_STEP).toFixed(2)); applyZoom(); }
+function zoomOut() { zoomLevel = Math.max(ZOOM_MIN, +(zoomLevel - ZOOM_STEP).toFixed(2)); applyZoom(); }
+function zoomFit() { zoomLevel = 1; applyZoom(); }
+
+// Ctrl + scroll zoom
+document.getElementById('book-wrapper').addEventListener('wheel', e => {
+  if (e.ctrlKey) {
+    e.preventDefault();
+    if (e.deltaY < 0) zoomIn(); else zoomOut();
+  }
+}, { passive: false });
+
+// Pinch-to-zoom
+let pinchDist = 0;
+let pinching = false;
+
+function getDist(touches) {
+  return Math.hypot(touches[0].clientX - touches[1].clientX, touches[0].clientY - touches[1].clientY);
+}
+
+document.getElementById('book-wrapper').addEventListener('touchstart', e => {
+  if (e.touches.length === 2) {
+    pinching = true;
+    pinchDist = getDist(e.touches);
+  }
+}, { passive: true });
+
+document.getElementById('book-wrapper').addEventListener('touchmove', e => {
+  if (pinching && e.touches.length === 2) {
+    const d = getDist(e.touches);
+    if (Math.abs(d - pinchDist) > 6) {
+      if (d > pinchDist) zoomIn(); else zoomOut();
+      pinchDist = d;
+    }
+  }
+}, { passive: true });
+
+document.getElementById('book-wrapper').addEventListener('touchend', () => { pinching = false; }, { passive: true });
+
+// Keyboard zoom
+document.addEventListener('keydown', e => {
+  if (e.ctrlKey && (e.key === '=' || e.key === '+')) { e.preventDefault(); zoomIn(); }
+  if (e.ctrlKey && e.key === '-') { e.preventDefault(); zoomOut(); }
+  if (e.ctrlKey && e.key === '0') { e.preventDefault(); zoomFit(); }
+});
+
+// ============================================================
+//  MAGNIFIER (full-page view)
+// ============================================================
+let magScale = 1;
+let magPanX = 0, magPanY = 0;
+let magDrag = false, magStartX = 0, magStartY = 0;
+
+function openMagnifier() {
+  if (pdfPages.length === 0) return;
+  const overlay = document.getElementById('zoom-overlay');
+  overlay.innerHTML = '';
+
+  const sp = SPREADS[currentSpread];
+  sp.pages.forEach(pageNum => {
+    const src = pdfPages[pageNum - 1];
+    if (src) {
+      const c = src.cloneNode(true);
+      c.getContext('2d').drawImage(src, 0, 0);
+      c.style.display = 'inline-block';
+      c.style.maxHeight = '85vh';
+      c.style.maxWidth = sp.pages.length > 1 ? '48vw' : '90vw';
+      c.style.borderRadius = '4px';
+      c.style.margin = '0 4px';
+      c.style.boxShadow = '0 8px 40px rgba(0,0,0,0.6)';
+      overlay.appendChild(c);
+    }
+  });
+
+  magScale = 1; magPanX = 0; magPanY = 0;
+  overlay.style.transform = '';
+  overlay.classList.add('open');
+  document.getElementById('zoom-close').classList.add('show');
+
+  const hint = document.getElementById('zoom-hint');
+  hint.classList.add('show');
+  setTimeout(() => hint.classList.remove('show'), 3000);
+}
+
+function closeMagnifier() {
+  document.getElementById('zoom-overlay').classList.remove('open');
+  document.getElementById('zoom-close').classList.remove('show');
+  document.getElementById('zoom-hint').classList.remove('show');
+}
+
+// Magnifier scroll zoom
+document.getElementById('zoom-overlay').addEventListener('wheel', e => {
+  e.preventDefault();
+  const delta = e.deltaY > 0 ? -0.1 : 0.1;
+  magScale = Math.max(0.5, Math.min(5, +(magScale + delta).toFixed(2)));
+  e.currentTarget.style.transform = `scale(${magScale}) translate(${magPanX}px, ${magPanY}px)`;
+}, { passive: false });
+
+// Magnifier drag
+const overlay = document.getElementById('zoom-overlay');
+overlay.addEventListener('mousedown', e => {
+  magDrag = true; magStartX = e.clientX - magPanX; magStartY = e.clientY - magPanY;
+  overlay.classList.add('grabbing');
+});
+overlay.addEventListener('mousemove', e => {
+  if (!magDrag) return;
+  magPanX = e.clientX - magStartX; magPanY = e.clientY - magStartY;
+  overlay.style.transform = `scale(${magScale}) translate(${magPanX / magScale}px, ${magPanY / magScale}px)`;
+});
+overlay.addEventListener('mouseup', () => { magDrag = false; overlay.classList.remove('grabbing'); });
+overlay.addEventListener('mouseleave', () => { magDrag = false; overlay.classList.remove('grabbing'); });
+
+// Magnifier touch drag
+let touchMagX = 0, touchMagY = 0;
+overlay.addEventListener('touchstart', e => {
+  if (e.touches.length === 1) {
+    touchMagX = e.touches[0].clientX - magPanX;
+    touchMagY = e.touches[0].clientY - magPanY;
+  }
+}, { passive: true });
+overlay.addEventListener('touchmove', e => {
+  if (e.touches.length === 1) {
+    magPanX = e.touches[0].clientX - touchMagX;
+    magPanY = e.touches[0].clientY - touchMagY;
+    overlay.style.transform = `scale(${magScale}) translate(${magPanX / magScale}px, ${magPanY / magScale}px)`;
+  }
+}, { passive: true });
+
+// Magnifier pinch-to-zoom
+let magPinchDist = 0;
+overlay.addEventListener('touchstart', e => {
+  if (e.touches.length === 2) magPinchDist = getDist(e.touches);
+}, { passive: true });
+overlay.addEventListener('touchmove', e => {
+  if (e.touches.length === 2) {
+    const d = getDist(e.touches);
+    if (Math.abs(d - magPinchDist) > 6) {
+      magScale = Math.max(0.5, Math.min(5, +(magScale + (d > magPinchDist ? 0.08 : -0.08)).toFixed(2)));
+      overlay.style.transform = `scale(${magScale}) translate(${magPanX / magScale}px, ${magPanY / magScale}px)`;
+      magPinchDist = d;
+    }
+  }
+}, { passive: true });
+
+// Close magnifier with Escape
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeMagnifier();
+});
+
+// ============================================================
+//  PDF.js worker
+// ============================================================
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+  'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+// ============================================================
+//  PROGRESO DE CARGA
+// ============================================================
+function setProgress(pct, msg) {
+  loaderBar.style.width = Math.min(pct, 100) + '%';
+  if (msg) loaderTxt.textContent = msg;
+}
+
+// ============================================================
+//  CONSTRUIR SPREADS
+// ============================================================
+function buildSpreads(total) {
+  const s = [];
+  let i = 1;
+  // Portada sola
+  s.push({ pages: [i], single: true }); i++;
+  // Páginas dobles
+  while (i <= total) {
+    if (i === total) {
+      // Última página sola (contraportada)
+      s.push({ pages: [i], single: true }); i++;
+    } else {
+      s.push({ pages: [i, i + 1], single: false }); i += 2;
+    }
+  }
+  return s;
+}
+
+// ============================================================
+//  TAMAÑO DEL FLIPBOOK
+// ============================================================
+function calcSize() {
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const reserved = 46 + 38 + 120 + 60;
+  const availH = vh - reserved;
+  const availW = vw - 70;
+  const ratio = 2 / 1.414;
+  let w, h;
+  if (availW / ratio < availH) { w = availW; h = w / ratio; }
+  else { h = availH; w = h * ratio; }
+  return {
+    w: Math.min(Math.floor(w), 950),
+    h: Math.min(Math.floor(h), 680)
+  };
+}
+
+// ============================================================
+//  RENDER DOM
+// ============================================================
+const flipbook = document.getElementById('flipbook');
+
+function buildDOM() {
+  const { w, h } = calcSize();
+  flipbook.style.width    = w + 'px';
+  flipbook.style.height   = h + 'px';
+  flipbook.style.position = 'relative';
+
+  flipbook.querySelectorAll('.page-spread').forEach(el => el.remove());
+  spreadEls = [];
+
+  SPREADS.forEach((spread) => {
+    const spreadEl = document.createElement('div');
+    spreadEl.className = 'page-spread' + (spread.single ? ' single' : '');
+
+    spread.pages.forEach(pageNum => {
+      const pageEl = document.createElement('div');
+      pageEl.className = 'page';
+
+      const canvas = pdfPages[pageNum - 1];
+      if (canvas) {
+        // Clonar el canvas para poder reutilizarlo en resize
+        const clone = canvas.cloneNode(true);
+        clone.style.width = '100%';
+        clone.style.height = '100%';
+        clone.getContext('2d').drawImage(canvas, 0, 0);
+        pageEl.appendChild(clone);
+      }
+
+      const numEl = document.createElement('div');
+      numEl.className = 'page-num';
+      numEl.textContent = pageNum;
+      pageEl.appendChild(numEl);
+
+      spreadEl.appendChild(pageEl);
+    });
+
+    // Insertar antes del spine
+    const spine = flipbook.querySelector('.spine');
+    flipbook.insertBefore(spreadEl, spine);
+    spreadEls.push(spreadEl);
+  });
+
+  document.getElementById('total-lbl').textContent =
+    SPREADS[SPREADS.length - 1].pages.slice(-1)[0];
+}
+
+// ============================================================
+//  DOTS
+// ============================================================
+function buildDots() {
+  const dotsEl = document.getElementById('dots');
+  dotsEl.innerHTML = '';
+  if (SPREADS.length > 35) return;
+  SPREADS.forEach((_, idx) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (idx === 0 ? ' active' : '');
+    d.addEventListener('click', () => goTo(idx));
+    dotsEl.appendChild(d);
+  });
+}
+
+// ============================================================
+//  NAVEGACIÓN
+// ============================================================
+function updateUI() {
+  document.querySelectorAll('.dot').forEach((d, i) =>
+    d.classList.toggle('active', i === currentSpread));
+
+  const sp = SPREADS[currentSpread];
+  const lbl = sp.pages.length === 1
+    ? sp.pages[0]
+    : sp.pages[0] + '–' + sp.pages[1];
+  document.getElementById('curr-lbl').textContent = lbl;
+
+  document.getElementById('btn-prev').disabled = currentSpread === 0;
+  document.getElementById('btn-next').disabled = currentSpread === SPREADS.length - 1;
+}
+
+function goTo(idx) {
+  if (isAnimating || idx === currentSpread || idx < 0 || idx >= SPREADS.length) return;
+  isAnimating = true;
+
+  const outEl = spreadEls[currentSpread];
+  const inEl  = spreadEls[idx];
+
+  outEl.classList.add('anim-out');
+
+  setTimeout(() => {
+    outEl.classList.remove('active', 'anim-out');
+    inEl.classList.add('active', 'anim-in');
+
+    setTimeout(() => {
+      inEl.classList.remove('anim-in');
+      currentSpread = idx;
+      updateUI();
+      isAnimating = false;
+    }, 260);
+  }, 240);
+}
+
+function goNext() { goTo(currentSpread + 1); }
+function goPrev() { goTo(currentSpread - 1); }
+
+// Reset zoom on page change for clean transitions
+const _origGoTo = goTo;
+goTo = function(idx) { zoomLevel = 1; applyZoom(); _origGoTo(idx); };
+
+// ============================================================
+//  MOSTRAR APP
+// ============================================================
+function revealApp() {
+  document.getElementById('app').style.visibility = 'visible';
+  const ls = document.getElementById('loading-screen');
+  ls.classList.add('fade');
+  setTimeout(() => ls.classList.add('hidden'), 650);
+}
+
+// ============================================================
+//  MOSTRAR ERROR
+// ============================================================
+function showError() {
+  document.getElementById('loading-screen').classList.add('hidden');
+  document.getElementById('error-filename').textContent = PDF_FILENAME;
+  document.getElementById('error-screen').classList.add('show');
+}
+
+// ============================================================
+//  🔑 CARGA AUTOMÁTICA DEL PDF
+//  Usa fetch() para obtener el PDF de la misma carpeta.
+//  En GitHub Pages esto funciona perfectamente.
+// ============================================================
+async function autoLoadPDF() {
+  setProgress(5, 'Conectando con el catálogo...');
+
+  let arrayBuffer;
+
+  try {
+    // Intentar cargar el PDF desde la misma URL base
+    const response = await fetch(PDF_FILENAME);
+
+    if (!response.ok) {
+      // El archivo no existe o hay error de red
+      console.error('PDF no encontrado:', response.status, PDF_FILENAME);
+      showError();
+      return;
+    }
+
+    setProgress(20, 'Descargando catálogo...');
+
+    // Leer como stream para mostrar progreso real
+    const contentLength = response.headers.get('content-length');
+    if (contentLength) {
+      const total = parseInt(contentLength, 10);
+      const reader = response.body.getReader();
+      const chunks = [];
+      let received = 0;
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        chunks.push(value);
+        received += value.length;
+        const pct = 20 + Math.round((received / total) * 30);
+        setProgress(pct, `Descargando... ${Math.round(received / 1024)}KB`);
+      }
+
+      const blob = new Blob(chunks);
+      arrayBuffer = await blob.arrayBuffer();
+    } else {
+      arrayBuffer = await response.arrayBuffer();
+      setProgress(50, 'Procesando páginas...');
+    }
+
+  } catch (err) {
+    console.error('Error de red al cargar PDF:', err);
+    showError();
+    return;
+  }
+
+  // Parsear PDF con PDF.js
+  try {
+    setProgress(52, 'Abriendo PDF...');
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    const numPages = pdf.numPages;
+
+    // Escala según densidad de pantalla
+    const scale = window.devicePixelRatio >= 2 ? 2.2 : 1.8;
+    pdfPages = new Array(numPages);
+
+    for (let p = 1; p <= numPages; p++) {
+      const page     = await pdf.getPage(p);
+      const viewport = page.getViewport({ scale });
+      const canvas   = document.createElement('canvas');
+      canvas.width   = viewport.width;
+      canvas.height  = viewport.height;
+      await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+      pdfPages[p - 1] = canvas;
+
+      // Progreso: de 52% a 95%
+      const pct = 52 + Math.round((p / numPages) * 43);
+      setProgress(pct, `Preparando página ${p} de ${numPages}...`);
+    }
+
+    setProgress(98, 'Casi listo...');
+
+    // Construir la interfaz
+    SPREADS = buildSpreads(numPages);
+    buildDOM();
+    buildDots();
+    spreadEls[0].classList.add('active');
+    updateUI();
+
+    setProgress(100, '¡Listo!');
+    setTimeout(revealApp, 400);
+
+  } catch (err) {
+    console.error('Error al parsear PDF:', err);
+    showError();
+  }
+}
+
+// ============================================================
+//  EVENTOS TECLADO
+// ============================================================
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); goNext(); }
+  if (e.key === 'ArrowLeft'  || e.key === 'PageUp')   { e.preventDefault(); goPrev(); }
+  const block = ['c','s','u','a','p'];
+  if ((e.ctrlKey || e.metaKey) && block.includes(e.key.toLowerCase())) e.preventDefault();
+  if (e.key === 'F12') e.preventDefault();
+});
+
+// ============================================================
+//  TOUCH SWIPE
+// ============================================================
+flipbook.addEventListener('touchstart', e => {
+  touchStartX = e.changedTouches[0].clientX;
+}, { passive: true });
+
+flipbook.addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  if (Math.abs(dx) > 40) dx < 0 ? goNext() : goPrev();
+}, { passive: true });
+
+// ============================================================
+//  MOUSE DRAG
+// ============================================================
+flipbook.addEventListener('mousedown',  e => { mouseStartX = e.clientX; isDragging = true; });
+flipbook.addEventListener('mouseup',    e => {
+  if (!isDragging) return;
+  isDragging = false;
+  const dx = e.clientX - mouseStartX;
+  if (Math.abs(dx) > 50) dx < 0 ? goNext() : goPrev();
+});
+flipbook.addEventListener('mouseleave', () => { isDragging = false; });
+
+// ============================================================
+//  BOTONES NAVEGACIÓN
+// ============================================================
+document.getElementById('btn-prev').addEventListener('click', goPrev);
+document.getElementById('btn-next').addEventListener('click', goNext);
+
+// ============================================================
+//  PROTECCIONES
+// ============================================================
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('selectstart',  e => e.preventDefault());
+document.addEventListener('dragstart',    e => e.preventDefault());
+
+// ============================================================
+//  RESIZE
+// ============================================================
+let resizeTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    if (SPREADS.length === 0) return;
+    buildDOM();
+    spreadEls[currentSpread]?.classList.add('active');
+    updateUI();
+  }, 250);
+});
+
+// ============================================================
+//  🚀 ARRANCAR — carga automática al abrir la página
+// ============================================================
+autoLoadPDF();
+</script>
+</body>
+</html>

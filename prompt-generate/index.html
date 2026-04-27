@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --g1:#FF3CAC;--g2:#784BA0;--g3:#2B86C5;
+    --gfull:linear-gradient(135deg,#FF3CAC,#F97316,#FACC15,#22D3EE,#784BA0);
+    --gtext:linear-gradient(90deg,#FF3CAC,#F97316,#FACC15,#22D3EE,#784BA0);
+    --dark:#0a0a0f;--card:#111118;--border:rgba(255,255,255,0.08);
+  }
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Plus Jakarta Sans',sans-serif;
+    background:var(--dark);color:#fff;overflow-x:hidden;
+  }
+  h1,h2,h3,.hero-title{font-family:'Syne',sans-serif}
+
+  /* CURSOR */
+  body{cursor:none}
+  #cursor{position:fixed;width:20px;height:20px;border-radius:50%;background:var(--gfull);background-size:200%;pointer-events:none;z-index:9999;transition:transform .15s ease;mix-blend-mode:difference}
+  #cursor-trail{position:fixed;width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,60,172,0.4);pointer-events:none;z-index:9998;transition:transform .3s ease, opacity .3s ease}
+
+  /* NAV */
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1.2rem 3rem;display:flex;align-items:center;justify-content:space-between;backdrop-filter:blur(20px);background:rgba(10,10,15,0.7);border-bottom:0.5px solid var(--border)}
+  .nav-logo{display:flex;align-items:center;gap:.6rem;font-family:'Syne',sans-serif;font-weight:800;font-size:1.4rem}
+  .logo-icon{width:32px;height:32px;background:var(--gfull);background-size:200%;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px}
+  .logo-text{background:var(--gtext);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;background-size:300%;animation:gradShift 4s ease infinite}
+  .nav-links{display:flex;gap:2rem;font-size:.85rem;color:rgba(255,255,255,0.6)}
+  .nav-links a{color:inherit;text-decoration:none;transition:color .2s}
+  .nav-links a:hover{color:#fff}
+  .nav-cta{background:var(--gfull);background-size:200%;padding:.55rem 1.4rem;border-radius:50px;font-size:.85rem;font-weight:600;color:#fff;border:none;cursor:none;animation:gradShift 4s ease infinite;transition:transform .2s,box-shadow .2s}
+  .nav-cta:hover{transform:scale(1.05);box-shadow:0 0 30px rgba(255,60,172,0.5)}
+
+  /* HERO */
+  .hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6rem 2rem 4rem;text-align:center;position:relative;overflow:hidden}
+  .hero-bg{position:absolute;inset:0;overflow:hidden}
+  .orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:.25;animation:orbFloat 8s ease-in-out infinite}
+  .orb1{width:500px;height:500px;background:#FF3CAC;top:-10%;left:-10%;animation-delay:0s}
+  .orb2{width:400px;height:400px;background:#2B86C5;bottom:-5%;right:-5%;animation-delay:3s}
+  .orb3{width:300px;height:300px;background:#F97316;top:40%;left:50%;animation-delay:1.5s}
+  .hero-badge{display:inline-flex;align-items:center;gap:.4rem;background:rgba(255,255,255,0.06);border:0.5px solid rgba(255,255,255,0.15);padding:.35rem 1rem;border-radius:50px;font-size:.75rem;color:rgba(255,255,255,0.7);margin-bottom:2rem;backdrop-filter:blur(10px)}
+  .badge-dot{width:6px;height:6px;background:#22D3EE;border-radius:50%;animation:pulse 2s infinite}
+  .hero-title{font-size:clamp(2.5rem,7vw,5.5rem);font-weight:800;line-height:1.05;letter-spacing:-0.02em;margin-bottom:1.5rem}
+  .grad-text{background:var(--gtext);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;background-size:300%;animation:gradShift 4s ease infinite}
+  .hero-sub{font-size:clamp(.95rem,2vw,1.2rem);color:rgba(255,255,255,0.55);max-width:580px;line-height:1.7;margin:0 auto 3rem}
+  .hero-ctas{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:5rem}
+  .btn-primary{background:var(--gfull);background-size:200%;padding:.8rem 2rem;border-radius:50px;font-size:1rem;font-weight:600;color:#fff;border:none;cursor:none;animation:gradShift 4s ease infinite;transition:transform .2s,box-shadow .3s}
+  .btn-primary:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 15px 40px rgba(255,60,172,0.4)}
+  .btn-secondary{background:transparent;border:0.5px solid rgba(255,255,255,0.2);padding:.8rem 2rem;border-radius:50px;font-size:1rem;color:rgba(255,255,255,0.8);cursor:none;transition:all .2s;backdrop-filter:blur(10px)}
+  .btn-secondary:hover{border-color:rgba(255,255,255,0.5);background:rgba(255,255,255,0.05);transform:translateY(-2px)}
+
+  /* DEMO LIVE */
+  .demo-box{background:var(--card);border:0.5px solid var(--border);border-radius:20px;padding:2rem;max-width:640px;width:100%;margin:0 auto;position:relative;overflow:hidden}
+  .demo-box::before{content:'';position:absolute;inset:-1px;border-radius:20px;padding:1px;background:var(--gfull);background-size:200%;animation:gradShift 4s ease infinite;-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+  .demo-input-wrap{display:flex;gap:.8rem;margin-bottom:1.2rem}
+  .demo-input{flex:1;background:rgba(255,255,255,0.06);border:0.5px solid rgba(255,255,255,0.1);border-radius:12px;padding:.8rem 1rem;color:#fff;font-family:'Plus Jakarta Sans',sans-serif;font-size:.9rem;outline:none}
+  .demo-input::placeholder{color:rgba(255,255,255,0.3)}
+  .demo-input:focus{border-color:rgba(255,60,172,0.5);background:rgba(255,255,255,0.08)}
+  .demo-btn{background:var(--gfull);background-size:200%;animation:gradShift 4s ease infinite;border:none;border-radius:12px;padding:.8rem 1.2rem;color:#fff;cursor:none;font-size:.85rem;font-weight:600;transition:transform .2s}
+  .demo-btn:hover{transform:scale(1.05)}
+  .demo-result{background:rgba(255,255,255,0.04);border-radius:12px;padding:1rem 1.2rem;font-size:.85rem;color:rgba(255,255,255,0.75);line-height:1.7;min-height:80px;border:0.5px solid rgba(255,255,255,0.06)}
+  .demo-result .result-label{font-size:.7rem;font-weight:600;letter-spacing:.1em;color:rgba(255,255,255,0.3);text-transform:uppercase;margin-bottom:.5rem}
+  .typing-text{color:#fff}
+  .cursor-blink{display:inline-block;width:2px;height:1em;background:#FF3CAC;margin-left:1px;animation:blink 1s infinite;vertical-align:text-bottom}
+
+  /* STATS */
+  .stats-row{display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;padding:3rem 2rem;border-top:0.5px solid var(--border);border-bottom:0.5px solid var(--border)}
+  .stat{text-align:center}
+  .stat-num{font-family:'Syne',sans-serif;font-size:2.2rem;font-weight:800;background:var(--gtext);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;background-size:300%;animation:gradShift 4s ease infinite}
+  .stat-label{font-size:.8rem;color:rgba(255,255,255,0.4);margin-top:.2rem}
+
+  /* HERRAMIENTAS */
+  section{padding:5rem 2rem}
+  .section-label{font-size:.75rem;font-weight:600;letter-spacing:.15em;color:rgba(255,255,255,0.3);text-transform:uppercase;text-align:center;margin-bottom:1rem}
+  .section-title{font-family:'Syne',sans-serif;font-size:clamp(2rem,4vw,3rem);font-weight:800;text-align:center;line-height:1.1;margin-bottom:1rem}
+  .section-sub{text-align:center;color:rgba(255,255,255,0.5);font-size:1rem;margin-bottom:4rem;max-width:500px;margin-left:auto;margin-right:auto}
+  .tools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1px;background:var(--border);border-radius:24px;overflow:hidden;max-width:960px;margin:0 auto}
+  .tool-card{background:var(--card);padding:1.8rem;transition:background .2s;position:relative;overflow:hidden;cursor:none}
+  .tool-card:hover{background:#16161e}
+  .tool-card::after{content:'';position:absolute;inset:0;opacity:0;background:linear-gradient(135deg,rgba(255,60,172,0.05),rgba(43,134,197,0.05));transition:opacity .3s}
+  .tool-card:hover::after{opacity:1}
+  .tool-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-bottom:1rem;position:relative;z-index:1}
+  .tool-name{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;margin-bottom:.4rem;position:relative;z-index:1}
+  .tool-desc{font-size:.82rem;color:rgba(255,255,255,0.45);line-height:1.6;position:relative;z-index:1}
+  .tool-arrow{position:absolute;right:1.2rem;bottom:1.2rem;width:28px;height:28px;border-radius:50%;border:0.5px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-size:.75rem;color:rgba(255,255,255,0.3);transition:all .2s}
+  .tool-card:hover .tool-arrow{border-color:rgba(255,60,172,0.5);color:#FF3CAC;background:rgba(255,60,172,0.1);transform:translate(2px,-2px)}
+
+  /* DIFERENCIADOR */
+  .diff-section{background:linear-gradient(180deg,var(--dark) 0%,#0d0d1a 100%)}
+  .diff-inner{max-width:960px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center}
+  .diff-text .big-no{font-family:'Syne',sans-serif;font-size:6rem;font-weight:800;line-height:1;color:rgba(255,255,255,0.04);position:absolute;top:-1rem;left:-1rem}
+  .diff-items{display:flex;flex-direction:column;gap:1rem}
+  .diff-item{display:flex;align-items:center;gap:1rem;padding:1rem 1.2rem;background:rgba(255,255,255,0.03);border-radius:12px;border:0.5px solid var(--border);transition:all .25s}
+  .diff-item:hover{background:rgba(255,255,255,0.06);border-color:rgba(255,60,172,0.2);transform:translateX(4px)}
+  .diff-x{width:28px;height:28px;border-radius:50%;background:rgba(239,68,68,0.1);border:0.5px solid rgba(239,68,68,0.3);display:flex;align-items:center;justify-content:center;font-size:.75rem;color:#ef4444;flex-shrink:0}
+  .diff-check{width:28px;height:28px;border-radius:50%;background:rgba(34,211,238,0.1);border:0.5px solid rgba(34,211,238,0.3);display:flex;align-items:center;justify-content:center;font-size:.75rem;color:#22d3ee;flex-shrink:0}
+  .diff-item span{font-size:.9rem;color:rgba(255,255,255,0.65)}
+  .diff-visual{position:relative;display:flex;align-items:center;justify-content:center}
+  .big-circle{width:280px;height:280px;border-radius:50%;background:var(--gfull);background-size:200%;animation:gradShift 4s ease infinite,spin 20s linear infinite;display:flex;align-items:center;justify-content:center;position:relative}
+  .big-circle::before{content:'';position:absolute;inset:8px;border-radius:50%;background:var(--dark)}
+  .circle-text{position:relative;z-index:1;text-align:center}
+  .circle-main{font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;line-height:1.1}
+  .circle-sub{font-size:.75rem;color:rgba(255,255,255,0.5);margin-top:.3rem}
+
+  /* VIRAL */
+  .viral-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;max-width:900px;margin:0 auto}
+  .viral-card{background:var(--card);border:0.5px solid var(--border);border-radius:16px;padding:1.5rem;text-align:center;transition:all .25s}
+  .viral-card:hover{transform:translateY(-4px);border-color:rgba(255,60,172,0.3);box-shadow:0 20px 40px rgba(0,0,0,0.4)}
+  .viral-emoji{font-size:2rem;margin-bottom:.8rem}
+  .viral-title{font-family:'Syne',sans-serif;font-size:.95rem;font-weight:700;margin-bottom:.4rem}
+  .viral-desc{font-size:.8rem;color:rgba(255,255,255,0.4);line-height:1.6}
+
+  /* CTA FINAL */
+  .cta-final{text-align:center;padding:6rem 2rem;background:radial-gradient(ellipse at 50% 50%,rgba(255,60,172,0.1) 0%,transparent 70%)}
+  .cta-glow{display:inline-block;margin-bottom:2rem;width:80px;height:80px;border-radius:50%;background:var(--gfull);background-size:200%;animation:gradShift 4s ease infinite;position:relative}
+  .cta-glow::after{content:'';position:absolute;inset:-8px;border-radius:50%;border:2px solid rgba(255,60,172,0.2);animation:ripple 2s infinite}
+
+  /* FOOTER */
+  footer{padding:2rem 3rem;border-top:0.5px solid var(--border);display:flex;align-items:center;justify-content:space-between;font-size:.8rem;color:rgba(255,255,255,0.3)}
+
+  /* ANIMATIONS */
+  @keyframes gradShift{0%{background-position:0%}50%{background-position:100%}100%{background-position:0%}}
+  @keyframes orbFloat{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(30px,-20px) scale(1.1)}}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+  @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+  @keyframes ripple{0%{transform:scale(1);opacity:.5}100%{transform:scale(1.5);opacity:0}}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+
+  .animate-in{opacity:0;animation:fadeUp .8s forwards}
+  .delay-1{animation-delay:.1s}.delay-2{animation-delay:.2s}.delay-3{animation-delay:.3s}.delay-4{animation-delay:.4s}
+  .float-anim{animation:float 4s ease-in-out infinite}
+
+  @media(max-width:768px){
+    nav{padding:1rem 1.5rem}
+    .nav-links{display:none}
+    .diff-inner{grid-template-columns:1fr}
+    .diff-visual{display:none}
+  }
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="cursor-trail"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <div class="logo-icon">❤️</div>
+    <span class="logo-text">LoveIA</span>
+  </div>
+  <div class="nav-links">
+    <a href="#herramientas">Herramientas</a>
+    <a href="#diferencia">Por qué LoveIA</a>
+    <a href="#viral">Casos de uso</a>
+  </div>
+  <button class="nav-cta" onclick="window.location.href='app.html'">Probar gratis →</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg">
+    <div class="orb orb1"></div>
+    <div class="orb orb2"></div>
+    <div class="orb orb3"></div>
+  </div>
+  <div style="position:relative;z-index:2;width:100%">
+    <div class="hero-badge animate-in">
+      <span class="badge-dot"></span>
+      Herramienta #1 para usar IA sin esfuerzo
+    </div>
+    <h1 class="hero-title animate-in delay-1">
+      Usa Inteligencia<br>
+      <span class="grad-text">Artificial</span><br>
+      sin saber de IA
+    </h1>
+    <p class="hero-sub animate-in delay-2">
+      Genera contenido, ideas y soluciones en segundos. Sin aprender. Sin complicaciones. Solo resultados.
+    </p>
+    <div class="hero-ctas animate-in delay-3">
+      <button class="btn-primary" onclick="window.location.href='app.html'">🚀 Probar gratis</button>
+      <button class="btn-secondary" onclick="window.location.href='app.html'">Explorar herramientas</button>
+    </div>
+    <div class="demo-box float-anim animate-in delay-4">
+      <div style="font-size:.75rem;font-weight:600;letter-spacing:.1em;color:rgba(255,255,255,0.3);text-transform:uppercase;margin-bottom:1rem">Demo en vivo</div>
+      <div class="demo-input-wrap">
+        <input class="demo-input" id="demoInput" type="text" placeholder="Escribe una idea... ej: quiero vender ropa en Instagram">
+        <button class="demo-btn" onclick="runDemo()">Generar ✨</button>
+      </div>
+      <div class="demo-result">
+        <div class="result-label">Prompt optimizado para ti</div>
+        <div class="typing-text" id="demoOutput">Escribe algo y mira la magia pasar...<span class="cursor-blink"></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-row">
+  <div class="stat"><div class="stat-num">50K+</div><div class="stat-label">usuarios activos</div></div>
+  <div class="stat"><div class="stat-num">12</div><div class="stat-label">herramientas gratuitas</div></div>
+  <div class="stat"><div class="stat-num">2M+</div><div class="stat-label">prompts generados</div></div>
+  <div class="stat"><div class="stat-num">0s</div><div class="stat-label">curva de aprendizaje</div></div>
+</div>
+
+<!-- HERRAMIENTAS -->
+<section id="herramientas">
+  <div class="section-label">Ecosistema</div>
+  <h2 class="section-title">Todo lo que necesitas<br><span class="grad-text">en un solo lugar</span></h2>
+  <p class="section-sub">Herramientas simples. Resultados poderosos. Sin necesitar experiencia.</p>
+  <div class="tools-grid">
+    <div class="tool-card">
+      <div class="tool-icon" style="background:rgba(255,60,172,0.15)">✨</div>
+      <div class="tool-name">Generador de Prompts</div>
+      <div class="tool-desc">Convierte una idea simple en un prompt optimizado listo para usar en ChatGPT o Claude.</div>
+      <div class="tool-arrow">→</div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon" style="background:rgba(249,115,22,0.15)">⚡</div>
+      <div class="tool-name">Mejorador de Prompts</div>
+      <div class="tool-desc">Toma tu prompt existente y lo potencia automáticamente para mejores resultados.</div>
+      <div class="tool-arrow">→</div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon" style="background:rgba(34,211,238,0.15)">📝</div>
+      <div class="tool-name">Generador de Contenido</div>
+      <div class="tool-desc">Posts, captions, artículos, emails. Contenido listo en segundos.</div>
+      <div class="tool-arrow">→</div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon" style="background:rgba(120,75,160,0.15)">💡</div>
+      <div class="tool-name">Ideas de Negocio</div>
+      <div class="tool-desc">Describe tu situación y obtén ideas validadas y listas para ejecutar.</div>
+      <div class="tool-arrow">→</div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon" style="background:rgba(250,204,21,0.15)">💬</div>
+      <div class="tool-name">Copy para Ventas</div>
+      <div class="tool-desc">Textos persuasivos para tus productos o servicios que realmente convierten.</div>
+      <div class="tool-arrow">→</div>
+    </div>
+    <div class="tool-card" style="border:0.5px dashed rgba(255,255,255,0.1)">
+      <div class="tool-icon" style="background:rgba(255,255,255,0.05)">🔜</div>
+      <div class="tool-name" style="color:rgba(255,255,255,0.4)">Más herramientas</div>
+      <div class="tool-desc">Nuevas herramientas llegan cada semana. Suscríbete para ser el primero.</div>
+      <div class="tool-arrow">+</div>
+    </div>
+  </div>
+</section>
+
+<!-- DIFERENCIADOR -->
+<section id="diferencia" class="diff-section">
+  <div class="section-label">Por qué LoveIA</div>
+  <h2 class="section-title" style="margin-bottom:3.5rem">No necesitas<br><span class="grad-text">aprender IA</span></h2>
+  <div class="diff-inner">
+    <div class="diff-text">
+      <div class="diff-items">
+        <div style="font-size:.8rem;color:rgba(255,255,255,0.3);margin-bottom:.5rem;padding-left:.2rem">ANTES</div>
+        <div class="diff-item"><div class="diff-x">✕</div><span>Necesitas experiencia técnica</span></div>
+        <div class="diff-item"><div class="diff-x">✕</div><span>Prompts complejos y difíciles</span></div>
+        <div class="diff-item"><div class="diff-x">✕</div><span>Horas de aprendizaje</span></div>
+        <div class="diff-item"><div class="diff-x">✕</div><span>Resultados inconsistentes</span></div>
+        <div style="height:1.5rem"></div>
+        <div style="font-size:.8rem;color:rgba(255,255,255,0.3);margin-bottom:.5rem;padding-left:.2rem">CON LOVEIA</div>
+        <div class="diff-item"><div class="diff-check">✓</div><span>Usas IA desde el primer minuto</span></div>
+        <div class="diff-item"><div class="diff-check">✓</div><span>Solo escribes tu idea en español</span></div>
+        <div class="diff-item"><div class="diff-check">✓</div><span>Resultados listos en segundos</span></div>
+        <div class="diff-item"><div class="diff-check">✓</div><span>Completamente gratis para empezar</span></div>
+      </div>
+    </div>
+    <div class="diff-visual">
+      <div class="big-circle">
+        <div class="circle-text">
+          <div class="circle-main">LoveIA</div>
+          <div class="circle-sub">La puerta de entrada<br>a la inteligencia<br>artificial</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VIRAL LOOP -->
+<section id="viral">
+  <div class="section-label">Casos de uso</div>
+  <h2 class="section-title">Miles ya lo<br><span class="grad-text">están usando</span></h2>
+  <p class="section-sub">Para cualquier persona, cualquier industria, cualquier idea.</p>
+  <div class="viral-cards">
+    <div class="viral-card">
+      <div class="viral-emoji">🛍️</div>
+      <div class="viral-title">Emprendedores</div>
+      <div class="viral-desc">Crean copy, descripciones de productos y estrategias en minutos.</div>
+    </div>
+    <div class="viral-card">
+      <div class="viral-emoji">📱</div>
+      <div class="viral-title">Creadores de contenido</div>
+      <div class="viral-desc">Generan ideas, guiones y captions para redes sociales sin esfuerzo.</div>
+    </div>
+    <div class="viral-card">
+      <div class="viral-emoji">💼</div>
+      <div class="viral-title">Freelancers</div>
+      <div class="viral-desc">Producen propuestas, emails y presentaciones en tiempo récord.</div>
+    </div>
+    <div class="viral-card">
+      <div class="viral-emoji">🎓</div>
+      <div class="viral-title">Estudiantes</div>
+      <div class="viral-desc">Resúmenes, ensayos e ideas para proyectos en segundos.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="cta-final">
+  <div class="cta-glow"></div>
+  <h2 class="section-title" style="margin-bottom:1rem">Empieza ahora.<br><span class="grad-text">Es gratis.</span></h2>
+  <p style="color:rgba(255,255,255,0.45);margin-bottom:2.5rem;font-size:1rem">Sin registros complicados. Sin tarjeta. Sin fricción.</p>
+  <button class="btn-primary" style="font-size:1.1rem;padding:1rem 2.8rem" onclick="window.location.href='app.html'">
+    Entrar a LoveIA →
+  </button>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="nav-logo" style="font-size:1rem">
+    <div class="logo-icon" style="width:24px;height:24px;font-size:11px">❤️</div>
+    <span class="logo-text">LoveIA</span>
+  </div>
+  <span>La forma más fácil de usar inteligencia artificial</span>
+  <span>© 2026 LoveIA</span>
+</footer>
+
+<script>
+  const cursor = document.getElementById('cursor');
+  const trail = document.getElementById('cursor-trail');
+  let mx=0,my=0,tx=0,ty=0;
+  document.addEventListener('mousemove',e=>{
+    mx=e.clientX; my=e.clientY;
+    cursor.style.transform=`translate(${mx-10}px,${my-10}px)`;
+  });
+  setInterval(()=>{
+    tx+=(mx-tx)*.15; ty+=(my-ty)*.15;
+    trail.style.transform=`translate(${tx-20}px,${ty-20}px)`;
+  },16);
+  document.querySelectorAll('button,a,.tool-card,.viral-card,.diff-item').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{cursor.style.transform+=` scale(2)`;cursor.style.mixBlendMode='screen'});
+    el.addEventListener('mouseleave',()=>{cursor.style.mixBlendMode='difference'});
+  });
+
+  const outputs = [
+    'Actúa como un experto en marketing de moda en Instagram. Crea 5 posts con gancho emocional para vender ropa casual dirigida a mujeres de 20-35 años. Incluye llamado a la acción en cada post. Usa emojis estratégicamente y hashtags de alto alcance. El tono debe ser cercano y aspiracional.',
+    'Eres un copywriter profesional. Escribe un hilo de Twitter/X de 7 tweets que expliquen los beneficios de [PRODUCTO] de manera que genere curiosidad y deseo. Empieza con una pregunta provocadora y termina con un CTA irresistible.',
+    'Actúa como un coach de negocios. Dame 5 ideas de negocio digital que pueda empezar con menos de $500 en 2026, con mercado comprobado, modelo de monetización claro y primeros pasos concretos para cada una.',
+  ];
+
+  function runDemo(){
+    const input = document.getElementById('demoInput').value.trim();
+    const out = document.getElementById('demoOutput');
+    if(!input) return;
+    out.innerHTML = '<span class="cursor-blink"></span>';
+    const text = outputs[Math.floor(Math.random()*outputs.length)];
+    let i=0;
+    const interval = setInterval(()=>{
+      if(i<text.length){
+        out.innerHTML = text.slice(0,++i) + '<span class="cursor-blink"></span>';
+      } else {
+        clearInterval(interval);
+        out.innerHTML = text;
+      }
+    },18);
+  }
+  document.getElementById('demoInput').addEventListener('keydown',e=>{if(e.key==='Enter')runDemo()});
+
+  const observer = new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){e.target.style.opacity='1';e.target.style.transform='translateY(0)'}
+    });
+  },{threshold:.1});
+  document.querySelectorAll('.tool-card,.viral-card,.diff-item').forEach(el=>{
+    el.style.opacity='0';el.style.transform='translateY(20px)';el.style.transition='opacity .5s, transform .5s';
+    observer.observe(el);
+  });
+</script>
+</body>
+</html>

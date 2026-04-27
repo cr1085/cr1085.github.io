@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SubGen — Subtítulos Automáticos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=Bangers&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+
+  <!-- ════════════════════ DASHBOARD ════════════════════ -->
+  <div id="dashboard-screen" class="screen active">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <span class="brand-icon">◈</span>
+        <span>SubGen</span>
+        
+      </div>
+      <nav class="sidebar-nav">
+        <a href="#" class="nav-item active" data-view="upload">
+          <span class="nav-icon">⬆</span> Subir Video
+        </a>
+        <a href="#" class="nav-item" data-view="history">
+          <span class="nav-icon">◷</span> Historial
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="user-badge">
+          <span class="user-avatar">G</span>
+          <span class="user-email">Invitado</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+      <!-- Header -->
+      <header class="dash-header">
+        <div>
+          <h2 id="view-title">Subir Video</h2>
+          <p id="view-subtitle">Sube un video y genera subtítulos automáticamente con IA</p>
+        </div>
+        <button onclick="goBack()" class="btn-back">
+  ← Volver a PromptLabs
+</button>
+
+<script>
+function goBack() {
+  const url = localStorage.getItem("returnToPromptLabs");
+  window.location.href = url || "../index.html";
+}
+</script>
+        <div class="header-status" id="header-status"></div>
+      </header>
+
+      <!-- ── UPLOAD VIEW ── -->
+      <div id="view-upload" class="view active">
+
+        <!-- Drop Zone -->
+        <div class="upload-zone" id="upload-zone">
+          <div class="upload-content">
+            <div class="upload-icon">▶</div>
+            <h3>Arrastra tu video aquí</h3>
+            <p>MP4, MOV, AVI, WebM — máx. 500MB</p>
+            <button class="btn-outline" id="btn-browse">Explorar archivos</button>
+            <input type="file" id="file-input" accept="video/*" hidden />
+          </div>
+          <div class="drop-indicator">Suelta el archivo</div>
+        </div>
+
+        <!-- File Preview -->
+        <div class="file-preview hidden" id="file-preview">
+          <div class="preview-header">
+            <div class="file-info">
+              <span class="file-icon">▶</span>
+              <div>
+                <div class="file-name" id="preview-filename">video.mp4</div>
+                <div class="file-meta" id="preview-meta">0 MB · MP4</div>
+              </div>
+            </div>
+            <button class="btn-remove" id="btn-remove-file">✕</button>
+          </div>
+          <video class="video-preview" id="video-preview" controls></video>
+          <div class="upload-options">
+            <div class="field">
+              <label>Idioma del video</label>
+              <select id="video-language" title="Seleccionar idioma del video">
+                <option value="es">Español</option>
+                <option value="en">Inglés</option>
+                <option value="fr">Francés</option>
+                <option value="pt">Portugués</option>
+                <option value="de">Alemán</option>
+                <option value="it">Italiano</option>
+                <option value="auto">Detección automática</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Modelo de transcripción</label>
+              <select id="whisper-model" title="Seleccionar modelo de transcripción">
+                <option value="base">Base (rápido)</option>
+                <option value="small" selected>Small (recomendado)</option>
+                <option value="medium">Medium (más preciso)</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn-primary btn-upload" id="btn-upload">
+            <span>Generar Subtítulos</span>
+            <span class="btn-arrow">⚡</span>
+          </button>
+        </div>
+
+        <!-- Progress Panel -->
+        <div class="progress-panel hidden" id="progress-panel">
+          <div class="progress-steps">
+            <div class="step" id="step-upload">
+              <div class="step-dot"></div>
+              <div class="step-info">
+                <span class="step-label">Subiendo video</span>
+                <span class="step-status">Esperando...</span>
+              </div>
+            </div>
+            <div class="step" id="step-process">
+              <div class="step-dot"></div>
+              <div class="step-info">
+                <span class="step-label">Procesando audio</span>
+                <span class="step-status">Esperando...</span>
+              </div>
+            </div>
+            <div class="step" id="step-transcribe">
+              <div class="step-dot"></div>
+              <div class="step-info">
+                <span class="step-label">Transcribiendo con Whisper</span>
+                <span class="step-status">Esperando...</span>
+              </div>
+            </div>
+            <div class="step" id="step-generate">
+              <div class="step-dot"></div>
+              <div class="step-info">
+                <span class="step-label">Generando archivo SRT</span>
+                <span class="step-status">Esperando...</span>
+              </div>
+            </div>
+          </div>
+          <div class="progress-bar-container">
+            <div class="progress-bar" id="main-progress-bar"></div>
+          </div>
+          <p class="progress-message" id="progress-message">Iniciando proceso...</p>
+        </div>
+
+        <!-- Result Panel -->
+        <div class="result-panel hidden" id="result-panel">
+          <div class="result-header">
+            <span class="result-check">✓</span>
+            <div>
+              <h3>¡Subtítulos generados!</h3>
+              <p id="result-subtitle-info">42 subtítulos · 3m 24s de video</p>
+            </div>
+          </div>
+
+          <!-- SRT Preview -->
+          <div class="srt-preview">
+            <div class="srt-preview-header">
+              <span>Vista previa SRT</span>
+              <button class="btn-copy" id="btn-copy-srt">Copiar</button>
+            </div>
+            <div class="srt-content" id="srt-content"></div>
+          </div>
+
+          <!-- Video with subtitles -->
+          <div class="video-with-subs">
+            <div class="video-container">
+              <video id="result-video" controls></video>
+              <div class="subtitle-overlay" id="subtitle-overlay"></div>
+            </div>
+          </div>
+
+          <!-- ── EDITOR DE ESTILOS ── -->
+          <div class="editor-section" id="editor-section"></div>
+
+          <div class="result-actions">
+            <button class="btn-primary" id="btn-download-srt">
+              ↓ Descargar .srt
+            </button>
+
+            <button class="btn-outline" id="btn-download-zip">
+              📦 Descargar video + subtítulos
+            </button>
+
+            <button class="btn-outline" id="btn-download-player">
+              🎬 Video con subtítulos activables
+            </button>
+            
+            <button class="btn-outline" id="btn-new-video">
+              + Nuevo video
+            </button>
+          </div>
+          
+          <div class="share-section">
+            <h4>📥 Opciones para obtener el video con subtítulos</h4>
+            
+            <div class="download-options">
+              <div class="download-option option-primary">
+                <h5>🎬 Opción 1: Grabar con el navegador</h5>
+                <p>El video se graba con los subtítulos directamente. Funciona mejor en Chrome/Edge.</p>
+                <button class="btn-burn-large" id="btn-burn-canvas">
+                  🔴 Iniciar grabación
+                </button>
+              </div>
+              
+              <div class="download-option">
+                <h5>⚡ Opción 2: FFmpeg (más estable)</h5>
+                <p>Usa FFmpeg.wasm para pegar subtítulos. Puede tardar más pero es más confiable.</p>
+                <button class="btn-outline" id="btn-burn-ffmpeg">
+                  ⚡ Procesar con FFmpeg
+                </button>
+              </div>
+            </div>
+            
+            <h4 style="margin-top:1.5rem">Otros archivos</h4>
+            <div class="share-buttons">
+              <button class="btn-share youtube" id="btn-share-youtube">
+                📺 YouTube
+              </button>
+              <button class="btn-share tiktok" id="btn-share-tiktok">
+                🎵 TikTok
+              </button>
+              <button class="btn-share instagram" id="btn-share-instagram">
+                📸 Instagram
+              </button>
+            </div>
+            
+            <details class="other-options">
+              <summary>📋 Cómo usar en TikTok/Instagram/CapCut</summary>
+              <div class="other-options-content">
+                <p><strong>Opción fácil (igual que las apps):</strong></p>
+                <ol>
+                  <li>📥 Descarga el archivo <strong>.srt</strong> abajo</li>
+                  <li>📱 Abre CapCut/TikTok/Instagram</li>
+                  <li>🅰️ Agrega tu video y busca "Subtitles" o "Captions"</li>
+                  <li>📝 Importa el archivo .srt o pega los subtítulos</li>
+                  <li>🎨 Personaliza el estilo (igual a los subtítulos de TikTok)</li>
+                </ol>
+                <hr>
+                <p><strong>Para subtítulos quemados (video final):</strong></p>
+                <ol>
+                  <li>Usa <a href="https://handbrake.fr" target="_blank" rel="noopener noreferrer">Handbrake</a> (gratis):</li>
+                  <li>Abre Handbrake → Open → tu video</li>
+                  <li>Subtitles → Import → selecciona el .srt</li>
+                  <li>Marca "Burn in" → Start</li>
+                </ol>
+              </div>
+            </details>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── HISTORY VIEW ── -->
+      <div id="view-history" class="view">
+        <div class="history-grid" id="history-grid">
+          <div class="empty-state">
+            <span class="empty-icon">◷</span>
+            <p>Todavía no tienes videos procesados</p>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Toast Notifications -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Scripts -->
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+
+  <!-- FFmpeg 0.12.x (nueva API) -->
+  <script>
+    // Exponer módulos FFmpeg en window con nombres claros para burn.js
+    window.FFmpegWASM = undefined;
+    window.FFmpegUtil = undefined;
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.6/dist/umd/ffmpeg.js"
+    onload="window.FFmpegWASM = FFmpegWASM; console.log('[FFmpeg] ffmpeg.js cargado');"
+    onerror="console.error('[FFmpeg] ERROR: no se pudo cargar ffmpeg.js')">
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/util@0.12.1/dist/umd/index.js"
+    onload="window.FFmpegUtil = FFmpegUtil; console.log('[FFmpeg] util.js cargado');"
+    onerror="console.error('[FFmpeg] ERROR: no se pudo cargar util.js')">
+  </script>
+
+  <script src="burn.js"></script>
+
+  <script src="config.js" onerror="console.error('ERROR: No se pudo cargar config.js')"></script>
+  <script src="videoStore.js"></script>
+  <script src="supabase.js"></script>
+  <script src="srt.js"></script>
+  <script src="ui.js"></script>
+  <script src="whisper.js"></script>
+  <script src="editor.js"></script>
+  <script src="app.js"></script>
+
+</body>
+</html>

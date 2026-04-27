@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QRConvert — Convierte todo en un QR</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- QRCode.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body data-theme="dark">
+
+  <!-- NOISE OVERLAY -->
+  <div class="noise"></div>
+
+  <!-- AUTH MODAL -->
+  <div id="authModal" class="modal-overlay hidden">
+    <div class="modal-box">
+      <button class="modal-close" id="closeAuthModal">✕</button>
+      <div class="modal-logo">QR<span>Convert</span></div>
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-tab="login">Iniciar sesión</button>
+        <button class="auth-tab" data-tab="register">Registrarse</button>
+      </div>
+      <div id="authLogin" class="auth-form">
+        <input type="email" id="loginEmail" placeholder="correo@ejemplo.com" autocomplete="email" />
+        <input type="password" id="loginPassword" placeholder="Contraseña" autocomplete="current-password" />
+        <button class="btn-primary" id="btnLogin">Entrar</button>
+        <div class="auth-divider"><span>o</span></div>
+        <button class="btn-google" id="btnGoogleLogin">
+          <svg viewBox="0 0 24 24" width="18" height="18"><path fill="#EA4335" d="M5.27 9.76A7.08 7.08 0 0 1 12 4.9c1.76 0 3.35.65 4.58 1.7l3.4-3.4A12 12 0 0 0 0 12c0 1.99.49 3.86 1.36 5.51l3.91-3.75Z"/><path fill="#34A853" d="M16.04 18.01A7.06 7.06 0 0 1 12 19.1c-2.99 0-5.56-1.85-6.73-4.51L1.36 18.5A12 12 0 0 0 12 24c3.24 0 6.19-1.19 8.44-3.14l-4.4-2.85Z"/><path fill="#4A90D9" d="M20.44 20.86A11.96 11.96 0 0 0 24 12c0-.8-.08-1.57-.23-2.32H12v4.64h6.9a5.8 5.8 0 0 1-2.46 3.69l4 2.85Z"/><path fill="#FBBC05" d="M5.27 14.59A7.1 7.1 0 0 1 4.9 12c0-.9.16-1.77.45-2.59L1.36 5.51A11.98 11.98 0 0 0 0 12c0 1.94.47 3.77 1.3 5.38l3.97-2.79Z"/></svg>
+          Continuar con Google
+        </button>
+      </div>
+      <div id="authRegister" class="auth-form hidden">
+        <input type="email" id="regEmail" placeholder="correo@ejemplo.com" autocomplete="email" />
+        <input type="password" id="regPassword" placeholder="Contraseña (mínimo 6 caracteres)" autocomplete="new-password" />
+        <button class="btn-primary" id="btnRegister">Crear cuenta</button>
+      </div>
+      <p class="auth-msg" id="authMsg"></p>
+    </div>
+  </div>
+
+  <!-- HISTORY MODAL -->
+  <div id="historyModal" class="modal-overlay hidden">
+    <div class="modal-box modal-history">
+      <button class="modal-close" id="closeHistoryModal">✕</button>
+      <h2 class="history-title">Historial de conversiones</h2>
+      <div id="historyList" class="history-list">
+        <p class="history-empty">Cargando...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo">QR<span>Convert</span></div>
+      <div class="header-actions">
+        <button class="btn-icon" id="themeToggle" title="Cambiar tema">☽</button>
+        <button class="btn-ghost" id="historyBtn" style="display:none">Historial</button>
+        <button class="btn-ghost" id="authBtn">Iniciar sesión</button>
+        <button class="btn-ghost hidden" id="logoutBtn">Salir</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-tag">Herramienta de conversión universal</div>
+    <h1 class="hero-title">Convierte <em>cualquier cosa</em><br/>en un código QR</h1>
+    <p class="hero-sub">Texto, URL, imagen, video — todo en segundos. Sin complicaciones.</p>
+  </section>
+
+  <!-- MAIN CONVERTER -->
+  <main class="main-container">
+    <!-- INPUT AREA -->
+    <div class="converter-card">
+      <div class="input-type-detect" id="typeDetect">
+        <span class="detect-label">Tipo detectado:</span>
+        <span class="detect-badge" id="detectBadge">Esperando input…</span>
+      </div>
+
+      <div class="input-zone" id="inputZone">
+        <textarea
+          id="mainInput"
+          class="main-textarea"
+          placeholder="Pega aquí texto, URL, enlace de video, o arrastra una imagen…"
+          rows="4"
+          spellcheck="false"
+        ></textarea>
+        <div class="drop-overlay" id="dropOverlay">
+          <span>Suelta la imagen aquí</span>
+        </div>
+      </div>
+
+      <!-- IMAGE UPLOAD -->
+      <div class="upload-row">
+        <label class="btn-upload" for="imageUpload">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Subir imagen
+        </label>
+        <input type="file" id="imageUpload" accept="image/*" class="hidden-input" />
+        <span class="upload-hint">o arrastra una imagen al área de texto</span>
+      </div>
+
+      <!-- ACTION BUTTONS -->
+      <div class="action-row">
+        <button class="action-btn active" data-action="qr" id="btnQR">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="3" height="3"/><rect x="18" y="14" width="3" height="3"/><rect x="14" y="18" width="3" height="3"/><rect x="18" y="18" width="3" height="3"/></svg>
+          Generar QR
+        </button>
+        <button class="action-btn" data-action="link" id="btnLink">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+          Enlace compartible
+        </button>
+      </div>
+
+      <button class="btn-convert" id="btnConvert">
+        <span>Convertir ahora</span>
+        <div class="btn-loader hidden" id="btnLoader"></div>
+      </button>
+    </div>
+
+    <!-- OUTPUT AREA -->
+    <div class="output-card hidden" id="outputCard">
+      <div class="output-header">
+        <span class="output-label" id="outputLabel">Tu QR</span>
+        <div class="output-controls">
+          <button class="ctrl-btn" id="btnCopy" title="Copiar enlace">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copiar
+          </button>
+          <button class="ctrl-btn" id="btnDownload" title="Descargar QR">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Descargar
+          </button>
+        </div>
+      </div>
+
+      <!-- QR Preview -->
+      <div class="qr-wrapper" id="qrWrapper">
+        <div id="qrCanvas"></div>
+      </div>
+
+      <!-- Link output -->
+      <div class="link-output hidden" id="linkOutput">
+        <div class="link-box" id="linkBox"></div>
+      </div>
+
+      <div class="output-meta" id="outputMeta"></div>
+    </div>
+
+    <!-- ERROR -->
+    <div class="error-card hidden" id="errorCard">
+      <span class="error-icon">⚠</span>
+      <p id="errorMsg">Algo salió mal.</p>
+    </div>
+  </main>
+
+  <!-- FEATURES SECTION -->
+  <section class="features">
+    <div class="features-grid">
+      <div class="feature-item">
+        <div class="feature-icon">⚡</div>
+        <h3>Instantáneo</h3>
+        <p>Vista previa en tiempo real mientras escribes.</p>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">🔗</div>
+        <h3>Cualquier formato</h3>
+        <p>URL, texto, imagen — todo se convierte.</p>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">📱</div>
+        <h3>Mobile-first</h3>
+        <p>Diseñado para funcionar en cualquier dispositivo.</p>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">📂</div>
+        <h3>Historial</h3>
+        <p>Guarda y revisa tus conversiones anteriores.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <span>QRConvert — Hecho con ♥ para convertir todo</span>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>

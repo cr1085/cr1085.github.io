@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PixelMind AI — Open Source Image Editor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="main.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
+</head>
+<body>
+<!-- AUTH MODAL -->
+<div id="authModal" class="modal-overlay active">
+  <div class="modal-box">
+    <div class="modal-logo">
+      <span class="logo-mark">PM</span>
+      <span class="logo-text">PixelMind<span>AI</span></span>
+    </div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" data-tab="login">Sign In</button>
+      <button class="auth-tab" data-tab="register">Create Account</button>
+    </div>
+    <form id="loginForm" class="auth-form active">
+      <div class="field-group">
+        <label>Email</label>
+        <input type="email" id="loginEmail" placeholder="you@example.com" required />
+      </div>
+      <div class="field-group">
+        <label>Password</label>
+        <input type="password" id="loginPassword" placeholder="••••••••" required />
+      </div>
+      <button type="submit" class="btn-primary">Sign In</button>
+      <p class="auth-hint">Demo: <code>demo@pixelmind.ai</code> / <code>demo1234</code></p>
+    </form>
+    <form id="registerForm" class="auth-form">
+      <div class="field-group">
+        <label>Username</label>
+        <input type="text" id="regName" placeholder="yourusername" required />
+      </div>
+      <div class="field-group">
+        <label>Email</label>
+        <input type="email" id="regEmail" placeholder="you@example.com" required />
+      </div>
+      <div class="field-group">
+        <label>Password</label>
+        <input type="password" id="regPassword" placeholder="Min. 8 characters" required />
+      </div>
+      <button type="submit" class="btn-primary">Create Free Account</button>
+    </form>
+    <p class="modal-footer">Open source · No paid APIs · Self-hostable</p>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app" class="app hidden">
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="logo">
+        <span class="logo-mark">PM</span>
+        <span class="logo-text">PixelMind<span>AI</span></span>
+      </div>
+      <nav class="topbar-nav">
+        <button class="nav-btn active" data-view="editor">Editor</button>
+        <button class="nav-btn" data-view="projects">Projects</button>
+        <button class="nav-btn" data-view="gallery">Gallery</button>
+      </nav>
+    </div>
+    <div class="topbar-right">
+      <div class="credits-badge"><span class="credit-icon">⚡</span><span id="userCredits">50</span> credits</div>
+      <div class="user-menu">
+        <div class="user-avatar" id="userAvatar">D</div>
+        <span id="userName">Demo</span>
+        <button class="logout-btn" id="logoutBtn" title="Sign out">↩</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- EDITOR VIEW -->
+  <div id="editorView" class="view active">
+    <div class="workspace">
+      <!-- LEFT TOOLS -->
+      <aside class="tools-panel">
+        <div class="tool-section">
+          <span class="tool-section-label">CANVAS</span>
+          <button class="tool-btn active" data-tool="select" title="Select (V)">
+            <svg viewBox="0 0 24 24" width="18" height="18"><path d="M4 4l7 18 3-7 7-3z" stroke="currentColor" fill="none" stroke-width="2"/></svg>
+          </button>
+          <button class="tool-btn" data-tool="draw" title="Draw (B)">
+            <svg viewBox="0 0 24 24" width="18" height="18"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor"/></svg>
+          </button>
+          <button class="tool-btn" data-tool="erase" title="Erase (E)">
+            <svg viewBox="0 0 24 24" width="18" height="18"><path d="M15.14 3L21 8.86 8.86 21H3v-5.86L15.14 3zm0 2.83L5 15.97V19h3.03L18.17 8.86 15.14 5.83z" fill="currentColor"/></svg>
+          </button>
+          <button class="tool-btn" data-tool="crop" title="Crop (C)">
+            <svg viewBox="0 0 24 24" width="18" height="18"><path d="M7 17V1H5v4H1v2h4v10a2 2 0 002 2h10v4h2v-4h4v-2H7zm10-4h2V7a2 2 0 00-2-2H9v2h8v8z" fill="currentColor"/></svg>
+          </button>
+          <button class="tool-btn" data-tool="text" title="Text (T)">
+            <svg viewBox="0 0 24 24" width="18" height="18"><path d="M5 4v3h5.5v12h3V7H19V4z" fill="currentColor"/></svg>
+          </button>
+          <button class="tool-btn" data-tool="mask" title="AI Mask">
+            <svg viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="12" r="9" stroke="currentColor" fill="none" stroke-width="1.5" stroke-dasharray="3 2"/><circle cx="12" cy="12" r="4" fill="currentColor" opacity=".5"/></svg>
+          </button>
+        </div>
+        <div class="tool-section">
+          <span class="tool-section-label">SHAPES</span>
+          <button class="tool-btn" data-tool="rect" title="Rectangle" style="font-size:16px">□</button>
+          <button class="tool-btn" data-tool="circle" title="Circle" style="font-size:16px">○</button>
+          <button class="tool-btn" data-tool="line" title="Line" style="font-size:16px">╱</button>
+        </div>
+        <div class="tool-section">
+          <span class="tool-section-label">OPTIONS</span>
+          <div class="slider-mini">
+            <label>Size</label>
+            <input type="range" id="brushSize" min="1" max="100" value="20" />
+            <span id="brushSizeVal">20</span>
+          </div>
+          <div class="color-row">
+            <label>Color</label>
+            <input type="color" id="colorPicker" value="#e040fb" />
+          </div>
+          <div class="slider-mini">
+            <label>Opacity</label>
+            <input type="range" id="opacitySlider" min="0" max="100" value="100" />
+            <span id="opacityVal">100</span>
+          </div>
+        </div>
+      </aside>
+
+      <!-- CANVAS CENTER -->
+      <main class="canvas-area">
+        <div class="canvas-toolbar">
+          <div class="canvas-toolbar-left">
+            <button class="icon-btn" id="undoBtn" title="Undo">↩</button>
+            <button class="icon-btn" id="redoBtn" title="Redo">↪</button>
+            <div class="divider-v"></div>
+            <button class="icon-btn" id="zoomOutBtn">−</button>
+            <span id="zoomLevel" class="zoom-label">100%</span>
+            <button class="icon-btn" id="zoomInBtn">+</button>
+            <button class="icon-btn" id="zoomFitBtn" title="Fit">⊞</button>
+          </div>
+          <div class="canvas-toolbar-right">
+            <button class="btn-secondary" id="importBtn">⇪ Import</button>
+            <button class="btn-secondary" id="exportBtn">⇩ Export</button>
+            <button class="btn-primary" id="newCanvasBtn">+ New</button>
+          </div>
+        </div>
+        <div class="canvas-viewport" id="canvasViewport">
+          <div class="canvas-wrapper" id="canvasWrapper">
+            <canvas id="mainCanvas"></canvas>
+          </div>
+          <div class="canvas-drop-hint" id="dropHint">
+            <div class="drop-icon">🖼</div>
+            <p>Drop image here or click <strong>Import</strong></p>
+            <p class="hint-sub">PNG · JPG · WEBP</p>
+          </div>
+        </div>
+        <div class="layers-bar">
+          <span class="layers-label">LAYERS</span>
+          <div id="layersList" class="layers-list"></div>
+          <button class="icon-btn" id="addLayerBtn" title="Add layer">+</button>
+          <button class="icon-btn danger" id="deleteLayerBtn" title="Delete">×</button>
+        </div>
+      </main>
+
+      <!-- RIGHT AI PANEL -->
+      <aside class="ai-panel">
+        <div class="panel-tabs">
+          <button class="panel-tab active" data-panel="ai">AI Tools</button>
+          <button class="panel-tab" data-panel="adjust">Adjust</button>
+          <button class="panel-tab" data-panel="filters">Filters</button>
+        </div>
+        <!-- AI -->
+        <div id="aiPanel" class="panel-content active">
+          <div class="ai-backend-selector">
+            <label class="field-label">AI Backend</label>
+            <select id="backendSelect">
+              <option value="local_sd">Stable Diffusion (Local :7860)</option>
+              <option value="comfyui">ComfyUI (Local :8188)</option>
+              <option value="huggingface">HuggingFace Spaces (Free)</option>
+              <option value="demo" selected>Demo Mode (Simulated)</option>
+            </select>
+            <div id="backendStatus" class="backend-status demo">● Demo Mode</div>
+          </div>
+          <div class="ai-backend-config" id="backendConfig" style="display:none">
+            <input type="text" id="backendUrl" placeholder="http://127.0.0.1:7860" value="http://127.0.0.1:7860" />
+            <button class="btn-sm" id="testConnectionBtn">Test</button>
+          </div>
+
+          <div class="ai-tool-card">
+            <div class="ai-tool-header"><span class="ai-tool-icon">✦</span><span>Text → Image</span><span class="credit-cost">⚡3</span></div>
+            <textarea id="txt2imgPrompt" placeholder="A futuristic city at night, neon lights, cinematic photography..." rows="3"></textarea>
+            <textarea id="txt2imgNegative" placeholder="Negative: blurry, ugly, watermark, low quality..." rows="2"></textarea>
+            <div class="param-row">
+              <div class="param-field"><label>Steps</label><input type="number" id="steps" value="20" min="1" max="150" /></div>
+              <div class="param-field"><label>CFG</label><input type="number" id="cfg" value="7" min="1" max="30" step="0.5" /></div>
+              <div class="param-field"><label>Seed</label><input type="number" id="seed" value="-1" /></div>
+            </div>
+            <div class="param-row">
+              <div class="param-field"><label>Width</label><select id="genWidth"><option>512</option><option>768</option><option selected>1024</option></select></div>
+              <div class="param-field"><label>Height</label><select id="genHeight"><option>512</option><option>768</option><option selected>1024</option></select></div>
+            </div>
+            <button class="btn-ai" id="generateBtn"><span class="btn-ai-icon">✦</span> Generate Image</button>
+          </div>
+
+          <div class="ai-tool-card">
+            <div class="ai-tool-header"><span class="ai-tool-icon">↻</span><span>Image → Image</span><span class="credit-cost">⚡4</span></div>
+            <textarea id="img2imgPrompt" placeholder="Transform into oil painting style..." rows="3"></textarea>
+            <div class="slider-mini"><label>Denoise <span id="denoiseVal">0.75</span></label><input type="range" id="denoise" min="0" max="1" step="0.05" value="0.75" /></div>
+            <button class="btn-ai" id="img2imgBtn"><span class="btn-ai-icon">↻</span> Restyle</button>
+          </div>
+
+          <div class="ai-tool-card">
+            <div class="ai-tool-header"><span class="ai-tool-icon">◈</span><span>Inpaint / Remove</span><span class="credit-cost">⚡5</span></div>
+            <p class="tool-desc">Paint mask over area, then describe replacement (blank = remove).</p>
+            <textarea id="inpaintPrompt" placeholder="Replace with: clear blue sky..." rows="2"></textarea>
+            <div class="mask-actions">
+              <button class="btn-sm" id="activateMaskBtn">🖌 Draw Mask</button>
+              <button class="btn-sm danger" id="clearMaskBtn">✕ Clear</button>
+            </div>
+            <button class="btn-ai" id="inpaintBtn"><span class="btn-ai-icon">◈</span> Apply Inpaint</button>
+          </div>
+
+          <div class="ai-tool-card">
+            <div class="ai-tool-header"><span class="ai-tool-icon">⤡</span><span>AI Upscale</span><span class="credit-cost">⚡3</span></div>
+            <div class="param-row">
+              <div class="param-field"><label>Scale</label><select id="upscaleScale"><option>2</option><option>4</option></select></div>
+              <div class="param-field"><label>Model</label><select id="upscaleModel"><option>ESRGAN</option><option>RealESRGAN</option><option>LDSR</option></select></div>
+            </div>
+            <button class="btn-ai" id="upscaleBtn"><span class="btn-ai-icon">⤡</span> Upscale</button>
+          </div>
+
+          <div class="ai-tool-card">
+            <div class="ai-tool-header"><span class="ai-tool-icon">◐</span><span>Style Transfer</span><span class="credit-cost">⚡4</span></div>
+            <div class="style-presets">
+              <button class="style-preset" data-style="oil painting, impasto, brushwork">Oil Paint</button>
+              <button class="style-preset" data-style="anime style, Studio Ghibli">Anime</button>
+              <button class="style-preset" data-style="watercolor painting, paper texture">Watercolor</button>
+              <button class="style-preset" data-style="pencil sketch, monochrome">Sketch</button>
+              <button class="style-preset" data-style="3D render, octane, photorealistic">3D Render</button>
+              <button class="style-preset" data-style="pixel art, 16-bit retro">Pixel Art</button>
+            </div>
+            <textarea id="stylePrompt" placeholder="Custom style..." rows="2"></textarea>
+            <button class="btn-ai" id="styleTransferBtn"><span class="btn-ai-icon">◐</span> Apply Style</button>
+          </div>
+        </div>
+
+        <!-- ADJUST -->
+        <div id="adjustPanel" class="panel-content">
+          <div class="adjust-group"><label>Brightness</label><input type="range" class="adjust-slider" data-filter="brightness" min="-100" max="100" value="0" /><span class="adjust-val">0</span></div>
+          <div class="adjust-group"><label>Contrast</label><input type="range" class="adjust-slider" data-filter="contrast" min="-100" max="100" value="0" /><span class="adjust-val">0</span></div>
+          <div class="adjust-group"><label>Saturation</label><input type="range" class="adjust-slider" data-filter="saturation" min="-100" max="100" value="0" /><span class="adjust-val">0</span></div>
+          <div class="adjust-group"><label>Hue</label><input type="range" class="adjust-slider" data-filter="hue" min="0" max="360" value="0" /><span class="adjust-val">0°</span></div>
+          <div class="adjust-group"><label>Blur</label><input type="range" class="adjust-slider" data-filter="blur" min="0" max="20" value="0" step="0.5" /><span class="adjust-val">0px</span></div>
+          <div class="adjust-group"><label>Vignette</label><input type="range" class="adjust-slider" data-filter="vignette" min="0" max="100" value="0" /><span class="adjust-val">0</span></div>
+          <button class="btn-secondary full-width" id="resetAdjustBtn">↺ Reset All</button>
+        </div>
+
+        <!-- FILTERS -->
+        <div id="filtersPanel" class="panel-content">
+          <div class="filters-grid">
+            <button class="filter-btn active" data-filter-preset="none"><div class="filter-preview none-p">Aa</div><span>None</span></button>
+            <button class="filter-btn" data-filter-preset="grayscale"><div class="filter-preview gray-p">Aa</div><span>B&W</span></button>
+            <button class="filter-btn" data-filter-preset="sepia"><div class="filter-preview sepia-p">Aa</div><span>Sepia</span></button>
+            <button class="filter-btn" data-filter-preset="vivid"><div class="filter-preview vivid-p">Aa</div><span>Vivid</span></button>
+            <button class="filter-btn" data-filter-preset="cool"><div class="filter-preview cool-p">Aa</div><span>Cool</span></button>
+            <button class="filter-btn" data-filter-preset="warm"><div class="filter-preview warm-p">Aa</div><span>Warm</span></button>
+            <button class="filter-btn" data-filter-preset="fade"><div class="filter-preview fade-p">Aa</div><span>Fade</span></button>
+            <button class="filter-btn" data-filter-preset="dramatic"><div class="filter-preview dramatic-p">Aa</div><span>Dramatic</span></button>
+            <button class="filter-btn" data-filter-preset="neon"><div class="filter-preview neon-p">Aa</div><span>Neon</span></button>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <!-- PROJECTS -->
+  <div id="projectsView" class="view">
+    <div class="projects-container">
+      <div class="projects-header">
+        <h1>My Projects</h1>
+        <button class="btn-primary" id="newProjectBtn">+ New Project</button>
+      </div>
+      <div id="projectsGrid" class="projects-grid"></div>
+    </div>
+  </div>
+
+  <!-- GALLERY -->
+  <div id="galleryView" class="view">
+    <div class="gallery-container">
+      <div class="projects-header">
+        <h1>Generated Gallery</h1>
+        <div class="gallery-filters">
+          <button class="filter-tag active" data-gfilter="all">All</button>
+          <button class="filter-tag" data-gfilter="txt2img">txt2img</button>
+          <button class="filter-tag" data-gfilter="inpaint">inpaint</button>
+          <button class="filter-tag" data-gfilter="upscale">upscale</button>
+        </div>
+      </div>
+      <div id="galleryGrid" class="gallery-grid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- LOADING OVERLAY -->
+<div id="loadingOverlay" class="loading-overlay hidden">
+  <div class="loading-box">
+    <div class="loading-spinner"></div>
+    <p id="loadingText">Processing...</p>
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <p id="progressStep" class="progress-step-text">Initializing...</p>
+  </div>
+</div>
+
+<!-- NEW CANVAS MODAL -->
+<div id="newCanvasModal" class="modal-overlay">
+  <div class="modal-box small">
+    <h3>New Canvas</h3>
+    <div class="field-group"><label>Width (px)</label><input type="number" id="newW" value="1024" min="64" max="4096" /></div>
+    <div class="field-group"><label>Height (px)</label><input type="number" id="newH" value="1024" min="64" max="4096" /></div>
+    <div class="field-group"><label>Background</label>
+      <select id="newBg"><option value="white">White</option><option value="black">Black</option><option value="transparent">Transparent</option></select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" id="cancelNewCanvas">Cancel</button>
+      <button class="btn-primary" id="confirmNewCanvas">Create</button>
+    </div>
+  </div>
+</div>
+
+<div id="toastContainer" class="toast-container"></div>
+<input type="file" id="fileInput" accept="image/*" style="display:none" />
+
+<script src="storage.js"></script>
+<script src="auth.js"></script>
+<script src="canvas.js"></script>
+<script src="ai-bridge.js"></script>
+<script src="filters.js"></script>
+<script src="projects.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

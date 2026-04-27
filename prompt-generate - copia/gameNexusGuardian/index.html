@@ -1,0 +1,4122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEXUS: Guardianes del Código</title>
+<style>
+/* ============================================================
+   NEXUS: Guardianes del Código
+   Estilos globales y sistema de diseño
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&family=Share+Tech+Mono&display=swap');
+
+:root {
+  --color-bg-deep:    #04080F;
+  --color-bg-mid:     #080E1A;
+  --color-bg-panel:   #0D1526;
+  --color-accent-1:   #00F5C4;  /* cian eléctrico */
+  --color-accent-2:   #7B2FFF;  /* violeta neón */
+  --color-accent-3:   #FF3C6F;  /* rojo alerta */
+  --color-accent-4:   #FFD700;  /* oro XP */
+  --color-text-main:  #E0EEFF;
+  --color-text-dim:   #5A7BA0;
+  --color-hud-bg:     rgba(4,8,15,0.85);
+  --font-display:     'Orbitron', monospace;
+  --font-body:        'Rajdhani', sans-serif;
+  --font-code:        'Share Tech Mono', monospace;
+  --canvas-w: 900px;
+  --canvas-h: 540px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%; height: 100%;
+  background: var(--color-bg-deep);
+  color: var(--color-text-main);
+  font-family: var(--font-body);
+  overflow: hidden;
+  user-select: none;
+}
+
+/* ── PANTALLAS DE FLUJO ── */
+.screen {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  transition: opacity 0.5s ease;
+}
+.screen.hidden { opacity: 0; pointer-events: none; }
+
+/* ── CANVAS PRINCIPAL ── */
+#gameCanvas {
+  display: block;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+/* ── WRAPPER DEL JUEGO ── */
+#gameWrapper {
+  position: relative;
+  width: var(--canvas-w);
+  height: var(--canvas-h);
+  max-width: 100vw;
+  max-height: 100vh;
+  overflow: hidden;
+}
+
+/* ── HUD ── */
+#hud {
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 56px;
+  background: var(--color-hud-bg);
+  border-bottom: 1px solid rgba(0,245,196,0.2);
+  display: flex; align-items: center;
+  padding: 0 16px; gap: 20px;
+  font-family: var(--font-body);
+  backdrop-filter: blur(8px);
+  z-index: 20;
+  pointer-events: none;
+}
+.hud-item {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 13px; font-weight: 600; letter-spacing: 0.05em;
+}
+.hud-label { color: var(--color-text-dim); font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; }
+.hud-val   { color: var(--color-accent-1); font-family: var(--font-code); font-size: 14px; }
+.hud-icon  { width: 18px; height: 18px; }
+
+#xpBar {
+  flex: 1; height: 6px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 3px; overflow: hidden;
+  border: 1px solid rgba(0,245,196,0.15);
+}
+#xpFill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-accent-2), var(--color-accent-1));
+  border-radius: 3px;
+  transition: width 0.6s ease;
+}
+
+.hud-sep { width: 1px; height: 24px; background: rgba(255,255,255,0.08); }
+
+/* ── PANEL INFERIOR (controles) ── */
+#bottomBar {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 42px;
+  background: var(--color-hud-bg);
+  border-top: 1px solid rgba(0,245,196,0.1);
+  display: flex; align-items: center;
+  padding: 0 16px; gap: 16px;
+  font-size: 11px; color: var(--color-text-dim);
+  font-family: var(--font-code);
+  pointer-events: none;
+  z-index: 20;
+}
+.key-hint { display: flex; align-items: center; gap: 4px; }
+.key {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-size: 10px; color: var(--color-text-main);
+  font-family: var(--font-code);
+}
+
+.back-btn {
+  background: rgba(123,47,255,0.15);
+  border: 1px solid rgba(123,47,255,0.4);
+  border-radius: 4px;
+  padding: 6px 14px;
+  font-size: 11px;
+  font-family: var(--font-code);
+  color: var(--color-accent-2);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  letter-spacing: 0.05em;
+}
+
+.back-btn:hover {
+  background: rgba(123,47,255,0.3);
+  box-shadow: 0 0 15px rgba(123,47,255,0.4);
+  transform: translateX(-2px);
+}
+
+/* ── DIALOG / MISIÓN ── */
+#dialogBox {
+  position: absolute;
+  bottom: 50px; left: 20px; right: 20px;
+  background: rgba(4,8,15,0.95);
+  border: 1px solid var(--color-accent-1);
+  border-radius: 8px;
+  padding: 16px 20px;
+  font-family: var(--font-body);
+  z-index: 30;
+  opacity: 0; pointer-events: none;
+  transform: translateY(8px);
+  transition: opacity 0.25s, transform 0.25s;
+  box-shadow: 0 0 24px rgba(0,245,196,0.12);
+}
+#dialogBox.visible {
+  opacity: 1; pointer-events: all; transform: translateY(0);
+}
+.dialog-npc  { font-size: 11px; color: var(--color-accent-1); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; }
+.dialog-text { font-size: 15px; line-height: 1.5; color: var(--color-text-main); }
+.dialog-btn  {
+  margin-top: 12px;
+  background: var(--color-accent-1);
+  color: var(--color-bg-deep);
+  border: none; border-radius: 4px;
+  padding: 6px 18px;
+  font-family: var(--font-body); font-weight: 700; font-size: 13px;
+  cursor: pointer; letter-spacing: 0.05em;
+  transition: opacity 0.15s;
+}
+.dialog-btn:hover { opacity: 0.85; }
+
+/* ── NOTIFICACIÓN XP ── */
+#xpNotify {
+  position: absolute; top: 70px; right: 20px;
+  font-family: var(--font-display); font-size: 18px;
+  color: var(--color-accent-4);
+  text-shadow: 0 0 10px rgba(255,215,0,0.5);
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(0);
+  transition: none;
+  z-index: 40;
+}
+
+/* ── MAPA DEL MUNDO ── */
+#worldMap {
+  position: absolute; inset: 0;
+  background: var(--color-bg-mid);
+  z-index: 50;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.4s;
+}
+#worldMap.visible { opacity: 1; pointer-events: all; }
+.map-title {
+  font-family: var(--font-display); font-size: 22px;
+  color: var(--color-accent-1); margin-bottom: 32px;
+  letter-spacing: 0.15em;
+}
+.map-grid { display: flex; gap: 24px; flex-wrap: wrap; justify-content: center; }
+.map-node {
+  width: 140px; padding: 18px 12px;
+  border: 1px solid rgba(0,245,196,0.2);
+  border-radius: 12px;
+  background: rgba(0,245,196,0.04);
+  text-align: center; cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, transform 0.15s;
+}
+.map-node:hover:not(.locked) {
+  border-color: var(--color-accent-1);
+  background: rgba(0,245,196,0.1);
+  transform: translateY(-3px);
+}
+.map-node.locked { opacity: 0.35; cursor: not-allowed; }
+.map-node.active { border-color: var(--color-accent-1); }
+.map-node-icon { font-size: 32px; margin-bottom: 8px; }
+.map-node-name { font-family: var(--font-display); font-size: 11px; color: var(--color-accent-1); letter-spacing: 0.1em; }
+.map-node-desc { font-size: 12px; color: var(--color-text-dim); margin-top: 4px; line-height: 1.4; }
+.map-node-level { font-size: 10px; color: var(--color-text-dim); margin-top: 6px; }
+.map-close {
+  margin-top: 28px; padding: 8px 28px;
+  border: 1px solid var(--color-accent-2);
+  border-radius: 6px; background: transparent;
+  color: var(--color-accent-2); cursor: pointer;
+  font-family: var(--font-body); font-weight: 600; font-size: 14px;
+  transition: background 0.15s;
+}
+.map-close:hover { background: rgba(123,47,255,0.12); }
+
+/* ── PANTALLA DE INICIO ── */
+#titleScreen {
+  background: var(--color-bg-deep);
+  z-index: 100;
+}
+.title-bg {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 60% 40% at 50% 30%, rgba(123,47,255,0.18) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 60% at 20% 80%, rgba(0,245,196,0.08) 0%, transparent 60%);
+}
+.title-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(0,245,196,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,245,196,0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+.title-content { position: relative; z-index: 1; text-align: center; }
+.title-eyebrow {
+  font-family: var(--font-code); font-size: 11px;
+  color: var(--color-accent-1); letter-spacing: 0.3em;
+  text-transform: uppercase; margin-bottom: 16px;
+}
+.title-main {
+  font-family: var(--font-display); font-size: clamp(28px,5vw,52px);
+  font-weight: 900; letter-spacing: 0.1em;
+  color: var(--color-text-main);
+  line-height: 1.1; margin-bottom: 8px;
+}
+.title-main span { color: var(--color-accent-1); }
+.title-sub {
+  font-family: var(--font-display); font-size: clamp(13px,2vw,18px);
+  color: var(--color-text-dim); letter-spacing: 0.2em;
+  margin-bottom: 48px;
+}
+.title-btn {
+  padding: 14px 48px; border: none; border-radius: 6px;
+  font-family: var(--font-display); font-size: 14px; font-weight: 700;
+  cursor: pointer; letter-spacing: 0.1em; transition: all 0.2s;
+}
+.title-btn.primary {
+  background: var(--color-accent-1); color: var(--color-bg-deep);
+  box-shadow: 0 0 20px rgba(0,245,196,0.3);
+}
+.title-btn.primary:hover { box-shadow: 0 0 32px rgba(0,245,196,0.5); transform: translateY(-2px); }
+.title-btn.secondary {
+  background: transparent;
+  border: 1px solid var(--color-accent-2);
+  color: var(--color-accent-2); margin-left: 16px;
+}
+.title-btn.secondary:hover { background: rgba(123,47,255,0.12); }
+.title-version { margin-top: 32px; font-size: 11px; color: var(--color-text-dim); font-family: var(--font-code); }
+
+/* ── MISIÓN ACTIVA (BANNER) ── */
+#missionBanner {
+  position: absolute; top: 62px; left: 50%; transform: translateX(-50%);
+  background: rgba(123,47,255,0.15);
+  border: 1px solid rgba(123,47,255,0.4);
+  border-radius: 20px; padding: 5px 16px;
+  font-family: var(--font-body); font-size: 12px;
+  color: var(--color-accent-2);
+  pointer-events: none; z-index: 25;
+  opacity: 0; transition: opacity 0.3s;
+}
+#missionBanner.visible { opacity: 1; }
+
+/* ── PANTALLA DE LOGROS ── */
+#achievementsPanel {
+  position: absolute; inset: 0; z-index: 55;
+  background: rgba(4,8,15,0.96);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity 0.3s;
+}
+#achievementsPanel.visible { opacity: 1; pointer-events: all; }
+.ach-title { font-family: var(--font-display); font-size: 20px; color: var(--color-accent-4); margin-bottom: 24px; letter-spacing: 0.1em; }
+.ach-grid { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; max-width: 600px; }
+.ach-item {
+  width: 130px; padding: 14px 10px;
+  border: 1px solid rgba(255,215,0,0.15);
+  border-radius: 10px; text-align: center;
+  background: rgba(255,215,0,0.04);
+  transition: all 0.2s;
+}
+.ach-item.unlocked { border-color: rgba(255,215,0,0.5); background: rgba(255,215,0,0.08); }
+.ach-icon { font-size: 28px; margin-bottom: 6px; }
+.ach-name { font-size: 11px; font-weight: 600; color: var(--color-accent-4); margin-bottom: 4px; }
+.ach-desc { font-size: 10px; color: var(--color-text-dim); line-height: 1.3; }
+
+/* ── SCANLINE OVERLAY ── */
+.scanlines {
+  position: absolute; inset: 0; z-index: 60;
+  background: repeating-linear-gradient(
+    0deg, transparent, transparent 3px,
+    rgba(0,0,0,0.08) 3px, rgba(0,0,0,0.08) 4px
+  );
+  pointer-events: none;
+}
+
+/* ── FLASH DE COLISIÓN / DAÑO ── */
+#flashOverlay {
+  position: absolute; inset: 0; z-index: 58;
+  pointer-events: none; opacity: 0;
+  background: rgba(255,60,111,0.25);
+  transition: opacity 0.1s;
+}
+
+/* ── PANEL DE EDUCACIÓN ── */
+#eduPanel {
+  position: absolute; inset: 0; z-index: 70;
+  background: rgba(4,8,15,0.97);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity 0.3s;
+}
+#eduPanel.visible { opacity: 1; pointer-events: all; }
+.edu-card {
+  max-width: 520px; width: 90%;
+  border: 1px solid var(--color-accent-1);
+  border-radius: 12px; padding: 28px 32px;
+  background: var(--color-bg-panel);
+  box-shadow: 0 0 40px rgba(0,245,196,0.1);
+}
+.edu-badge {
+  display: inline-block; padding: 3px 12px;
+  border-radius: 20px; font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  background: rgba(0,245,196,0.12); color: var(--color-accent-1);
+  margin-bottom: 14px;
+}
+.edu-title { font-family: var(--font-display); font-size: 17px; color: var(--color-text-main); margin-bottom: 12px; line-height: 1.3; }
+.edu-body  { font-size: 14px; line-height: 1.7; color: var(--color-text-dim); margin-bottom: 20px; }
+.edu-concept {
+  background: rgba(0,245,196,0.05); border-left: 3px solid var(--color-accent-1);
+  padding: 10px 14px; border-radius: 0 6px 6px 0;
+  font-family: var(--font-code); font-size: 12px; color: var(--color-accent-1);
+  margin-bottom: 20px; line-height: 1.5;
+}
+.edu-btn {
+  background: var(--color-accent-1); color: var(--color-bg-deep);
+  border: none; border-radius: 6px; padding: 10px 28px;
+  font-family: var(--font-body); font-weight: 700; font-size: 14px;
+  cursor: pointer; letter-spacing: 0.05em; transition: opacity 0.15s;
+}
+.edu-btn:hover { opacity: 0.85; }
+
+/* RESPONSIVE básico */
+@media (max-width: 920px) {
+  :root { --canvas-w: 100vw; --canvas-h: 100vh; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PANTALLA DE CARGA - ESTILOS
+   ═══════════════════════════════════════════════════════════════ */
+#loadingScreen {
+  background: var(--color-bg-deep);
+  z-index: 200;
+  overflow: hidden;
+}
+
+#loadingScreen.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s ease;
+}
+
+.loading-bg {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 20%, rgba(0,245,196,0.08) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(123,47,255,0.06) 0%, transparent 50%),
+    linear-gradient(180deg, var(--color-bg-deep) 0%, var(--color-bg-mid) 100%);
+  animation: bgPulse 4s ease-in-out infinite;
+}
+
+@keyframes bgPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+.loading-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(0,245,196,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,245,196,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  animation: gridMove 20s linear infinite;
+}
+
+@keyframes gridMove {
+  0% { transform: perspective(500px) rotateX(60deg) translateY(0); }
+  100% { transform: perspective(500px) rotateX(60deg) translateY(40px); }
+}
+
+.loading-content {
+  position: relative; z-index: 10;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 32px;
+  padding: 40px;
+}
+
+.loading-logo {
+  text-align: center;
+  animation: logoFadeIn 0.8s ease-out;
+}
+
+@keyframes logoFadeIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.logo-hex {
+  margin-bottom: 20px;
+  filter: drop-shadow(0 0 20px rgba(0,245,196,0.4));
+}
+
+.logo-hex svg polygon {
+  filter: drop-shadow(0 0 8px var(--color-accent-1));
+}
+
+.loading-title {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 8vw, 56px);
+  font-weight: 900;
+  color: var(--color-text-main);
+  letter-spacing: 0.2em;
+  text-shadow: 0 0 30px rgba(0,245,196,0.5);
+  margin-bottom: 8px;
+}
+
+.loading-subtitle {
+  font-family: var(--font-code);
+  font-size: clamp(10px, 2vw, 14px);
+  color: var(--color-text-dim);
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+}
+
+.loading-terminal {
+  width: 100%; max-width: 500px;
+  background: rgba(4,8,15,0.9);
+  border: 1px solid rgba(0,245,196,0.2);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 0 30px rgba(0,245,196,0.1);
+}
+
+.terminal-header {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 14px;
+  background: rgba(0,245,196,0.05);
+  border-bottom: 1px solid rgba(0,245,196,0.1);
+}
+
+.terminal-dot {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+}
+.terminal-dot.red { background: #FF5F56; }
+.terminal-dot.yellow { background: #FFBD2E; }
+.terminal-dot.green { background: #27C93F; }
+
+.terminal-title {
+  margin-left: 12px;
+  font-family: var(--font-code);
+  font-size: 11px;
+  color: var(--color-text-dim);
+}
+
+.terminal-body {
+  padding: 16px;
+  min-height: 100px;
+  font-family: var(--font-code);
+  font-size: 12px;
+}
+
+.terminal-line {
+  margin-bottom: 6px;
+  opacity: 0;
+  animation: termLineIn 0.3s ease-out forwards;
+}
+
+.terminal-line .prompt {
+  color: var(--color-accent-1);
+  margin-right: 8px;
+}
+
+.terminal-line .cmd {
+  color: var(--color-text-main);
+}
+
+.terminal-line .output {
+  color: var(--color-text-dim);
+  margin-left: 8px;
+}
+
+.terminal-line .success { color: var(--color-accent-1); }
+.terminal-line .warning { color: #FFD700; }
+.terminal-line .error { color: var(--color-accent-3); }
+
+@keyframes termLineIn {
+  from { opacity: 0; transform: translateX(-10px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.loading-progress-container {
+  width: 100%; max-width: 400px;
+  text-align: center;
+}
+
+.progress-bar-wrapper {
+  position: relative;
+  height: 8px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid rgba(0,245,196,0.15);
+}
+
+.progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--color-accent-2), var(--color-accent-1));
+  border-radius: 4px;
+  transition: width 0.3s ease-out;
+}
+
+.progress-glow {
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(0,245,196,0.3), transparent);
+  animation: progressGlow 1.5s ease-in-out infinite;
+}
+
+@keyframes progressGlow {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.progress-text {
+  display: flex; justify-content: space-between;
+  margin-top: 12px;
+  font-family: var(--font-code);
+  font-size: 12px;
+}
+
+.progress-text #progressPercent {
+  color: var(--color-accent-1);
+  font-weight: bold;
+}
+
+.progress-text #progressStatus {
+  color: var(--color-text-dim);
+}
+
+.loading-specs {
+  display: flex; gap: 24px;
+  padding: 12px 24px;
+  background: rgba(0,0,0,0.3);
+  border-radius: 8px;
+  border: 1px solid rgba(0,245,196,0.1);
+}
+
+.spec-item {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 4px;
+}
+
+.spec-label {
+  font-family: var(--font-code);
+  font-size: 9px;
+  color: var(--color-text-dim);
+  letter-spacing: 0.1em;
+}
+
+.spec-value {
+  font-family: var(--font-code);
+  font-size: 13px;
+  color: var(--color-accent-1);
+}
+
+.loading-particles {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.loading-particle {
+  position: absolute;
+  width: 2px; height: 2px;
+  background: var(--color-accent-1);
+  border-radius: 50%;
+  animation: particleFloat linear infinite;
+  opacity: 0.6;
+}
+
+@keyframes particleFloat {
+  0% { transform: translateY(100vh) scale(0); opacity: 0; }
+  10% { opacity: 0.6; }
+  90% { opacity: 0.6; }
+  100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+}
+
+.loading-scanlines {
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(
+    0deg, transparent, transparent 2px,
+    rgba(0,0,0,0.1) 2px, rgba(0,0,0,0.1) 4px
+  );
+  pointer-events: none;
+  animation: scanMove 8s linear infinite;
+}
+
+@keyframes scanMove {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(4px); }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ESTADOS DE CARGA ADICIONALES
+   ═══════════════════════════════════════════════════════════════ */
+.loading-complete .progress-bar {
+  background: var(--color-accent-1);
+  box-shadow: 0 0 20px var(--color-accent-1);
+}
+
+.loading-complete .loading-terminal {
+  border-color: var(--color-accent-1);
+  animation: terminalComplete 0.5s ease-out;
+}
+
+@keyframes terminalComplete {
+  0% { transform: scale(0.98); }
+  50% { transform: scale(1.01); }
+  100% { transform: scale(1); }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PANTALLA DE CARGA DEL JUEGO
+   ═══════════════════════════════════════════════════════════════ */
+#gameLoadingScreen {
+  background: var(--color-bg-deep);
+  z-index: 150;
+}
+
+.game-loading-bg {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 100% 80% at 50% 120%, rgba(0,245,196,0.12) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(123,47,255,0.08) 0%, transparent 40%),
+    var(--color-bg-deep);
+  animation: gameLoadBgPulse 3s ease-in-out infinite;
+}
+
+@keyframes gameLoadBgPulse {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
+}
+
+.game-loading-content {
+  position: relative; z-index: 10;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 24px;
+}
+
+.game-loader-ring {
+  position: relative;
+  width: 120px; height: 120px;
+}
+
+.ring-core {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 40px; height: 40px;
+  margin: -20px 0 0 -20px;
+  background: var(--color-accent-1);
+  border-radius: 50%;
+  box-shadow: 0 0 30px var(--color-accent-1), 0 0 60px rgba(0,245,196,0.4);
+  animation: corePulse 1.5s ease-in-out infinite;
+}
+
+@keyframes corePulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 30px var(--color-accent-1), 0 0 60px rgba(0,245,196,0.4); }
+  50% { transform: scale(1.1); box-shadow: 0 0 40px var(--color-accent-1), 0 0 80px rgba(0,245,196,0.6); }
+}
+
+.ring-orbit {
+  position: absolute;
+  border: 2px solid rgba(0,245,196,0.3);
+  border-radius: 50%;
+  top: 50%; left: 50%;
+}
+
+.ring-orbit.orbit-1 {
+  width: 60px; height: 60px;
+  margin: -30px 0 0 -30px;
+  border-color: rgba(0,245,196,0.4);
+  animation: orbitRotate 4s linear infinite;
+}
+
+.ring-orbit.orbit-2 {
+  width: 90px; height: 90px;
+  margin: -45px 0 0 -45px;
+  border-color: rgba(123,47,255,0.3);
+  animation: orbitRotate 6s linear infinite reverse;
+}
+
+.ring-orbit.orbit-3 {
+  width: 120px; height: 120px;
+  margin: -60px 0 0 -60px;
+  border-color: rgba(255,215,0,0.2);
+  animation: orbitRotate 8s linear infinite;
+}
+
+@keyframes orbitRotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.game-loading-title {
+  font-family: var(--font-display);
+  font-size: 20px;
+  color: var(--color-text-main);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.game-loading-world {
+  font-family: var(--font-code);
+  font-size: 14px;
+  color: var(--color-accent-2);
+  letter-spacing: 0.2em;
+}
+
+.game-loading-bar {
+  width: 250px; height: 4px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 2px;
+  overflow: hidden;
+  border: 1px solid rgba(0,245,196,0.2);
+}
+
+.game-loading-progress {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--color-accent-2), var(--color-accent-1));
+  border-radius: 2px;
+  transition: width 0.3s ease-out;
+  box-shadow: 0 0 10px var(--color-accent-1);
+}
+
+.game-loading-status {
+  font-family: var(--font-code);
+  font-size: 11px;
+  color: var(--color-text-dim);
+  letter-spacing: 0.05em;
+}
+
+.game-loading-particles {
+  position: absolute; inset: 0;
+  pointer-events: none;
+}
+
+.game-particle {
+  position: absolute;
+  width: 3px; height: 3px;
+  border-radius: 50%;
+  animation: gameParticleFly 2s linear infinite;
+  opacity: 0;
+}
+
+@keyframes gameParticleFly {
+  0% { transform: translateY(0) scale(0); opacity: 0; }
+  20% { opacity: 0.9; }
+  80% { opacity: 0.9; }
+  100% { transform: translateY(-200px) scale(1); opacity: 0; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     PANTALLA DE CARGA - SISTEMA DE ARRANQUE
+     ═══════════════════════════════════════════════════════════════ -->
+<div id="loadingScreen" class="screen">
+  <div class="loading-bg"></div>
+  <div class="loading-grid"></div>
+  <div class="loading-content">
+    <div class="loading-logo">
+      <div class="logo-hex">
+        <svg viewBox="0 0 80 80" width="80" height="80">
+          <polygon points="40,5 70,25 70,55 40,75 10,55 10,25" fill="none" stroke="var(--color-accent-1)" stroke-width="2">
+            <animate attributeName="stroke-dasharray" values="0,200;200,0" dur="1.5s" repeatCount="indefinite"/>
+          </polygon>
+          <polygon points="40,15 60,30 60,50 40,65 20,50 20,30" fill="rgba(0,245,196,0.1)" stroke="var(--color-accent-1)" stroke-width="1.5"/>
+          <text x="40" y="44" text-anchor="middle" fill="var(--color-accent-1)" font-size="24" font-family="Orbitron" font-weight="bold">N</text>
+        </svg>
+      </div>
+      <h1 class="loading-title">NEXUS</h1>
+      <p class="loading-subtitle">SISTEMA DE PROTECCIÓN NEURAL</p>
+    </div>
+    
+    <div class="loading-terminal">
+      <div class="terminal-header">
+        <span class="terminal-dot red"></span>
+        <span class="terminal-dot yellow"></span>
+        <span class="terminal-dot green"></span>
+        <span class="terminal-title">boot_sequence.sh</span>
+      </div>
+      <div class="terminal-body" id="terminalBody">
+        <div class="terminal-line"><span class="prompt">$</span> <span class="cmd">init_nexus_system</span></div>
+      </div>
+    </div>
+    
+    <div class="loading-progress-container">
+      <div class="progress-bar-wrapper">
+        <div class="progress-bar" id="progressBar"></div>
+        <div class="progress-glow"></div>
+      </div>
+      <div class="progress-text">
+        <span id="progressPercent">0%</span>
+        <span id="progressStatus">Inicializando...</span>
+      </div>
+    </div>
+    
+    <div class="loading-specs">
+      <div class="spec-item">
+        <span class="spec-label">CPU</span>
+        <span class="spec-value" id="cpuLoad">--</span>
+      </div>
+      <div class="spec-item">
+        <span class="spec-label">MEM</span>
+        <span class="spec-value" id="memLoad">--</span>
+      </div>
+      <div class="spec-item">
+        <span class="spec-label">NET</span>
+        <span class="spec-value" id="netStatus">OFFLINE</span>
+      </div>
+      <div class="spec-item">
+        <span class="spec-label">UPTIME</span>
+        <span class="spec-value" id="uptime">00:00:00</span>
+      </div>
+    </div>
+  </div>
+  
+  <div class="loading-particles" id="loadingParticles"></div>
+  <div class="loading-scanlines"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     PANTALLA DE CARGA DEL JUEGO
+     ═══════════════════════════════════════════════════════════════ -->
+<div id="gameLoadingScreen" class="screen" style="display:none;">
+  <div class="game-loading-bg"></div>
+  <div class="game-loading-content">
+    <div class="game-loader-ring">
+      <div class="ring-orbit orbit-1"></div>
+      <div class="ring-orbit orbit-2"></div>
+      <div class="ring-orbit orbit-3"></div>
+      <div class="ring-core"></div>
+    </div>
+    <h2 class="game-loading-title">CARGANDO MUNDO</h2>
+    <p class="game-loading-world" id="gameLoadingWorld">HARDWARE</p>
+    <div class="game-loading-bar">
+      <div class="game-loading-progress" id="gameLoadingProgress"></div>
+    </div>
+    <p class="game-loading-status" id="gameLoadingStatus">Inicializando sector...</p>
+    <div class="game-loading-particles"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     PANTALLA DE TÍTULO
+     ═══════════════════════════════════════════════════════════════ -->
+<div id="titleScreen" class="screen hidden">
+  <div class="title-bg"></div>
+  <div class="title-grid"></div>
+  <div class="title-content">
+    <p class="title-eyebrow">// sistema_restauración_v2.4.1</p>
+    <h1 class="title-main">NEXUS<br><span>Guardianes del Código</span></h1>
+    <p class="title-sub">Aprende informática. Salva el sistema.</p>
+    <div>
+      <button class="title-btn primary" id="btnStart">INICIAR MISIÓN</button>
+      <button class="title-btn secondary" id="btnCredits">ACERCA DE</button>
+    </div>
+    <div style="margin-top:16px">
+      <button class="title-btn secondary" id="btnBackToAppTitle" style="border-color:var(--color-accent-1);color:var(--color-accent-1)">← VOLVER A INFO-MÁTICA</button>
+    </div>
+    <p class="title-version">v0.1.0-alpha · Motor NEXUS · Listo para escalar</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     PANTALLA DE JUEGO
+     ═══════════════════════════════════════════════════════ -->
+<div id="gameScreen" class="screen hidden">
+  <div id="gameWrapper">
+
+    <!-- Canvas de renderizado -->
+    <canvas id="gameCanvas"></canvas>
+
+    <!-- Scanlines estéticas -->
+    <div class="scanlines"></div>
+
+    <!-- Flash de daño -->
+    <div id="flashOverlay"></div>
+
+    <!-- HUD Superior -->
+    <div id="hud">
+      <div class="hud-item">
+        <span class="hud-label">JUGADOR</span>
+        <span class="hud-val" id="hudPlayerName">Guardián</span>
+      </div>
+      <div class="hud-sep"></div>
+      <div class="hud-item">
+        <span class="hud-label">LVL</span>
+        <span class="hud-val" id="hudLevel">1</span>
+      </div>
+      <div id="xpBar"><div id="xpFill" style="width:0%"></div></div>
+      <span class="hud-val" id="hudXP" style="font-size:11px;color:var(--color-text-dim)">0 / 100 XP</span>
+      <div class="hud-sep"></div>
+      <div class="hud-item">
+        <span class="hud-label">HP</span>
+        <span class="hud-val" id="hudHP" style="color:var(--color-accent-3)">100</span>
+      </div>
+      <div class="hud-sep"></div>
+      <div class="hud-item">
+        <span class="hud-label">MUNDO</span>
+        <span class="hud-val" id="hudWorld">HARDWARE</span>
+      </div>
+    </div>
+
+    <!-- Banner de misión activa -->
+    <div id="missionBanner"></div>
+
+    <!-- Notificación XP flotante -->
+    <div id="xpNotify"></div>
+
+    <!-- Dialog / NPC -->
+    <div id="dialogBox">
+      <p class="dialog-npc" id="dialogNPC">NPC</p>
+      <p class="dialog-text" id="dialogText">...</p>
+      <button class="dialog-btn" id="dialogBtn">Continuar →</button>
+    </div>
+
+    <!-- Barra inferior (controles) -->
+    <div id="bottomBar">
+      <div class="key-hint"><span class="key">W A S D</span> Mover</div>
+      <div class="key-hint"><span class="key">E</span> Interactuar</div>
+      <div class="key-hint"><span class="key">F</span> Atacar</div>
+      <div class="key-hint"><span class="key">M</span> Mapa</div>
+      <div class="key-hint"><span class="key">L</span> Logros</div>
+      <div class="key-hint"><span class="key">ESC</span> Pausa</div>
+      <div style="flex:1"></div>
+      <button class="back-btn" id="btnBackToApp">← VOLVER A INFO-MÁTICA</button>
+    </div>
+
+    <!-- Mapa del mundo -->
+    <div id="worldMap">
+      <h2 class="map-title">// MAPA DEL SISTEMA</h2>
+      <div class="map-grid" id="mapGrid"></div>
+      <button class="map-close" id="mapClose">CERRAR</button>
+    </div>
+
+    <!-- Panel de logros -->
+    <div id="achievementsPanel">
+      <h2 class="ach-title">⚡ LOGROS</h2>
+      <div class="ach-grid" id="achGrid"></div>
+      <button class="map-close" style="margin-top:24px" id="achClose">CERRAR</button>
+    </div>
+
+    <!-- Panel educativo -->
+    <div id="eduPanel">
+      <div class="edu-card" id="eduCard">
+        <span class="edu-badge" id="eduBadge">Concepto</span>
+        <h3 class="edu-title" id="eduTitle">Título</h3>
+        <p  class="edu-body"  id="eduBody">Cuerpo</p>
+        <div class="edu-concept" id="eduConcept"></div>
+        <button class="edu-btn" id="eduClose">¡Entendido! Seguir →</button>
+      </div>
+    </div>
+
+  </div><!-- /gameWrapper -->
+</div><!-- /gameScreen -->
+
+<script>
+/* ================================================================
+   NEXUS: GUARDIANES DEL CÓDIGO
+   ================================================================
+   ARQUITECTURA:
+   ┌─────────────────────────────────────────────────────────────┐
+   │  CORE ENGINE  →  GAME LOGIC  →  UI/UX  →  DATA LAYER       │
+   └─────────────────────────────────────────────────────────────┘
+
+   Módulos (emulados como namespaces en un único archivo HTML):
+   · AssetLoader      — Sistema de carga de assets con placeholders
+   · Physics          — AABB, colisiones, resolución
+   · Renderer         — Capa de renderizado sobre Canvas 2D
+   · EntityManager    — Pool de entidades (player, NPCs, objetos)
+   · InputSystem      — Teclado + touch
+   · MissionSystem    — Ciclo de misiones tipo Zelda
+   · ProgressionSystem— XP, niveles, logros
+   · UIController     — HUD, diálogos, paneles
+   · WorldManager     — Carga y gestión de mundos
+   · PlayerService    — Persistencia (localStorage en demo; Supabase listo)
+   · GameLoop         — requestAnimationFrame con delta-time fijo
+   · GAME             — Punto de entrada y orquestador
+   ================================================================ */
+
+'use strict';
+
+/* ──────────────────────────────────────────────────────────────
+   1. ASSET LOADER
+   ──────────────────────────────────────────────────────────────
+   Sistema de assets con placeholders procedurales.
+   CÓMO REEMPLAZAR ASSETS:
+     AssetLoader.register('player_idle', { type: 'image', src: '/sprites/player_idle.png' });
+     Luego AssetLoader.load('player_idle') devuelve la imagen cargada.
+   ────────────────────────────────────────────────────────────── */
+const AssetLoader = (() => {
+  const registry = {};  // name → { type, src?, generator? }
+  const cache    = {};  // name → OffscreenCanvas | HTMLImageElement
+
+  /* Registrar asset externo (imagen real) */
+  function register(name, config) {
+    registry[name] = config;
+  }
+
+  /* Obtener asset del cache (sync) */
+  function get(name) {
+    return cache[name] || null;
+  }
+
+  /* Generar placeholder procedural en un OffscreenCanvas o Canvas regular */
+  function _generatePlaceholder(name, config) {
+    const w = config.w || 32, h = config.h || 32;
+    let oc, cx;
+    if (typeof OffscreenCanvas !== 'undefined') {
+      oc = new OffscreenCanvas(w, h);
+      cx = oc.getContext('2d');
+    } else {
+      oc = document.createElement('canvas');
+      oc.width = w; oc.height = h;
+      cx = oc.getContext('2d');
+    }
+    cx.fillStyle = config.bg    || '#1a1a2e';
+    cx.fillRect(0, 0, w, h);
+    cx.fillStyle = config.color || '#00F5C4';
+    cx.font = `bold ${Math.min(w,h)*0.35}px monospace`;
+    cx.textAlign = 'center'; cx.textBaseline = 'middle';
+    cx.fillText(config.glyph || '?', w/2, h/2);
+    if (config.border) {
+      cx.strokeStyle = config.color || '#00F5C4';
+      cx.lineWidth = 2; cx.strokeRect(1,1,w-2,h-2);
+    }
+    return oc;
+  }
+
+  /* Cargar todos los assets en una Promise */
+  async function loadAll() {
+    /* ── Assets dummy incorporados ── */
+    const placeholders = {
+      /* SPRITES DEL JUGADOR
+         CÓMO REEMPLAZAR: Cambiar 'src' por ruta real y type a 'image' */
+      player_idle:  { type:'proc', w:32,h:32, bg:'#0D1A2D', color:'#00F5C4', glyph:'▲', border:true },
+      player_run_r: { type:'proc', w:32,h:32, bg:'#0D1A2D', color:'#00E0B5', glyph:'▶', border:true },
+      player_run_l: { type:'proc', w:32,h:32, bg:'#0D1A2D', color:'#00E0B5', glyph:'◀', border:true },
+      player_jump:  { type:'proc', w:32,h:32, bg:'#0D1A2D', color:'#7B2FFF', glyph:'△', border:true },
+
+      /* NPCs
+         CÓMO AGREGAR NUEVOS PERSONAJES:
+           1. Registrar sprite: AssetLoader.register('npc_nuevo', { type:'proc', ... })
+           2. Crear definición en WORLD_DATA.npcs con su diálogo y misión */
+      npc_mentor:   { type:'proc', w:32,h:32, bg:'#1A0D2D', color:'#7B2FFF', glyph:'M', border:true },
+      npc_vendor:   { type:'proc', w:32,h:32, bg:'#2D1A0D', color:'#FFD700', glyph:'V', border:true },
+      npc_enemy:    { type:'proc', w:32,h:32, bg:'#2D0D0D', color:'#FF3C6F', glyph:'⚡', border:true },
+      npc_terminal: { type:'proc', w:32,h:32, bg:'#0D2D1A', color:'#00F5C4', glyph:'$', border:true },
+
+      /* TILES DE MUNDO
+         CÓMO CAMBIAR FONDOS: Reemplazar estos por tilesets reales */
+      tile_floor:   { type:'proc', w:32,h:32, bg:'#0A0E1A', color:'#1A2236' },
+      tile_wall:    { type:'proc', w:32,h:32, bg:'#0D1526', color:'#1E2D42', border:true },
+      tile_platform:{ type:'proc', w:64,h:16, bg:'#1A2A1A', color:'#00F5C4', border:true },
+      tile_data:    { type:'proc', w:32,h:32, bg:'#1A0D2D', color:'#7B2FFF', glyph:'◈', border:true },
+      tile_bug:     { type:'proc', w:24,h:24, bg:'#2D0D0D', color:'#FF3C6F', glyph:'✗', border:true },
+
+      /* ITEMS */
+      item_xp:      { type:'proc', w:20,h:20, bg:'#2D2200', color:'#FFD700', glyph:'★' },
+      item_key:     { type:'proc', w:20,h:20, bg:'#002D2D', color:'#00F5C4', glyph:'🔑' },
+      item_data:    { type:'proc', w:20,h:20, bg:'#1A0D2D', color:'#7B2FFF', glyph:'◆' },
+    };
+
+    /* Combinar con registry externo */
+    const all = { ...placeholders, ...registry };
+
+    for (const [name, cfg] of Object.entries(all)) {
+      if (cfg.type === 'image') {
+        await new Promise((res, rej) => {
+          const img = new Image();
+          img.onload = () => { cache[name] = img; res(); };
+          img.onerror = () => { cache[name] = _generatePlaceholder(name, { ...cfg, type:'proc' }); res(); };
+          img.src = cfg.src;
+        });
+      } else {
+        cache[name] = _generatePlaceholder(name, cfg);
+      }
+    }
+    return cache;
+  }
+
+  return { register, get, loadAll };
+})();
+
+
+/* ──────────────────────────────────────────────────────────────
+   2. PHYSICS ENGINE
+   ──────────────────────────────────────────────────────────────
+   AABB simple. Detección y resolución de colisiones.
+   Para escalar: reemplazar por Matter.js o sistema de cuadrantes.
+   ────────────────────────────────────────────────────────────── */
+const Physics = (() => {
+  const GRAVITY    = 800;   // px/s²
+  const MAX_FALL   = 600;   // px/s  (velocidad máxima caída)
+  const FRICTION   = 0.82;  // fricción horizontal en suelo
+
+  /* Crea AABB desde entidad */
+  function aabb(e) {
+    return { x: e.x, y: e.y, w: e.w, h: e.h };
+  }
+
+  /* Intersección AABB */
+  function intersects(a, b) {
+    return a.x < b.x + b.w &&
+           a.x + a.w > b.x &&
+           a.y < b.y + b.h &&
+           a.y + a.h > b.y;
+  }
+
+  /* Resolución: empuja 'a' fuera de 'b' y devuelve lado */
+  function resolve(entity, tile) {
+    const dx = (entity.x + entity.w/2) - (tile.x + tile.w/2);
+    const dy = (entity.y + entity.h/2) - (tile.y + tile.h/2);
+    const ox = entity.w/2 + tile.w/2 - Math.abs(dx);
+    const oy = entity.h/2 + tile.h/2 - Math.abs(dy);
+    if (ox <= 0 || oy <= 0) return null;
+
+    if (ox < oy) {
+      entity.x += dx < 0 ? -ox : ox;
+      entity.vx = 0;
+      return dx < 0 ? 'right' : 'left';
+    } else {
+      entity.y += dy < 0 ? -oy : oy;
+      if (dy < 0) { entity.vy = 0; entity.onGround = true; return 'top'; }
+      else        { entity.vy = 0;                          return 'bottom'; }
+    }
+  }
+
+  /* Integrar física de una entidad */
+  function integrate(entity, dt, tiles) {
+    if (!entity.physicsEnabled) return;
+
+    entity.onGround = false;
+
+    /* Gravedad */
+    entity.vy += GRAVITY * dt;
+    if (entity.vy > MAX_FALL) entity.vy = MAX_FALL;
+
+    /* Mover Y → resolver colisiones Y */
+    entity.y += entity.vy * dt;
+    for (const tile of tiles) {
+      if (tile.solid && intersects(aabb(entity), aabb(tile))) {
+        resolve(entity, tile);
+      }
+    }
+
+    /* Mover X → resolver colisiones X */
+    entity.x += entity.vx * dt;
+    for (const tile of tiles) {
+      if (tile.solid && intersects(aabb(entity), aabb(tile))) {
+        resolve(entity, tile);
+      }
+    }
+
+    /* Fricción horizontal cuando en suelo */
+    if (entity.onGround) {
+      entity.vx *= FRICTION;
+      if (Math.abs(entity.vx) < 0.5) entity.vx = 0;
+    }
+  }
+
+  return { intersects, resolve, integrate, aabb };
+})();
+
+
+/* ──────────────────────────────────────────────────────────────
+   3. RENDERER
+   ──────────────────────────────────────────────────────────────
+   Capa de renderizado. Opera sobre un Canvas 2D.
+   Soporta: parallax de N capas, sprites, shapes, texto estilizado.
+   ────────────────────────────────────────────────────────────── */
+const Renderer = (() => {
+  let canvas, ctx, W, H;
+
+  function init(canvasEl) {
+    canvas = canvasEl;
+    ctx    = canvas.getContext('2d');
+    resize();
+  }
+
+  function resize() {
+    const wrapper = canvas.parentElement;
+    const ww = wrapper.clientWidth || 900;
+    const wh = wrapper.clientHeight || 540;
+    W = canvas.width  = ww;
+    H = canvas.height = wh - 56 - 42; // -HUD(56px) -bottomBar(42px)
+    canvas.style.marginTop = '56px';
+  }
+
+  function clear() {
+    ctx.fillStyle = '#04080F';
+    ctx.fillRect(0, 0, W, H);
+  }
+
+  /* Parallax: layers = [{offset, speed, color, lines}]
+     CÓMO REEMPLAZAR: pasar sprites/imágenes en vez de shapes */
+  function drawParallax(layers, camX) {
+    for (const layer of layers) {
+      const px = (-camX * layer.speed) % W;
+      ctx.save();
+      ctx.globalAlpha = layer.alpha || 1;
+
+      /* Dibujar dos veces para efecto loop infinito */
+      _drawParallaxLayer(layer, px, camX);
+      _drawParallaxLayer(layer, px + W, camX);
+      _drawParallaxLayer(layer, px - W, camX);
+
+      ctx.restore();
+    }
+  }
+
+  function _drawParallaxLayer(layer, offsetX, camX) {
+    if (layer.type === 'stars') {
+      ctx.fillStyle = layer.color;
+      for (const star of layer.stars) {
+        ctx.beginPath();
+        ctx.arc(
+          ((star.x + offsetX) % W + W) % W,
+          star.y, star.r, 0, Math.PI*2
+        );
+        ctx.fill();
+      }
+    } else if (layer.type === 'grid') {
+      ctx.strokeStyle = layer.color;
+      ctx.lineWidth = 0.5;
+      const step = layer.step || 60;
+      const ox = ((offsetX) % step + step) % step;
+      for (let x = ox; x < W; x += step) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+      }
+      for (let y = 0; y < H; y += step) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+      }
+    } else if (layer.type === 'mountains') {
+      ctx.fillStyle = layer.color;
+      ctx.beginPath();
+      ctx.moveTo(offsetX, H);
+      for (const pt of layer.points) {
+        ctx.lineTo(offsetX + pt.x, H - pt.y);
+      }
+      ctx.lineTo(offsetX + W, H);
+      ctx.closePath();
+      ctx.fill();
+    }
+  }
+
+  /* Dibujar sprite (OffscreenCanvas o Image) */
+  function drawSprite(asset, x, y, w, h, flipX) {
+    if (!asset) return;
+    ctx.save();
+    if (flipX) {
+      ctx.translate(x + w, y);
+      ctx.scale(-1, 1);
+      ctx.drawImage(asset, 0, 0, w, h);
+    } else {
+      ctx.drawImage(asset, x, y, w, h);
+    }
+    ctx.restore();
+  }
+
+  /* Dibujar tile */
+  function drawTile(tile, camX, camY) {
+    const sx = tile.x - camX;
+    const sy = tile.y - camY;
+    if (sx > W + 32 || sx < -tile.w || sy > H + 32 || sy < -tile.h) return; // culling
+
+    const asset = AssetLoader.get(tile.sprite);
+    if (asset) {
+      ctx.drawImage(asset, sx, sy, tile.w, tile.h);
+    } else {
+      ctx.fillStyle = tile.color || '#1A2236';
+      ctx.fillRect(sx, sy, tile.w, tile.h);
+    }
+  }
+
+  /* Dibujar entidad con sprite */
+  function drawEntity(entity, camX, camY) {
+    const sx = entity.x - camX;
+    const sy = entity.y - camY;
+    if (sx > W + entity.w || sx < -entity.w) return;
+
+    const asset = AssetLoader.get(entity.sprite || entity.spriteKey);
+    if (asset) {
+      ctx.save();
+      if (entity.facingLeft) {
+        ctx.translate(sx + entity.w, sy);
+        ctx.scale(-1, 1);
+        ctx.drawImage(asset, 0, 0, entity.w, entity.h);
+      } else {
+        ctx.drawImage(asset, sx, sy, entity.w, entity.h);
+      }
+      /* Sombra bajo entidad */
+      ctx.globalAlpha = 0.25;
+      ctx.fillStyle = '#000';
+      ctx.beginPath();
+      ctx.ellipse(sx + entity.w/2, sy + entity.h + 3, entity.w*0.45, 4, 0, 0, Math.PI*2);
+      ctx.fill();
+      ctx.restore();
+    } else {
+      ctx.fillStyle = entity.color || '#00F5C4';
+      ctx.fillRect(sx, sy, entity.w, entity.h);
+    }
+
+    /* Indicador de interacción */
+    if (entity.nearPlayer && entity.interactable) {
+      _drawInteractHint(sx + entity.w/2, sy - 10);
+    }
+
+    /* Barra HP de enemigos */
+    if (entity.type === 'enemy' && entity.maxHp) {
+      const bw = entity.w, bh = 4;
+      const bx = sx, by = sy - 8;
+      ctx.fillStyle = 'rgba(0,0,0,0.5)'; ctx.fillRect(bx, by, bw, bh);
+      const ratio = entity.hp / entity.maxHp;
+      ctx.fillStyle = ratio > 0.5 ? '#00F5C4' : ratio > 0.25 ? '#FFD700' : '#FF3C6F';
+      ctx.fillRect(bx, by, bw * ratio, bh);
+    }
+  }
+
+  function _drawInteractHint(cx, cy) {
+    ctx.save();
+    ctx.strokeStyle = '#00F5C4';
+    ctx.lineWidth = 1.5;
+    ctx.fillStyle = 'rgba(0,245,196,0.15)';
+    const r = 10;
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = '#00F5C4';
+    ctx.font = 'bold 9px monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('E', cx, cy);
+    ctx.restore();
+  }
+
+  /* Dibujar items sueltos (animados con bob) */
+  function drawItem(item, camX, camY, time) {
+    const sx = item.x - camX;
+    const sy = item.y - camY + Math.sin(time * 2 + item.x) * 4;
+    if (sx > W || sx < 0) return;
+
+    const asset = AssetLoader.get(item.sprite);
+    if (asset) {
+      ctx.save();
+      ctx.globalAlpha = 0.9 + Math.sin(time*3)*0.1;
+      ctx.drawImage(asset, sx, sy, item.w, item.h);
+      /* Halo */
+      ctx.globalAlpha = 0.2 + Math.sin(time*2)*0.1;
+      ctx.fillStyle = item.glowColor || '#FFD700';
+      ctx.beginPath(); ctx.arc(sx+item.w/2, sy+item.h/2, item.w*0.75, 0, Math.PI*2);
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+
+  /* Dibujar texto en canvas (para debug o labels) */
+  function drawText(text, x, y, opts={}) {
+    ctx.save();
+    ctx.fillStyle = opts.color || '#00F5C4';
+    ctx.font = `${opts.weight||'bold'} ${opts.size||12}px ${opts.font||'Orbitron, monospace'}`;
+    ctx.textAlign = opts.align || 'left';
+    ctx.globalAlpha = opts.alpha || 1;
+    ctx.fillText(text, x, y);
+    ctx.restore();
+  }
+
+  /* Partícula XP flotante en canvas */
+  function drawParticles(particles, camX, camY) {
+    for (const p of particles) {
+      ctx.save();
+      ctx.globalAlpha = p.life;
+      ctx.fillStyle = p.color;
+      ctx.font = `bold ${p.size}px Orbitron, monospace`;
+      ctx.textAlign = 'center';
+      ctx.fillText(p.text, p.x - camX, p.y - camY);
+      ctx.restore();
+    }
+  }
+
+  /* Efecto scanline en canvas (opcional, se superpone al div CSS) */
+  function drawVignette() {
+    const grad = ctx.createRadialGradient(W/2,H/2,H*0.3,W/2,H/2,H*0.75);
+    grad.addColorStop(0, 'transparent');
+    grad.addColorStop(1, 'rgba(0,0,0,0.45)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, H);
+  }
+
+  /* Dibujar proyectiles */
+  function drawProjectiles(projectiles, camX, camY, time) {
+    for (const p of projectiles) {
+      const sx = p.x - camX;
+      const sy = p.y - camY;
+      if (sx > W + 32 || sx < -32 || sy > H + 32 || sy < -32) continue;
+      
+      ctx.save();
+      ctx.globalAlpha = 0.9;
+      ctx.fillStyle = p.color || '#FF3C6F';
+      ctx.shadowColor = p.color || '#FF3C6F';
+      ctx.shadowBlur = 10;
+      
+      /* Dibujar proyectil como círculo con cola */
+      ctx.beginPath();
+      ctx.arc(sx + p.w/2, sy + p.h/2, 8, 0, Math.PI * 2);
+      ctx.fill();
+      
+      /* Cola del proyectil */
+      const tailLength = 20;
+      const angle = Math.atan2(p.vy || 0, p.vx);
+      ctx.globalAlpha = 0.4;
+      ctx.beginPath();
+      ctx.moveTo(sx + p.w/2, sy + p.h/2);
+      ctx.lineTo(sx + p.w/2 - Math.cos(angle) * tailLength, sy + p.h/2 - Math.sin(angle) * tailLength);
+      ctx.strokeStyle = p.color || '#FF3C6F';
+      ctx.lineWidth = 4;
+      ctx.stroke();
+      
+      ctx.restore();
+    }
+  }
+
+  return { init, resize, clear, drawParallax, drawSprite, drawTile, drawEntity, drawItem, drawText, drawParticles, drawProjectiles, drawVignette, get W() { return W; }, get H() { return H; } };
+})();
+
+
+/* ──────────────────────────────────────────────────────────────
+   4. INPUT SYSTEM
+   ──────────────────────────────────────────────────────────────
+   Teclado + gamepad-ready. Emite eventos de alto nivel.
+   ────────────────────────────────────────────────────────────── */
+const InputSystem = (() => {
+  const keys = {};
+  const _justPressed  = {};
+  const _justReleased = {};
+
+  function init() {
+    window.addEventListener('keydown', e => {
+      if (!keys[e.code]) _justPressed[e.code] = true;
+      keys[e.code] = true;
+    });
+    window.addEventListener('keyup', e => {
+      keys[e.code] = false;
+      _justReleased[e.code] = true;
+    });
+  }
+
+  function isDown(code)          { return !!keys[code]; }
+  function justPressed(code)     { return !!_justPressed[code]; }
+  function justReleased(code)    { return !!_justReleased[code]; }
+
+  /* Llamar al final del frame para limpiar estados */
+  function flush() {
+    for (const k in _justPressed)  delete _justPressed[k];
+    for (const k in _justReleased) delete _justReleased[k];
+  }
+
+  /* Devuelve vector de movimiento normalizado */
+  function moveVector() {
+    let x = 0, y = 0;
+    if (isDown('KeyA') || isDown('ArrowLeft'))  x -= 1;
+    if (isDown('KeyD') || isDown('ArrowRight')) x += 1;
+    if (isDown('KeyW') || isDown('ArrowUp'))    y -= 1;
+    if (isDown('KeyS') || isDown('ArrowDown'))  y += 1;
+    return { x, y };
+  }
+
+  return { init, isDown, justPressed, justReleased, flush, moveVector };
+})();
+
+
+/* ──────────────────────────────────────────────────────────────
+   5. ENTITY MANAGER
+   ──────────────────────────────────────────────────────────────
+   Pool de entidades. Factoría + actualización masiva.
+   CÓMO AGREGAR NUEVOS PERSONAJES:
+     EntityManager.createNPC({ id:'npc_robot', x:300, y:200,
+       sprite:'npc_robot', dialog:[...], missionId:'m_robot' });
+   ────────────────────────────────────────────────────────────── */
+const EntityManager = (() => {
+  let entities = [];
+  let player   = null;
+
+  /* ── FACTORÍA de entidades ── */
+  function createPlayer(config) {
+    player = {
+      id: 'player', type: 'player',
+      x: config.x, y: config.y,
+      w: 28, h: 32,
+      vx: 0, vy: 0,
+      hp: 100, maxHp: 100,
+      physicsEnabled: true,
+      onGround: false,
+      facingLeft: false,
+      spriteKey: 'player_idle',
+      sprite: 'player_idle',
+      canJump: true,
+      jumpCooldown: 0,
+      interactRadius: 48,
+      color: '#00F5C4',
+      /* Animación simple */
+      animFrame: 0, animTimer: 0,
+    };
+    entities.push(player);
+    return player;
+  }
+
+  /* CÓMO AGREGAR NUEVOS PERSONAJES NPC:
+     Crear nueva entrada en WORLD_DATA, llamar createNPC con la config */
+  function createNPC(config) {
+    const npc = {
+      id: config.id,
+      type: config.hostile ? 'enemy' : 'npc',
+      x: config.x, y: config.y,
+      w: config.w || 28, h: config.h || 32,
+      vx: 0, vy: 0,
+      hp: config.hp || 50, maxHp: config.hp || 50,
+      physicsEnabled: config.physicsEnabled !== false,
+      onGround: false,
+      facingLeft: false,
+      sprite: config.sprite,
+      color: config.color || '#7B2FFF',
+      interactable: !config.hostile,
+      nearPlayer: false,
+      dialog: config.dialog || [],
+      dialogIndex: 0,
+      missionId: config.missionId || null,
+      patrolRange: config.patrolRange || 0,
+      patrolOrigin: config.x,
+      patrolDir: 1,
+      hostile: !!config.hostile,
+      xpReward: config.xpReward || 0,
+      tag: config.tag || null,
+      isBoss: config.isBoss || false,
+      bossPhase: config.bossPhase || 1,
+      attackCooldown: config.attackCooldown || 2,
+      attackTimer: 0,
+      lastPlayerX: 0,
+      learnPattern: config.learnPattern || false,
+      patternMemory: [],
+      canShoot: config.canShoot || false,
+      projectileSpeed: config.projectileSpeed || 200,
+      projectileDamage: config.projectileDamage || 10,
+    };
+    entities.push(npc);
+    return npc;
+  }
+
+  function createItem(config) {
+    const item = {
+      id: config.id,
+      type: 'item',
+      x: config.x, y: config.y,
+      w: config.w || 20, h: config.h || 20,
+      sprite: config.sprite || 'item_xp',
+      glowColor: config.glowColor,
+      collected: false,
+      onCollect: config.onCollect || null,
+    };
+    entities.push(item);
+    return item;
+  }
+
+  function getPlayer()  { return player; }
+  function getAll()     { return entities; }
+  function getNPCs()    { return entities.filter(e => e.type === 'npc' || e.type === 'enemy'); }
+  function getItems()   { return entities.filter(e => e.type === 'item' && !e.collected); }
+
+  function clear() {
+    entities = [];
+    player = null;
+  }
+
+  function removeEntity(id) {
+    entities = entities.filter(e => e.id !== id);
+  }
+
+  /* Atacar enemigos cercanos al jugador */
+  function attackNearbyEnemies(p, range, damage) {
+    const hits = [];
+    for (const e of entities) {
+      if (!e.hostile || e.type !== 'enemy') continue;
+      const dist = Math.hypot(e.x + e.w/2 - (p.x + p.w/2), e.y + e.h/2 - (p.y + p.h/2));
+      if (dist < range) {
+        e.hp -= damage;
+        hits.push(e);
+        if (e.hp <= 0) {
+          removeEntity(e.id);
+        }
+      }
+    }
+    return hits;
+  }
+
+  /* Actualizar comportamientos simples de NPCs */
+  function updateNPCs(dt, tiles, onShoot) {
+    for (const e of entities) {
+      if (e.type !== 'npc' && e.type !== 'enemy') continue;
+
+      /* patrullan solo si no son bosses */
+      if (e.patrolRange > 0 && !e.isBoss) {
+        e.vx = 60 * e.patrolDir;
+        if (Math.abs(e.x - e.patrolOrigin) > e.patrolRange) {
+          e.patrolDir *= -1;
+          e.facingLeft = e.patrolDir < 0;
+        }
+      }
+
+      /* Persecución básica de enemigos */
+      if (e.hostile && player) {
+        const dist = Math.hypot(e.x - player.x, e.y - player.y);
+        
+        if (e.isBoss) {
+          /* IA de Boss - más compleja */
+          e.attackTimer -= dt;
+          
+          /* Aprender patrón del jugador */
+          if (e.learnPattern) {
+            e.patternMemory.push(player.vx > 0 ? 'right' : player.vx < 0 ? 'left' : 'idle');
+            if (e.patternMemory.length > 10) e.patternMemory.shift();
+          }
+          
+          /* Moverse hacia el jugador pero con pausas */
+          if (dist > 60) {
+            const dir = player.x > e.x ? 1 : -1;
+            e.vx = 50 * dir;
+            e.facingLeft = dir < 0;
+          } else {
+            e.vx = 0;
+          }
+          
+          /* Ataque a distancia */
+          if (e.canShoot && e.attackTimer <= 0 && dist < 300) {
+            const dir = player.x > e.x ? 1 : -1;
+            if (onShoot) {
+              onShoot({
+                x: e.x + e.w/2,
+                y: e.y + e.h/2,
+                vx: dir * e.projectileSpeed,
+                damage: e.projectileDamage,
+                color: e.color || '#FF3C6F'
+              });
+            }
+            e.attackTimer = e.attackCooldown;
+          }
+        } else {
+          /* Enemigos normales - IA mejorada */
+          const detectionRange = 200;
+          const attackRange = 50;
+          
+          if (dist < detectionRange) {
+            const dir = player.x > e.x ? 1 : -1;
+            
+            /* Mantener distancia de ataque */
+            if (dist > attackRange) {
+              e.vx = 70 * dir;
+            } else {
+              e.vx = 0;
+            }
+            e.facingLeft = dir < 0;
+          }
+        }
+      }
+
+      Physics.integrate(e, dt, tiles);
+    }
+  }
+  
+  /* Crear proyectil de boss */
+  let projectiles = [];
+  
+  function createProjectile(config) {
+    projectiles.push({
+      id: 'proj_' + Date.now() + Math.random(),
+      type: 'projectile',
+      x: config.x, y: config.y,
+      w: 16, h: 16,
+      vx: config.vx, vy: config.vy || 0,
+      damage: config.damage || 10,
+      color: config.color || '#FF3C6F',
+      life: 3,
+    });
+  }
+  
+  function getProjectiles() { return projectiles; }
+  
+  function updateProjectiles(dt, player, onHit) {
+    for (let i = projectiles.length - 1; i >= 0; i--) {
+      const p = projectiles[i];
+      p.x += p.vx * dt;
+      p.y += (p.vy || 0) * dt;
+      p.life -= dt;
+      
+      /* Colisión con jugador */
+      if (player && Physics.intersects({x:p.x, y:p.y, w:p.w, h:p.h}, {x:player.x, y:player.y, w:player.w, h:player.h})) {
+        if (onHit) onHit(p.damage);
+        projectiles.splice(i, 1);
+        continue;
+      }
+      
+      /* Eliminar si expired */
+      if (p.life <= 0) {
+        projectiles.splice(i, 1);
+      }
+    }
+  }
+  
+  function clearProjectiles() { projectiles = []; }
+
+  /* Proximidad NPC-player para indicador de interacción */
+  function updateProximity(p) {
+    if (!p) return;
+    for (const e of entities) {
+      if (!e.interactable) continue;
+      const dist = Math.hypot(e.x + e.w/2 - (p.x + p.w/2), e.y + e.h/2 - (p.y + p.h/2));
+      e.nearPlayer = dist < p.interactRadius;
+    }
+  }
+
+  /* Colisión enemy-player */
+  function checkEnemyCollisions(p, onHit) {
+    if (!p) return;
+    for (const e of entities) {
+      if (!e.hostile) continue;
+      if (Physics.intersects(Physics.aabb(p), Physics.aabb(e))) {
+        onHit(e);
+      }
+    }
+  }
+
+  /* Recoger items */
+  function checkItemPickups(p, onPickup) {
+    if (!p) return;
+    for (const item of getItems()) {
+      if (Physics.intersects(Physics.aabb(p), Physics.aabb(item))) {
+        item.collected = true;
+        if (onPickup) onPickup(item);
+      }
+    }
+  }
+
+  return { createPlayer, createNPC, createItem, getPlayer, getAll, getNPCs, getItems, clear, removeEntity, attackNearbyEnemies, updateNPCs, updateProximity, checkEnemyCollisions, checkItemPickups, createProjectile, getProjectiles, updateProjectiles, clearProjectiles };
+})();
+
+
+/* ──────────────────────────────────────────────────────────────
+   6. MISSION SYSTEM
+   ──────────────────────────────────────────────────────────────
+   Misiones basadas en ACCIONES (no preguntas).
+   Cada misión enseña un concepto de informática.
+   CÓMO AGREGAR NUEVAS MISIONES:
+     MissionSystem.register({ id:'m_new', title:'...', steps:[...] });
+   ────────────────────────────────────────────────────────────── */
+const MissionSystem = (() => {
+  const missions  = {};
+  let activeMission = null;
+  let callbacks = {};
+
+  /* ── DEFINICIONES DE MISIONES ── */
+  /* Cada misión tiene steps con tipo de acción y concepto educativo */
+  const MISSIONS = {
+    /* ── MUNDO 1: HARDWARE ── */
+    m_boot: {
+      id: 'm_boot', worldId: 'w_hardware',
+      title: 'Secuencia de Arranque',
+      category: 'Hardware', icon: '🔌',
+      xpReward: 80,
+      /* Concepto educativo adjunto a esta misión */
+      eduContent: {
+        badge: 'Hardware · Arranque',
+        title: 'El proceso POST y la secuencia de arranque',
+        body:  'Cuando enciendes una computadora, el procesador ejecuta el POST (Power-On Self-Test): verifica RAM, CPU, almacenamiento y periféricos antes de cargar el SO. Si algo falla, emite pitidos o muestra un código de error.',
+        concept: 'POST → BIOS/UEFI → MBR/GPT → Bootloader → Kernel → OS'
+      },
+      steps: [
+        { id: 's1', type: 'talk_npc', npcId: 'npc_mentor_1', description: 'Habla con el Mentor del Sistema' },
+        { id: 's2', type: 'collect_items', itemTag: 'data_fragment', count: 3, description: 'Recoge 3 fragmentos de datos del suelo' },
+        { id: 's3', type: 'reach_zone', zoneId: 'zone_terminal', description: 'Llega al terminal de arranque' },
+        { id: 's4', type: 'talk_npc', npcId: 'npc_terminal_1', description: 'Activa la secuencia de arranque' },
+      ],
+    },
+    m_ram: {
+      id: 'm_ram', worldId: 'w_hardware',
+      title: 'Defragmentación de RAM',
+      category: 'Hardware', icon: '💾',
+      xpReward: 120,
+      eduContent: {
+        badge: 'Hardware · Memoria',
+        title: 'RAM: Memoria de Acceso Aleatorio',
+        body:  'La RAM (Random Access Memory) es la memoria temporal de tu PC. Guarda los datos de los programas activos. Es volátil: se borra al apagar. Más RAM = más programas simultáneos sin lentitud.',
+        concept: 'CPU ↔ Caché L1/L2/L3 ↔ RAM ↔ Almacenamiento (SSD/HDD)'
+      },
+      steps: [
+        { id: 's1', type: 'defeat_enemies', enemyTag: 'bug_ram', count: 5, description: 'Elimina 5 bugs de RAM' },
+        { id: 's2', type: 'collect_items', itemTag: 'data_fragment', count: 4, description: 'Recoge fragmentos de memoria limpia' },
+        { id: 's3', type: 'talk_npc', npcId: 'npc_mentor_1', description: 'Reporta al Mentor' },
+      ],
+    },
+
+    /* ── MUNDO 2: ARCHIVOS ── */
+    m_filesystem: {
+      id: 'm_filesystem', worldId: 'w_files',
+      title: 'Orden en el Caos',
+      category: 'Archivos', icon: '📁',
+      xpReward: 150,
+      eduContent: {
+        badge: 'Sistema de Archivos',
+        title: 'Árbol de directorios y rutas',
+        body:  'Un sistema de archivos organiza datos en una jerarquía de carpetas (directorios). Cada archivo tiene una ruta absoluta (desde la raíz) o relativa (desde el directorio actual).',
+        concept: '/ (raíz) → /home/usuario/ → /home/usuario/documentos/reporte.pdf'
+      },
+      steps: [
+        { id: 's1', type: 'collect_items', itemTag: 'file_fragment', count: 6, description: 'Recoge archivos dispersos' },
+        { id: 's2', type: 'reach_zone', zoneId: 'zone_folder', description: 'Deposítalos en la carpeta correcta' },
+        { id: 's3', type: 'defeat_enemies', enemyTag: 'bug_corrupt', count: 3, description: 'Elimina 3 archivos corruptos' },
+      ],
+    },
+
+    /* ── MUNDO 3: INTERNET ── */
+    m_network: {
+      id: 'm_network', worldId: 'w_internet',
+      title: 'Protocolo Perdido',
+      category: 'Internet', icon: '🌐',
+      xpReward: 180,
+      eduContent: {
+        badge: 'Redes · TCP/IP',
+        title: 'Cómo viajan los datos por internet',
+        body:  'Internet funciona mediante el protocolo TCP/IP. Los datos se dividen en paquetes, viajan por distintas rutas y se reensamblan en destino. DNS convierte nombres de dominio en direcciones IP.',
+        concept: 'Datos → Paquetes TCP → Enrutadores IP → DNS → Servidor web'
+      },
+      steps: [
+        { id: 's1', type: 'talk_npc', npcId: 'npc_router', description: 'Consulta al Router sobre la ruta perdida' },
+        { id: 's2', type: 'collect_items', itemTag: 'packet', count: 5, description: 'Recoge paquetes de datos' },
+        { id: 's3', type: 'reach_zone', zoneId: 'zone_server', description: 'Lleva los paquetes al servidor' },
+      ],
+    },
+
+    /* ── MUNDO 4: SEGURIDAD ── */
+    m_security: {
+      id: 'm_security', worldId: 'w_security',
+      title: 'Defensa del Firewall',
+      category: 'Seguridad', icon: '🛡️',
+      xpReward: 220,
+      eduContent: {
+        badge: 'Seguridad · Firewall',
+        title: 'El Firewall: Primera Línea de Defensa',
+        body: 'El firewall监控 el tráfico de red, permitiendo o bloqueando conexiones según reglas. Los firewalls modernos incluyen IDS/IPS para detectar amenazas. La configuración correcta es crítica: default-deny es el principio más seguro.',
+        concept: 'Firewall → IDS/IPS → Reglas → Monitoreo'
+      },
+      steps: [
+        { id: 's1', type: 'defeat_enemies', enemyTag: 'malware', count: 4, description: 'Elimina 4 malware del sistema' },
+        { id: 's2', type: 'defeat_enemies', enemyTag: 'spyware', count: 3, description: 'Elimina 3 spyware' },
+        { id: 's3', type: 'defeat_enemies', enemyTag: 'trojan', count: 2, description: 'Elimina 2 troyanos' },
+        { id: 's4', type: 'talk_npc', npcId: 'boss_security', description: 'Enfrenta al rootkit maestro' },
+      ],
+    },
+
+    /* ── MUNDO 5: BASE DE DATOS ── */
+    m_database: {
+      id: 'm_database', worldId: 'w_data',
+      title: 'Integridad de Datos',
+      category: 'Datos', icon: '🗄️',
+      xpReward: 280,
+      eduContent: {
+        badge: 'Datos · Integridad',
+        title: 'Integridad de Datos: ACID',
+        body: 'Las transacciones de base de datos siguen el principio ACID: Atomicidad (todo o nada), Consistencia (restricciones cumplidas), Isolation (transacciones independientes), Durabilidad (persistencia garantizada).',
+        concept: 'ACID → Transacciones → Rollback → Commit'
+      },
+      steps: [
+        { id: 's1', type: 'defeat_enemies', enemyTag: 'sql_injection', count: 4, description: 'Detén 4 inyecciones SQL' },
+        { id: 's2', type: 'defeat_enemies', enemyTag: 'nosql_injection', count: 3, description: 'Detén 3 NoSQL injections' },
+        { id: 's3', type: 'defeat_enemies', enemyTag: 'deadlock', count: 2, description: 'Resuelve 2 interbloqueos' },
+        { id: 's4', type: 'talk_npc', npcId: 'boss_data', description: 'Enfrenta al Data Lord' },
+      ],
+    },
+  };
+
+  /* Registrar misión externa
+     CÓMO AGREGAR NUEVAS MISIONES desde datos externos: */
+  function register(missionDef) {
+    missions[missionDef.id] = missionDef;
+  }
+
+  function init() {
+    for (const [id, m] of Object.entries(MISSIONS)) {
+      missions[id] = m;
+    }
+  }
+
+  function start(missionId) {
+    const m = missions[missionId];
+    if (!m) { console.warn(`[Missions] No existe: ${missionId}`); return false; }
+    activeMission = {
+      ...m,
+      currentStep: 0,
+      stepProgress: {},
+      startedAt: Date.now(),
+    };
+    if (callbacks.onStart) callbacks.onStart(activeMission);
+    return true;
+  }
+
+  function getActive() { return activeMission; }
+  function getAll()    { return Object.values(missions); }
+  function getForWorld(worldId) { return Object.values(missions).filter(m => m.worldId === worldId); }
+
+  /* Notificar evento de juego a la misión activa */
+  function notifyEvent(eventType, payload) {
+    if (!activeMission) return;
+    const step = activeMission.steps[activeMission.currentStep];
+    if (!step) return;
+
+    let advanced = false;
+
+    if (step.type === eventType) {
+      /* Progreso basado en conteo */
+      if (step.count) {
+        if (!activeMission.stepProgress[step.id]) activeMission.stepProgress[step.id] = 0;
+        if (!step.itemTag || payload.tag === step.itemTag || payload.tag === step.enemyTag) {
+          activeMission.stepProgress[step.id]++;
+          if (activeMission.stepProgress[step.id] >= step.count) advanced = true;
+        }
+      } else if (step.type === 'talk_npc') {
+        if (payload.npcId === step.npcId) advanced = true;
+      } else if (step.type === 'reach_zone') {
+        if (payload.zoneId === step.zoneId) advanced = true;
+      } else {
+        advanced = true;
+      }
+    }
+
+    if (advanced) _advanceStep();
+  }
+
+  function _advanceStep() {
+    activeMission.currentStep++;
+    if (activeMission.currentStep >= activeMission.steps.length) {
+      _complete();
+    } else {
+      if (callbacks.onStepAdvance) callbacks.onStepAdvance(activeMission);
+    }
+  }
+
+  function _complete() {
+    if (callbacks.onComplete) callbacks.onComplete(activeMission);
+    activeMission = null;
+  }
+
+  function on(event, cb) { callbacks[event] = cb; }
+
+  function getStepProgress() {
+    if (!activeMission) return null;
+    const step = activeMission.steps[activeMission.currentStep];
+    if (!step) return null;
+    const progress = activeMission.stepProgress[step.id] || 0;
+    return { step, progress, total: step.count || 1 };
+  }
+
+  return { init, register, start, getActive, getAll, getForWorld, notifyEvent, on, getStepProgress };
+})();
+
+
+/* ──────────────────────────────────────────────────────────────
+   7. PROGRESSION SYSTEM
+   ──────────────────────────────────────────────────────────────
+   XP, niveles, logros, desbloqueo de mundos.
+   ────────────────────────────────────────────────────────────── */
+const ProgressionSystem = (() => {
+  let state = {
+    playerName: 'Guardián',
+    level: 1, xp: 0,
+    xpToNext: 100,
+    hp: 100, maxHp: 100,
+    unlockedWorlds: ['w_hardware'],
+    completedMissions: [],
+    achievements: {},
+    totalEnemiesDefeated: 0,
+    totalItemsCollected: 0,
+    playtimeSeconds: 0,
+  };
+
+  /* Tabla de XP por nivel: nivel → XP total acumulado necesario */
+  const XP_TABLE = [0, 100, 250, 450, 700, 1000, 1400, 1900, 2500, 3200];
+
+  const ACHIEVEMENTS = [
+    { id: 'ach_first_mission', name: 'Primer Contacto', desc: 'Completa tu primera misión', icon: '🚀', condition: s => s.completedMissions.length >= 1 },
+    { id: 'ach_bug_hunter',   name: 'Cazabichos',     desc: 'Derrota 10 enemigos',       icon: '🐛', condition: s => s.totalEnemiesDefeated >= 10 },
+    { id: 'ach_collector',    name: 'Coleccionista',  desc: 'Recoge 20 ítems',           icon: '📦', condition: s => s.totalItemsCollected >= 20 },
+    { id: 'ach_level5',       name: 'Guardián Senior',desc: 'Alcanza nivel 5',           icon: '⭐', condition: s => s.level >= 5 },
+    { id: 'ach_explorer',     name: 'Explorador',     desc: 'Desbloquea 2 mundos',       icon: '🗺️', condition: s => s.unlockedWorlds.length >= 2 },
+    { id: 'ach_speed_run',    name: 'Velocista',      desc: 'Completa una misión en <2min', icon: '⚡', condition: s => s.speedRunDone },
+  ];
+
+  let callbacks = {};
+  function on(event, cb) { callbacks[event] = cb; }
+
+  function addXP(amount, source) {
+    state.xp += amount;
+    if (callbacks.onXP) callbacks.onXP(amount, source);
+
+    /* Nivel arriba */
+    while (state.level < XP_TABLE.length - 1 && state.xp >= XP_TABLE[state.level]) {
+      state.level++;
+      if (callbacks.onLevelUp) callbacks.onLevelUp(state.level);
+      _checkWorldUnlocks();
+    }
+
+    state.xpToNext = XP_TABLE[Math.min(state.level, XP_TABLE.length-1)] - state.xp;
+    _checkAchievements();
+  }
+
+  function _checkWorldUnlocks() {
+    const WORLD_REQS = { w_files: 2, w_internet: 4, w_security: 6, w_data: 8 };
+    for (const [worldId, reqLevel] of Object.entries(WORLD_REQS)) {
+      if (state.level >= reqLevel && !state.unlockedWorlds.includes(worldId)) {
+        state.unlockedWorlds.push(worldId);
+        if (callbacks.onWorldUnlock) callbacks.onWorldUnlock(worldId);
+      }
+    }
+  }
+
+  function _checkAchievements() {
+    for (const ach of ACHIEVEMENTS) {
+      if (!state.achievements[ach.id] && ach.condition(state)) {
+        state.achievements[ach.id] = true;
+        if (callbacks.onAchievement) callbacks.onAchievement(ach);
+      }
+    }
+  }
+
+  function completeMission(mission) {
+    if (state.completedMissions.includes(mission.id)) return;
+    state.completedMissions.push(mission.id);
+    addXP(mission.xpReward, 'mission');
+    /* Bonus de velocidad */
+    const elapsed = (Date.now() - mission.startedAt) / 1000;
+    if (elapsed < 120) { state.speedRunDone = true; }
+    _checkAchievements();
+    PlayerService.save(state);
+  }
+
+  function recordEnemyDefeat() {
+    state.totalEnemiesDefeated++;
+    addXP(15, 'enemy');
+    _checkAchievements();
+  }
+
+  function recordItemCollect() {
+    state.totalItemsCollected++;
+    addXP(5, 'item');
+    _checkAchievements();
+  }
+
+  function takeDamage(amount) {
+    state.hp = Math.max(0, state.hp - amount);
+    if (callbacks.onDamage) callbacks.onDamage(state.hp, state.maxHp);
+  }
+
+  function getState()        { return state; }
+  function getAchievements() { return ACHIEVEMENTS.map(a => ({ ...a, unlocked: !!state.achievements[a.id] })); }
+  function getXPPercent()    {
+    const prev = XP_TABLE[state.level - 1] || 0;
+    const next = XP_TABLE[Math.min(state.level, XP_TABLE.length-1)];
+    return Math.min(100, ((state.xp - prev) / (next - prev)) * 100);
+  }
+  function isWorldUnlocked(worldId) { return state.unlockedWorlds.includes(worldId); }
+
+  function load(saved) {
+    if (saved) Object.assign(state, saved);
+  }
+
+  return { addXP, completeMission, recordEnemyDefeat, recordItemCollect, takeDamage, on, getState, getAchievements, getXPPercent, isWorldUnlocked, load };
+})();
+
+
+/* ──────────────────────────────────────────────────────────────
+   8. DATA LAYER — PlayerService
+   ──────────────────────────────────────────────────────────────
+   Persistencia del jugador.
+   DEMO: usa localStorage.
+   PRODUCCIÓN: Conectar Supabase aquí SIN afectar el game loop.
+
+   CÓMO CONECTAR SUPABASE:
+     import { createClient } from '@supabase/supabase-js';
+     const supabase = createClient(URL, ANON_KEY);
+     En save(): await supabase.from('players').upsert({ id, ...state });
+     En load(): const { data } = await supabase.from('players').select().eq('id', playerId);
+   IMPORTANTE: No llamar Supabase dentro del game loop.
+   Usar eventos (onMissionComplete, onLevelUp) para disparar saves.
+   ────────────────────────────────────────────────────────────── */
+  const PlayerService = (() => {
+  const KEY = 'nexus_player_state';
+
+  function save(state) {
+    try {
+      localStorage.setItem(KEY, JSON.stringify(state));
+      /* SUPABASE: await supabase.from('players').upsert(state) */
+    } catch(e) { console.warn('[PlayerService] save failed:', e); }
+  }
+
+  function load() {
+    try {
+      const raw = localStorage.getItem(KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch(e) { return null; }
+  }
+
+  function clear() { localStorage.removeItem(KEY); }
+
+  return { save, load, clear };
+})();
+
+
+/* ──────────────────────────────────────────────────────────────
+   9. WORLD MANAGER
+   ──────────────────────────────────────────────────────────────
+   Carga mundos desde definiciones de datos.
+   CÓMO CREAR UN NUEVO MUNDO:
+     1. Agregar entrada en WORLD_DATA
+     2. Definir tiles (mapa), NPCs, items, zonas
+     3. Agregar parallax layers propios
+     4. Registrar misiones asociadas con worldId: 'w_nuevo'
+   ────────────────────────────────────────────────────────────── */
+const WorldManager = (() => {
+  let currentWorld  = null;
+  let tiles         = [];
+  let zones         = [];
+  let parallaxLayers = [];
+
+  /* ── DEFINICIÓN DE MUNDOS
+     CÓMO AGREGAR NUEVOS MUNDOS: Copiar estructura y personalizar ── */
+  const WORLD_DATA = {
+
+    /* ══ MUNDO 1: HARDWARE ══ */
+    w_hardware: {
+      id: 'w_hardware',
+      name: 'NÚCLEO DE HARDWARE',
+      theme: { bgColor: '#04080F', accentColor: '#00F5C4' },
+      width: 2400,
+
+      /* Capas de parallax (3 mínimo requerido)
+         CÓMO CAMBIAR FONDOS: Reemplazar los generadores por imágenes */
+      parallax: [
+        {
+          id: 'p_stars', type: 'stars', speed: 0.05, alpha: 0.6,
+          color: 'rgba(0,245,196,0.6)',
+          stars: _genStars(120, 900, 400),
+        },
+        {
+          id: 'p_grid', type: 'grid', speed: 0.15, alpha: 0.12,
+          color: '#00F5C4', step: 80,
+        },
+        {
+          id: 'p_mountains', type: 'mountains', speed: 0.3, alpha: 0.4,
+          color: '#0D1526',
+          points: _genMountains(2400, 180),
+        },
+      ],
+
+      /* Mapa de tiles: c=tipo, x/y en tiles (32px) */
+      map: _buildMap_hardware(),
+
+      /* NPCs: ver createNPC() para campos */
+      npcs: [
+        {
+          id: 'npc_mentor_1', sprite: 'npc_mentor',
+          x: 180, y: 330,
+          physicsEnabled: false,
+          dialog: [
+            { text: '¡Bienvenido, Guardián! El sistema NEXUS está fallando. Los módulos de hardware están corrompidos. Necesito que recuperes los fragmentos de datos dispersos y actives el terminal de arranque.', action: { type: 'start_mission', missionId: 'm_boot' } },
+            { text: 'Recuerda: cada componente de hardware tiene una función vital. La CPU procesa, la RAM almacena temporalmente, el almacenamiento persiste. ¡El orden importa!' },
+            { text: 'Usa WASD para moverte, E para interactuar y F para atacar enemigos.' },
+          ],
+        },
+        {
+          id: 'npc_terminal_1', sprite: 'npc_terminal',
+          x: 780, y: 330,
+          physicsEnabled: false,
+          dialog: [
+            { text: '> Iniciando POST... CPU: OK. RAM: Verificando... Almacenamiento: Detectado. Secuencia de arranque restaurada. ¡Sistema estabilizado!', action: { type: 'complete_step', stepType: 'reach_zone', zoneId: 'zone_terminal' } },
+          ],
+        },
+        /* Enemigos básicos - Bug de RAM */
+        {
+          id: 'npc_enemy_bug_1', sprite: 'npc_enemy',
+          x: 350, y: 330, hostile: true,
+          hp: 25, xpReward: 8,
+          patrolRange: 80, patrolOrigin: 350,
+          color: '#FF3C6F', tag: 'bug_ram',
+        },
+        {
+          id: 'npc_enemy_bug_2', sprite: 'npc_enemy',
+          x: 500, y: 330, hostile: true,
+          hp: 25, xpReward: 8,
+          patrolRange: 100, patrolOrigin: 500,
+          color: '#FF3C6F', tag: 'bug_ram',
+        },
+        {
+          id: 'npc_enemy_bug_3', sprite: 'npc_enemy',
+          x: 650, y: 330, hostile: true,
+          hp: 25, xpReward: 8,
+          patrolRange: 60, patrolOrigin: 650,
+          color: '#FF3C6F', tag: 'bug_ram',
+        },
+        /* Enemigo en plataforma */
+        {
+          id: 'npc_enemy_bug_4', sprite: 'npc_enemy',
+          x: 520, y: 180, hostile: true,
+          hp: 30, xpReward: 10,
+          patrolRange: 50, patrolOrigin: 520,
+          color: '#FF3C6F', tag: 'bug_ram',
+        },
+        /* EnemigoCPU - más rápido */
+        {
+          id: 'npc_enemy_cpu_1', sprite: 'npc_enemy',
+          x: 950, y: 330, hostile: true,
+          hp: 40, xpReward: 15,
+          patrolRange: 120, patrolOrigin: 950,
+          color: '#FF6B35', tag: 'bug_cpu',
+        },
+        {
+          id: 'npc_enemy_cpu_2', sprite: 'npc_enemy',
+          x: 1100, y: 330, hostile: true,
+          hp: 40, xpReward: 15,
+          patrolRange: 90, patrolOrigin: 1100,
+          color: '#FF6B35', tag: 'bug_cpu',
+        },
+        {
+          id: 'npc_enemy_cpu_3', sprite: 'npc_enemy',
+          x: 1250, y: 180, hostile: true,
+          hp: 45, xpReward: 18,
+          patrolRange: 70, patrolOrigin: 1250,
+          color: '#FF6B35', tag: 'bug_cpu',
+        },
+        /* BOSS - El Glitch del Sistema */
+        {
+          id: 'boss_hardware', sprite: 'npc_enemy',
+          x: 1800, y: 290, hostile: true,
+          hp: 200, xpReward: 100,
+          w: 64, h: 64,
+          color: '#FF0000', tag: 'boss_hardware',
+          isBoss: true,
+          canShoot: true,
+          projectileSpeed: 180,
+          projectileDamage: 15,
+          attackCooldown: 2.5,
+          learnPattern: true,
+          dialog: [
+            { text: '⚠ ERROR CRÍTICO: BUG MAESTRO DETECTADO' },
+            { text: 'Soy el GLITCH, el error que nadie puede corregir. ¡Tu conocimiento es inútil contra mí!' },
+          ],
+          eduContent: {
+            badge: 'Hardware · Boss',
+            title: 'El Glitch del Sistema: Error Crítico',
+            body: 'Los bugs hardware son errores críticos que afectan el funcionamiento básico del sistema. El síndrome del azul de la pantalla (BSOD) ocurre cuando errores acumulativos colapsan el sistema. La limpieza y el mantenimiento preventivo son esenciales.',
+            concept: 'POST → BIOS → OS → Mantenimiento → Estabilidad'
+          }
+        },
+      ],
+
+      /* Items sueltos en el mundo */
+      items: [
+        { id: 'item_hw_1', sprite: 'item_data', x: 240, y: 308, tag: 'data_fragment', glowColor: '#7B2FFF', xpValue: 5 },
+        { id: 'item_hw_2', sprite: 'item_data', x: 340, y: 308, tag: 'data_fragment', glowColor: '#7B2FFF', xpValue: 5 },
+        { id: 'item_hw_3', sprite: 'item_data', x: 560, y: 155, tag: 'data_fragment', glowColor: '#7B2FFF', xpValue: 5 },
+        { id: 'item_hw_4', sprite: 'item_xp',   x: 390, y: 308, tag: 'xp_orb',       glowColor: '#FFD700', xpValue: 10 },
+        { id: 'item_hw_5', sprite: 'item_xp',   x: 700, y: 155, tag: 'xp_orb',       glowColor: '#FFD700', xpValue: 10 },
+      ],
+
+      /* Zonas de trigger */
+      zones: [
+        { id: 'zone_terminal', x: 760, y: 310, w: 80, h: 60 },
+        { id: 'zone_exit',     x: 2300, y: 310, w: 60, h: 80 },
+      ],
+
+      /* Posición inicial del jugador */
+      playerStart: { x: 80, y: 330 },
+
+      /* Misiones disponibles en este mundo */
+      missions: ['m_boot', 'm_ram'],
+    },
+
+    /* ══ MUNDO 2: ARCHIVOS (desbloqueado en nivel 2) ══ */
+    w_files: {
+      id: 'w_files',
+      name: 'SISTEMA DE ARCHIVOS',
+      theme: { bgColor: '#080412', accentColor: '#7B2FFF' },
+      width: 3200,
+      parallax: [
+        { id: 'p_stars2', type: 'stars', speed: 0.04, alpha: 0.5, color: 'rgba(123,47,255,0.7)', stars: _genStars(100, 900, 400) },
+        { id: 'p_grid2',  type: 'grid',  speed: 0.12, alpha: 0.08, color: '#7B2FFF', step: 100 },
+        { id: 'p_mnt2',   type: 'mountains', speed: 0.28, alpha: 0.35, color: '#0D0A1A', points: _genMountains(3200, 220) },
+      ],
+      map: _buildMap_files(),
+      npcs: [
+        {
+          id: 'npc_mentor_2', sprite: 'npc_mentor',
+          x: 160, y: 330,
+          physicsEnabled: false,
+          dialog: [
+            { text: 'El sistema de archivos está caótico. Los archivos están dispersos por todo el directorio. Recoge los fragmentos y ordénalos en las carpetas correctas para restaurar la estructura de árbol.', action: { type: 'start_mission', missionId: 'm_filesystem' } },
+            { text: 'Cada archivo tiene una ruta. Aprende a leer las rutas absolutas: comienzan desde la raíz (/). Las rutas relativas parten de donde estás ahora.' },
+          ],
+        },
+        /* Archivos corruptos - básicos */
+        {
+          id: 'npc_enemy_corrupt_1', sprite: 'npc_enemy',
+          x: 350, y: 330, hostile: true, hp: 35, xpReward: 12,
+          patrolRange: 80, patrolOrigin: 350, color: '#FF3C6F', tag: 'bug_corrupt',
+        },
+        {
+          id: 'npc_enemy_corrupt_2', sprite: 'npc_enemy',
+          x: 500, y: 330, hostile: true, hp: 35, xpReward: 12,
+          patrolRange: 100, patrolOrigin: 500, color: '#FF3C6F', tag: 'bug_corrupt',
+        },
+        {
+          id: 'npc_enemy_corrupt_3', sprite: 'npc_enemy',
+          x: 650, y: 330, hostile: true, hp: 35, xpReward: 12,
+          patrolRange: 70, patrolOrigin: 650, color: '#FF3C6F', tag: 'bug_corrupt',
+        },
+        /* Archivos duplicados */
+        {
+          id: 'npc_enemy_dup_1', sprite: 'npc_enemy',
+          x: 800, y: 330, hostile: true, hp: 45, xpReward: 15,
+          patrolRange: 90, patrolOrigin: 800, color: '#FF8C00', tag: 'bug_dup',
+        },
+        {
+          id: 'npc_enemy_dup_2', sprite: 'npc_enemy',
+          x: 950, y: 330, hostile: true, hp: 45, xpReward: 15,
+          patrolRange: 110, patrolOrigin: 950, color: '#FF8C00', tag: 'bug_dup',
+        },
+        {
+          id: 'npc_enemy_dup_3', sprite: 'npc_enemy',
+          x: 1100, y: 180, hostile: true, hp: 50, xpReward: 18,
+          patrolRange: 60, patrolOrigin: 1100, color: '#FF8C00', tag: 'bug_dup',
+        },
+        /* Meta-archivos - tougher */
+        {
+          id: 'npc_enemy_meta_1', sprite: 'npc_enemy',
+          x: 1300, y: 330, hostile: true, hp: 60, xpReward: 22,
+          patrolRange: 80, patrolOrigin: 1300, color: '#9B59B6', tag: 'bug_meta',
+        },
+        {
+          id: 'npc_enemy_meta_2', sprite: 'npc_enemy',
+          x: 1450, y: 330, hostile: true, hp: 60, xpReward: 22,
+          patrolRange: 100, patrolOrigin: 1450, color: '#9B59B6', tag: 'bug_meta',
+        },
+        /* Mini-boss - Fragmentador */
+        {
+          id: 'boss_files_mini', sprite: 'npc_enemy',
+          x: 1650, y: 290, hostile: true,
+          hp: 120, xpReward: 60,
+          w: 48, h: 48,
+          color: '#8E44AD', tag: 'boss_files_mini',
+          isBoss: true,
+          canShoot: true,
+          projectileSpeed: 160,
+          projectileDamage: 12,
+          attackCooldown: 2,
+          dialog: [
+            { text: '⚠ ADVERTENCIA: FRAGMENTADOR DETECTADO' },
+            { text: 'Soy el Fragmentador, puedo partir cualquier archivo en pedazos. ¡No intentes recuperarlos!' },
+          ],
+          eduContent: {
+            badge: 'Archivos · Fragmentación',
+            title: 'El Fragmentador: Descomposición de Archivos',
+            body: 'La fragmentación ocurre cuando los archivos se dividen en fragmentos no consecutivos en el disco. Esto ralentiza el acceso a los datos. La desfragmentación reorganiza los archivos para mejorar el rendimiento.',
+            concept: 'Fragmentación → Desfragmentación → Acceso rápido'
+          }
+        },
+        /* BOSS FINAL - El root del caos */
+        {
+          id: 'boss_files', sprite: 'npc_enemy',
+          x: 2200, y: 290, hostile: true,
+          hp: 250, xpReward: 120,
+          w: 72, h: 72,
+          color: '#6C3483', tag: 'boss_files',
+          isBoss: true,
+          canShoot: true,
+          projectileSpeed: 200,
+          projectileDamage: 18,
+          attackCooldown: 2.2,
+          learnPattern: true,
+          dialog: [
+            { text: '⚠⚠ ERROR DE SISTEMA: CORRUPCIÓN MAESTRA' },
+            { text: 'Soy el ROOT DEL CAOS. Todos los archivos corruptos son mis hijos. ¡No puedes destruirme!' },
+          ],
+          eduContent: {
+            badge: 'Archivos · Boss Final',
+            title: 'El Root del Caos: Gestión de Archivos',
+            body: 'El sistema de archivos es la base de todo SO. Los permisos, propietarios y estructura jerárquica mantienen todo organizado. Un administrador debe conocer derechos de archivos, cuotas y backups para prevenir desastres.',
+            concept: 'Permisos → Propietarios → Backups → Recuperación'
+          }
+        },
+      ],
+      items: [
+        { id: 'item_f1', sprite: 'item_data', x: 260, y: 308, tag: 'file_fragment', glowColor: '#7B2FFF', xpValue: 5 },
+        { id: 'item_f2', sprite: 'item_data', x: 360, y: 308, tag: 'file_fragment', glowColor: '#7B2FFF', xpValue: 5 },
+        { id: 'item_f3', sprite: 'item_data', x: 560, y: 180, tag: 'file_fragment', glowColor: '#7B2FFF', xpValue: 5 },
+        { id: 'item_f4', sprite: 'item_data', x: 760, y: 308, tag: 'file_fragment', glowColor: '#7B2FFF', xpValue: 5 },
+        { id: 'item_f5', sprite: 'item_xp',   x: 460, y: 308, tag: 'xp_orb',       glowColor: '#FFD700', xpValue: 15 },
+        { id: 'item_f6', sprite: 'item_data', x: 900, y: 308, tag: 'file_fragment', glowColor: '#7B2FFF', xpValue: 5 },
+        { id: 'item_f7', sprite: 'item_xp',   x: 1050, y: 180, tag: 'xp_orb',       glowColor: '#FFD700', xpValue: 20 },
+      ],
+      zones: [
+        { id: 'zone_folder',  x: 900, y: 310, w: 80, h: 60 },
+        { id: 'zone_exit',    x: 3100, y: 310, w: 60, h: 80 },
+      ],
+      playerStart: { x: 80, y: 330 },
+      missions: ['m_filesystem'],
+    },
+
+    /* ══ MUNDO 3: INTERNET ══ */
+    w_internet: {
+      id: 'w_internet',
+      name: 'RED GLOBAL',
+      theme: { bgColor: '#040814', accentColor: '#378ADD' },
+      width: 3600,
+      parallax: [
+        { id: 'p_stars3', type: 'stars', speed: 0.03, alpha: 0.5, color: 'rgba(55,138,221,0.7)', stars: _genStars(150, 900, 400) },
+        { id: 'p_grid3',  type: 'grid',  speed: 0.1, alpha: 0.08, color: '#378ADD', step: 120 },
+        { id: 'p_mnt3',   type: 'mountains', speed: 0.25, alpha: 0.3, color: '#080E1A', points: _genMountains(3600, 200) },
+      ],
+      map: _buildMap_internet(),
+      npcs: [
+        {
+          id: 'npc_router', sprite: 'npc_terminal',
+          x: 200, y: 330,
+          physicsEnabled: false,
+          dialog: [
+            { text: 'Soy el enrutador principal. Los paquetes de datos se han perdido en la red. Recupéralos y tráelos al servidor para restablecer la conexión.', action: { type: 'start_mission', missionId: 'm_network' } },
+            { text: 'Recuerda: en internet, los datos viajan divididos en paquetes. Cada paquete puede tomar una ruta diferente, pero todos llegan al mismo destino.' },
+          ],
+        },
+        /* Paquetes perdidos - básicos */
+        {
+          id: 'npc_enemy_net_1', sprite: 'npc_enemy',
+          x: 400, y: 330, hostile: true, hp: 45, xpReward: 16,
+          patrolRange: 100, patrolOrigin: 400, color: '#FF3C6F', tag: 'packet_loss',
+        },
+        {
+          id: 'npc_enemy_net_2', sprite: 'npc_enemy',
+          x: 550, y: 330, hostile: true, hp: 45, xpReward: 16,
+          patrolRange: 80, patrolOrigin: 550, color: '#FF3C6F', tag: 'packet_loss',
+        },
+        {
+          id: 'npc_enemy_net_3', sprite: 'npc_enemy',
+          x: 700, y: 330, hostile: true, hp: 45, xpReward: 16,
+          patrolRange: 120, patrolOrigin: 700, color: '#FF3C6F', tag: 'packet_loss',
+        },
+        /* Latencia - más resistentes */
+        {
+          id: 'npc_enemy_latency_1', sprite: 'npc_enemy',
+          x: 900, y: 330, hostile: true, hp: 60, xpReward: 20,
+          patrolRange: 90, patrolOrigin: 900, color: '#E67E22', tag: 'latency',
+        },
+        {
+          id: 'npc_enemy_latency_2', sprite: 'npc_enemy',
+          x: 1050, y: 330, hostile: true, hp: 60, xpReward: 20,
+          patrolRange: 110, patrolOrigin: 1050, color: '#E67E22', tag: 'latency',
+        },
+        {
+          id: 'npc_enemy_latency_3', sprite: 'npc_enemy',
+          x: 1200, y: 180, hostile: true, hp: 65, xpReward: 22,
+          patrolRange: 70, patrolOrigin: 1200, color: '#E67E22', tag: 'latency',
+        },
+        /* DNS Poisoning - difíciles */
+        {
+          id: 'npc_enemy_dns_1', sprite: 'npc_enemy',
+          x: 1400, y: 330, hostile: true, hp: 75, xpReward: 25,
+          patrolRange: 100, patrolOrigin: 1400, color: '#3498DB', tag: 'dns_poison',
+        },
+        {
+          id: 'npc_enemy_dns_2', sprite: 'npc_enemy',
+          x: 1550, y: 330, hostile: true, hp: 75, xpReward: 25,
+          patrolRange: 80, patrolOrigin: 1550, color: '#3498DB', tag: 'dns_poison',
+        },
+        /* Mini-boss - Timeout */
+        {
+          id: 'boss_internet_mini', sprite: 'npc_enemy',
+          x: 1750, y: 290, hostile: true,
+          hp: 140, xpReward: 70,
+          w: 48, h: 48,
+          color: '#2980B9', tag: 'boss_internet_mini',
+          isBoss: true,
+          canShoot: true,
+          projectileSpeed: 170,
+          projectileDamage: 14,
+          attackCooldown: 1.8,
+          dialog: [
+            { text: '⚠ ERROR: TIMEOUT EXCEDIDO' },
+            { text: 'Soy el Timeout, el guardián del tiempo. Si no actúas rápido, perderás la conexión para siempre.' },
+          ],
+          eduContent: {
+            badge: 'Internet · Timeout',
+            title: 'El Timeout: Tiempo de Espera Agotado',
+            body: 'El timeout es el tiempo máximo de espera para una respuesta. Si un servidor no responde a tiempo, la conexión se pierde. Esto protege los recursos del sistema de conexiones zombie.',
+            concept: 'Timeout → Keep-alive → Reconexión'
+          }
+        },
+        /* BOSS FINAL - DDoS Master */
+        {
+          id: 'boss_internet', sprite: 'npc_enemy',
+          x: 2400, y: 290, hostile: true,
+          hp: 300, xpReward: 150,
+          w: 80, h: 80,
+          color: '#1A5276', tag: 'boss_internet',
+          isBoss: true,
+          canShoot: true,
+          projectileSpeed: 220,
+          projectileDamage: 20,
+          attackCooldown: 2,
+          learnPattern: true,
+          dialog: [
+            { text: '⚠⚠ ALERTA MÁXIMA: ATAQUE DDoS DETECTADO' },
+            { text: 'Soy el MAESTRO DDoS. Millones de zombis responden a mi llamado. ¿Crees que puedes detenerme?' },
+          ],
+          eduContent: {
+            badge: 'Internet · DDoS',
+            title: 'El Maestro DDoS: Seguridad de Red',
+            body: 'Los ataques DDoS (Distributed Denial of Service) saturan servidores con solicitudes masivas. Las contramedidas incluyen firewall, balanceo de carga y CDN. La prevención requiere monitoreo constante y planes de respuesta.',
+            concept: 'DDoS → Firewall → CDN → Mitigación'
+          }
+        },
+      ],
+      items: [
+        { id: 'item_n1', sprite: 'item_data', x: 320, y: 308, tag: 'packet', glowColor: '#378ADD', xpValue: 8 },
+        { id: 'item_n2', sprite: 'item_data', x: 420, y: 180, tag: 'packet', glowColor: '#378ADD', xpValue: 8 },
+        { id: 'item_n3', sprite: 'item_data', x: 620, y: 308, tag: 'packet', glowColor: '#378ADD', xpValue: 8 },
+        { id: 'item_n4', sprite: 'item_data', x: 820, y: 180, tag: 'packet', glowColor: '#378ADD', xpValue: 8 },
+        { id: 'item_n5', sprite: 'item_xp',   x: 500, y: 308, tag: 'xp_orb', glowColor: '#FFD700', xpValue: 20 },
+        { id: 'item_n6', sprite: 'item_data', x: 1000, y: 308, tag: 'packet', glowColor: '#378ADD', xpValue: 8 },
+        { id: 'item_n7', sprite: 'item_xp',   x: 1150, y: 180, tag: 'xp_orb', glowColor: '#FFD700', xpValue: 22 },
+      ],
+      zones: [
+        { id: 'zone_server', x: 980, y: 310, w: 80, h: 60 },
+        { id: 'zone_exit',   x: 3500, y: 310, w: 60, h: 80 },
+      ],
+      playerStart: { x: 80, y: 330 },
+      missions: ['m_network'],
+    },
+
+    /* ══ MUNDO 4: SEGURIDAD ══ */
+    w_security: {
+      id: 'w_security',
+      name: 'FIREWALL · SEGURIDAD',
+      theme: { bgColor: '#0A050A', accentColor: '#FF3C6F' },
+      width: 4000,
+      parallax: [
+        { id:'ps1', type:'stars', speed:0.04, alpha:0.5, color:'rgba(255,60,111,0.5)', stars:_genStars(120,900,400) },
+        { id:'ps2', type:'grid', speed:0.1, alpha:0.07, color:'#FF3C6F', step:90 },
+        { id:'ps3', type:'mountains', speed:0.25, alpha:0.3, color:'#1A0808', points:_genMountains(4000,190) },
+      ],
+      map: _buildMap_security(),
+      npcs: [
+        {
+          id: 'npc_security_mentor', sprite: 'npc_terminal',
+          x: 180, y: 330,
+          physicsEnabled: false,
+          dialog: [
+            { text: '¡Alerta de seguridad! Los malware están intentando romper el firewall. Tu misión es detenerlos antes de que roben datos sensibles.', action: { type: 'start_mission', missionId: 'm_security' } },
+            { text: 'La seguridad en capas es clave: firewall, IDS/IPS, antivirus y educación del usuario. Cada capa es una defensa.' },
+          ],
+        },
+        /* Malware básico */
+        {
+          id: 'npc_enemy_malware_1', sprite: 'npc_enemy',
+          x: 400, y: 330, hostile: true, hp: 55, xpReward: 18,
+          patrolRange: 100, patrolOrigin: 400, color: '#E74C3C', tag: 'malware',
+        },
+        {
+          id: 'npc_enemy_malware_2', sprite: 'npc_enemy',
+          x: 550, y: 330, hostile: true, hp: 55, xpReward: 18,
+          patrolRange: 80, patrolOrigin: 550, color: '#E74C3C', tag: 'malware',
+        },
+        {
+          id: 'npc_enemy_malware_3', sprite: 'npc_enemy',
+          x: 700, y: 330, hostile: true, hp: 55, xpReward: 18,
+          patrolRange: 120, patrolOrigin: 700, color: '#E74C3C', tag: 'malware',
+        },
+        /* Spyware */
+        {
+          id: 'npc_enemy_spy_1', sprite: 'npc_enemy',
+          x: 900, y: 330, hostile: true, hp: 70, xpReward: 24,
+          patrolRange: 90, patrolOrigin: 900, color: '#C0392B', tag: 'spyware',
+        },
+        {
+          id: 'npc_enemy_spy_2', sprite: 'npc_enemy',
+          x: 1050, y: 330, hostile: true, hp: 70, xpReward: 24,
+          patrolRange: 110, patrolOrigin: 1050, color: '#C0392B', tag: 'spyware',
+        },
+        {
+          id: 'npc_enemy_spy_3', sprite: 'npc_enemy',
+          x: 1200, y: 180, hostile: true, hp: 75, xpReward: 26,
+          patrolRange: 70, patrolOrigin: 1200, color: '#C0392B', tag: 'spyware',
+        },
+        /* Troyanos */
+        {
+          id: 'npc_enemy_trojan_1', sprite: 'npc_enemy',
+          x: 1400, y: 330, hostile: true, hp: 85, xpReward: 28,
+          patrolRange: 100, patrolOrigin: 1400, color: '#922B21', tag: 'trojan',
+        },
+        {
+          id: 'npc_enemy_trojan_2', sprite: 'npc_enemy',
+          x: 1550, y: 330, hostile: true, hp: 85, xpReward: 28,
+          patrolRange: 80, patrolOrigin: 1550, color: '#922B21', tag: 'trojan',
+        },
+        /* Mini-boss - Ransomware */
+        {
+          id: 'boss_security_mini', sprite: 'npc_enemy',
+          x: 1800, y: 290, hostile: true,
+          hp: 160, xpReward: 80,
+          w: 52, h: 52,
+          color: '#7B241C', tag: 'boss_security_mini',
+          isBoss: true,
+          canShoot: true,
+          projectileSpeed: 180,
+          projectileDamage: 16,
+          attackCooldown: 1.5,
+          dialog: [
+            { text: '⚠ RANSOMWARE DETECTADO' },
+            { text: 'Tus archivos han sido cifrados. Paga el rescate o lose todo. Ja, ja, ja...' },
+          ],
+          eduContent: {
+            badge: 'Seguridad · Ransomware',
+            title: 'El Ransomware: Secuestro de Datos',
+            body: 'El ransomware cifra archivos y exige rescate. Nunca pagues: no hay garantía de recuperación. Prevenir con backups offline, software actualizado y educación del usuario es la mejor defensa.',
+            concept: 'Prevención → Backup → Actualización → Recuperación'
+          }
+        },
+        /* BOSS FINAL -rootkit Master */
+        {
+          id: 'boss_security', sprite: 'npc_enemy',
+          x: 2500, y: 290, hostile: true,
+          hp: 350, xpReward: 180,
+          w: 88, h: 88,
+          color: '#641E16', tag: 'boss_security',
+          isBoss: true,
+          canShoot: true,
+          projectileSpeed: 240,
+          projectileDamage: 22,
+          attackCooldown: 1.8,
+          learnPattern: true,
+          dialog: [
+            { text: '⚠⚠ ROOTKIT MAESTRO DETECTADO' },
+            { text: 'Soy el ROOTKIT, el malware invisible. Estoy en el núcleo del sistema. No puedes verme, pero puedo ver todo.' },
+          ],
+          eduContent: {
+            badge: 'Seguridad · Rootkit',
+            title: 'El Rootkit: El Malware Invisible',
+            body: 'Los rootkits se esconden en el kernel del SO, siendo difíciles de detectar. Usan técnicas de Rootkit signing y stealth. La recuperación requiere formato o herramientas especializadas como chkrootkit.',
+            concept: 'Detección → Análisis → Remoción → Prevención'
+          }
+        },
+      ],
+      items: [
+        { id: 'item_sec1', sprite: 'item_data', x: 300, y: 308, tag: 'security_token', glowColor: '#FF3C6F', xpValue: 10 },
+        { id: 'item_sec2', sprite: 'item_data', x: 450, y: 180, tag: 'security_token', glowColor: '#FF3C6F', xpValue: 10 },
+        { id: 'item_sec3', sprite: 'item_data', x: 650, y: 308, tag: 'security_token', glowColor: '#FF3C6F', xpValue: 10 },
+        { id: 'item_sec4', sprite: 'item_xp',   x: 800, y: 308, tag: 'xp_orb',       glowColor: '#FFD700', xpValue: 25 },
+        { id: 'item_sec5', sprite: 'item_data', x: 1000, y: 180, tag: 'security_token', glowColor: '#FF3C6F', xpValue: 10 },
+        { id: 'item_sec6', sprite: 'item_xp',   x: 1300, y: 308, tag: 'xp_orb',       glowColor: '#FFD700', xpValue: 28 },
+      ],
+      zones: [
+        { id: 'zone_firewall', x: 600, y: 310, w: 80, h: 60 },
+        { id: 'zone_exit',    x: 3900, y: 310, w: 60, h: 80 },
+      ],
+      playerStart: { x: 80, y: 330 },
+      missions: ['m_security'],
+    },
+
+    /* ══ MUNDO 5: BASE DE DATOS ══ */
+    w_data: {
+      id: 'w_data',
+      name: 'BASE DE DATOS',
+      theme: { bgColor: '#0A0A05', accentColor: '#FFD700' },
+      width: 4400,
+      parallax: [
+        { id:'pd1', type:'stars', speed:0.03, alpha:0.5, color:'rgba(255,215,0,0.4)', stars:_genStars(130,900,400) },
+        { id:'pd2', type:'grid', speed:0.09, alpha:0.07, color:'#FFD700', step:110 },
+        { id:'pd3', type:'mountains', speed:0.22, alpha:0.3, color:'#1A1408', points:_genMountains(4400,200) },
+      ],
+      map: _buildMap_data(),
+      npcs: [
+        {
+          id: 'npc_db_mentor', sprite: 'npc_terminal',
+          x: 180, y: 330,
+          physicsEnabled: false,
+          dialog: [
+            { text: '¡La base de datos está bajo ataque! Los datos están siendo corruptos, eliminados y cifrados. ¡Protege la integridad de los datos!', action: { type: 'start_mission', missionId: 'm_database' } },
+            { text: 'Los datos son el activo más valioso. Backup, redundancia y cifrado son esenciales. Un database administrator debe conocer ACID y las transacciones.' },
+          ],
+        },
+        /* Inyección SQL básica */
+        {
+          id: 'npc_enemy_sql_1', sprite: 'npc_enemy',
+          x: 400, y: 330, hostile: true, hp: 65, xpReward: 22,
+          patrolRange: 100, patrolOrigin: 400, color: '#F39C12', tag: 'sql_injection',
+        },
+        {
+          id: 'npc_enemy_sql_2', sprite: 'npc_enemy',
+          x: 550, y: 330, hostile: true, hp: 65, xpReward: 22,
+          patrolRange: 80, patrolOrigin: 550, color: '#F39C12', tag: 'sql_injection',
+        },
+        {
+          id: 'npc_enemy_sql_3', sprite: 'npc_enemy',
+          x: 700, y: 330, hostile: true, hp: 65, xpReward: 22,
+          patrolRange: 120, patrolOrigin: 700, color: '#F39C12', tag: 'sql_injection',
+        },
+        /* NoSQL Injection */
+        {
+          id: 'npc_enemy_nosql_1', sprite: 'npc_enemy',
+          x: 900, y: 330, hostile: true, hp: 80, xpReward: 28,
+          patrolRange: 90, patrolOrigin: 900, color: '#E67E22', tag: 'nosql_injection',
+        },
+        {
+          id: 'npc_enemy_nosql_2', sprite: 'npc_enemy',
+          x: 1050, y: 330, hostile: true, hp: 80, xpReward: 28,
+          patrolRange: 110, patrolOrigin: 1050, color: '#E67E22', tag: 'nosql_injection',
+        },
+        {
+          id: 'npc_enemy_nosql_3', sprite: 'npc_enemy',
+          x: 1200, y: 180, hostile: true, hp: 85, xpReward: 30,
+          patrolRange: 70, patrolOrigin: 1200, color: '#E67E22', tag: 'nosql_injection',
+        },
+        /* Deadlock */
+        {
+          id: 'npc_enemy_deadlock_1', sprite: 'npc_enemy',
+          x: 1400, y: 330, hostile: true, hp: 95, xpReward: 32,
+          patrolRange: 100, patrolOrigin: 1400, color: '#D35400', tag: 'deadlock',
+        },
+        {
+          id: 'npc_enemy_deadlock_2', sprite: 'npc_enemy',
+          x: 1550, y: 330, hostile: true, hp: 95, xpReward: 32,
+          patrolRange: 80, patrolOrigin: 1550, color: '#D35400', tag: 'deadlock',
+        },
+        /* Mini-boss - Database Corruption */
+        {
+          id: 'boss_data_mini', sprite: 'npc_enemy',
+          x: 1800, y: 290, hostile: true,
+          hp: 180, xpReward: 90,
+          w: 56, h: 56,
+          color: '#B7950B', tag: 'boss_data_mini',
+          isBoss: true,
+          canShoot: true,
+          projectileSpeed: 190,
+          projectileDamage: 18,
+          attackCooldown: 1.4,
+          dialog: [
+            { text: '⚠ CORRUPCIÓN DE DATOS DETECTADA' },
+            { text: 'Los datos están contaminándose. Tablas corruptas, índices destruidos. ¿Podrás recover algo?' },
+          ],
+          eduContent: {
+            badge: 'Datos · Corrupción',
+            title: 'La Corrupción de Datos',
+            body: 'La corrupción de datos puede ocurrir por hardware, software o errores humanos. Los logs de transacciones y checksums ayudan a detectarla. La recuperación requiere backups y herramientas especializadas.',
+            concept: 'Prevención → Detección → Recuperación → Logs'
+          }
+        },
+        /* BOSS FINAL - Data Lord */
+        {
+          id: 'boss_data', sprite: 'npc_enemy',
+          x: 2800, y: 290, hostile: true,
+          hp: 400, xpReward: 200,
+          w: 96, h: 96,
+          color: '#9A7D0A', tag: 'boss_data',
+          isBoss: true,
+          canShoot: true,
+          projectileSpeed: 260,
+          projectileDamage: 25,
+          attackCooldown: 1.6,
+          learnPattern: true,
+          dialog: [
+            { text: '⚠⚠⚠ SEÑOR DE LOS DATOS DESPIERTA' },
+            { text: 'Soy el DATA LORD, el guardián de la información.control total sobre todos los registros. ¿Te crees capaz de vencerme?' },
+          ],
+          eduContent: {
+            badge: 'Datos · Master',
+            title: 'El Data Lord: Administración de DB',
+            body: 'Un DBA debe dominar ACID (Atomicidad, Consistencia, Isolation, Durabilidad), normalización, índices, partitions y replication. La alta disponibilidad y disaster recovery son responsabilidades críticas.',
+            concept: 'ACID → Normalización → Índices → HA'
+          }
+        },
+      ],
+      items: [
+        { id: 'item_db1', sprite: 'item_data', x: 300, y: 308, tag: 'data_shard', glowColor: '#FFD700', xpValue: 12 },
+        { id: 'item_db2', sprite: 'item_data', x: 450, y: 180, tag: 'data_shard', glowColor: '#FFD700', xpValue: 12 },
+        { id: 'item_db3', sprite: 'item_data', x: 650, y: 308, tag: 'data_shard', glowColor: '#FFD700', xpValue: 12 },
+        { id: 'item_db4', sprite: 'item_xp',   x: 800, y: 308, tag: 'xp_orb',       glowColor: '#FFD700', xpValue: 30 },
+        { id: 'item_db5', sprite: 'item_data', x: 1000, y: 180, tag: 'data_shard', glowColor: '#FFD700', xpValue: 12 },
+        { id: 'item_db6', sprite: 'item_xp',   x: 1300, y: 308, tag: 'xp_orb',       glowColor: '#FFD700', xpValue: 35 },
+      ],
+      zones: [
+        { id: 'zone_db_core', x: 800, y: 310, w: 80, h: 60 },
+        { id: 'zone_exit',    x: 4300, y: 310, w: 60, h: 80 },
+      ],
+      playerStart: { x: 80, y: 330 },
+      missions: ['m_database'],
+    },
+  };
+
+  /* ── GENERADORES DE MAPAS ── */
+  function _buildMap_hardware() {
+    return _buildPlatformerMap({
+      width: 2400, floorY: 14,
+      platforms: [
+        { tx: 14, ty: 10, tw: 6, th: 1 },  // plataforma media
+        { tx: 22, ty:  8, tw: 5, th: 1 },
+        { tx: 32, ty: 10, tw: 4, th: 1 },
+      ],
+      extraWalls: [],
+    });
+  }
+
+  function _buildMap_files() {
+    return _buildPlatformerMap({
+      width: 3200, floorY: 14,
+      platforms: [
+        { tx: 10, ty: 10, tw: 8, th: 1 },
+        { tx: 20, ty:  8, tw: 6, th: 1 },
+        { tx: 30, ty: 11, tw: 5, th: 1 },
+        { tx: 40, ty:  9, tw: 4, th: 1 },
+        { tx: 50, ty: 10, tw: 6, th: 1 },
+        { tx: 60, ty:  8, tw: 5, th: 1 },
+      ],
+    });
+  }
+
+  function _buildMap_internet() {
+    return _buildPlatformerMap({
+      width: 3600, floorY: 14,
+      platforms: [
+        { tx: 12, ty:  9, tw: 7, th: 1 },
+        { tx: 22, ty: 11, tw: 5, th: 1 },
+        { tx: 32, ty:  8, tw: 6, th: 1 },
+        { tx: 42, ty: 10, tw: 5, th: 1 },
+        { tx: 52, ty:  9, tw: 4, th: 1 },
+        { tx: 62, ty: 11, tw: 6, th: 1 },
+        { tx: 72, ty:  8, tw: 5, th: 1 },
+      ],
+    });
+  }
+
+  function _buildMap_security() {
+    return _buildPlatformerMap({
+      width: 4000, floorY: 14,
+      platforms: [
+        { tx: 10, ty: 10, tw: 6, th: 1 },
+        { tx: 20, ty:  8, tw: 7, th: 1 },
+        { tx: 30, ty: 11, tw: 5, th: 1 },
+        { tx: 40, ty:  9, tw: 6, th: 1 },
+        { tx: 50, ty: 10, tw: 5, th: 1 },
+        { tx: 60, ty:  8, tw: 7, th: 1 },
+        { tx: 70, ty: 11, tw: 4, th: 1 },
+        { tx: 80, ty:  9, tw: 6, th: 1 },
+      ],
+    });
+  }
+
+  function _buildMap_data() {
+    return _buildPlatformerMap({
+      width: 4400, floorY: 14,
+      platforms: [
+        { tx: 10, ty: 10, tw: 6, th: 1 },
+        { tx: 20, ty:  8, tw: 7, th: 1 },
+        { tx: 30, ty: 11, tw: 5, th: 1 },
+        { tx: 40, ty:  9, tw: 6, th: 1 },
+        { tx: 50, ty: 10, tw: 5, th: 1 },
+        { tx: 60, ty:  8, tw: 7, th: 1 },
+        { tx: 70, ty: 11, tw: 4, th: 1 },
+        { tx: 80, ty:  9, tw: 6, th: 1 },
+        { tx: 90, ty: 10, tw: 5, th: 1 },
+        { tx: 100, ty:  8, tw: 4, th: 1 },
+      ],
+    });
+  }
+
+  function _buildMap_generic(accentColor) {
+    return _buildPlatformerMap({ width: 3200, floorY: 14, platforms: [
+      { tx:15, ty:10, tw:6, th:1 }, { tx:28, ty:8, tw:5, th:1 },
+    ]});
+  }
+
+  /* Constructor genérico de mapa plataformero
+     Genera suelo, paredes y plataformas flotantes */
+  function _buildPlatformerMap({ width, floorY=14, platforms=[] }) {
+    const TILE = 32;
+    const tiles = [];
+    const tw = Math.ceil(width / TILE);
+    const th = 16; /* filas totales */
+
+    /* Suelo */
+    for (let x = 0; x < tw; x++) {
+      for (let y = floorY; y < th; y++) {
+        tiles.push({
+          x: x*TILE, y: y*TILE, w: TILE, h: TILE,
+          solid: true, sprite: y === floorY ? 'tile_platform' : 'tile_wall',
+          color: y === floorY ? '#1A2A1A' : '#0D1526',
+        });
+      }
+    }
+
+    /* Plataformas flotantes */
+    for (const p of platforms) {
+      for (let dx = 0; dx < p.tw; dx++) {
+        for (let dy = 0; dy < p.th; dy++) {
+          tiles.push({
+            x: (p.tx+dx)*TILE, y: (p.ty+dy)*TILE,
+            w: TILE, h: p.th === 1 ? 16 : TILE,
+            solid: true, sprite: 'tile_platform',
+            color: '#1A2A1A',
+          });
+        }
+      }
+    }
+
+    /* Paredes izquierda y derecha */
+    for (let y = 0; y < th; y++) {
+      tiles.push({ x: -TILE, y: y*TILE, w: TILE, h: TILE, solid: true, sprite: 'tile_wall', color:'#0D1526' });
+      tiles.push({ x: width, y: y*TILE, w: TILE, h: TILE, solid: true, sprite: 'tile_wall', color:'#0D1526' });
+    }
+
+    return tiles;
+  }
+
+  /* Generadores procedurales de elementos visuales */
+  function _genStars(count, W, H) {
+    return Array.from({length: count}, (_, i) => ({
+      x: Math.random() * W,
+      y: Math.random() * H,
+      r: Math.random() * 1.5 + 0.3,
+    }));
+  }
+
+  function _genMountains(W, maxH) {
+    const pts = [];
+    let x = 0;
+    while (x <= W + 100) {
+      pts.push({ x, y: Math.random() * maxH * 0.7 + maxH * 0.3 });
+      x += 60 + Math.random() * 80;
+    }
+    pts.push({ x: W + 200, y: 0 });
+    return pts;
+  }
+
+  /* ── API PÚBLICA ── */
+  function getWorldList() { return Object.values(WORLD_DATA); }
+
+  function load(worldId) {
+    const def = WORLD_DATA[worldId];
+    if (!def) { console.error(`[World] No existe: ${worldId}`); return false; }
+    currentWorld = def;
+    tiles = def.map || [];
+    zones = def.zones || [];
+    parallaxLayers = def.parallax || [];
+    return true;
+  }
+
+  function getCurrentWorld()   { return currentWorld; }
+  function getTiles()          { return tiles; }
+  function getZones()          { return zones; }
+  function getParallaxLayers() { return parallaxLayers; }
+  function getNPCDefs()        { return currentWorld?.npcs || []; }
+  function getItemDefs()       { return currentWorld?.items || []; }
+  function getPlayerStart()    { return currentWorld?.playerStart || { x:80, y:330 }; }
+
+  /* Verificar si jugador está en una zona */
+  function checkZones(player) {
+    const pa = Physics.aabb(player);
+    for (const zone of zones) {
+      if (Physics.intersects(pa, zone)) return zone;
+    }
+    return null;
+  }
+
+  return { getWorldList, load, getCurrentWorld, getTiles, getZones, getParallaxLayers, getNPCDefs, getItemDefs, getPlayerStart, checkZones };
+})();
+
+
+/* ──────────────────────────────────────────────────────────────
+   10. UI CONTROLLER
+   ──────────────────────────────────────────────────────────────
+   HUD, diálogos, paneles de misión, logros, educativos.
+   ────────────────────────────────────────────────────────────── */
+const UIController = (() => {
+  const $ = id => document.getElementById(id);
+
+  const els = {
+    hudPlayerName: $('hudPlayerName'),
+    hudLevel: $('hudLevel'),
+    hudXP: $('hudXP'),
+    xpFill: $('xpFill'),
+    hudHP: $('hudHP'),
+    hudWorld: $('hudWorld'),
+    dialogBox: $('dialogBox'),
+    dialogNPC: $('dialogNPC'),
+    dialogText: $('dialogText'),
+    dialogBtn: $('dialogBtn'),
+    xpNotify: $('xpNotify'),
+    missionBanner: $('missionBanner'),
+    worldMap: $('worldMap'),
+    mapGrid: $('mapGrid'),
+    mapClose: $('mapClose'),
+    achievementsPanel: $('achievementsPanel'),
+    achGrid: $('achGrid'),
+    achClose: $('achClose'),
+    eduPanel: $('eduPanel'),
+    eduBadge: $('eduBadge'),
+    eduTitle: $('eduTitle'),
+    eduBody: $('eduBody'),
+    eduConcept: $('eduConcept'),
+    eduClose: $('eduClose'),
+    flashOverlay: $('flashOverlay'),
+  };
+
+  let currentDialog = null;
+  let dialogCallback = null;
+  let _flashTimeout = null;
+
+  function init() {
+    els.dialogBtn.addEventListener('click', advanceDialog);
+    els.mapClose.addEventListener('click', closeMap);
+    els.achClose.addEventListener('click', closeAchievements);
+    els.eduClose.addEventListener('click', closeEdu);
+  }
+
+  /* ── HUD ── */
+  function updateHUD(state, worldName) {
+    els.hudPlayerName.textContent = state.playerName;
+    els.hudLevel.textContent = state.level;
+    const xpNext = ProgressionSystem.getXPPercent();
+    els.hudXP.textContent = `${state.xp} / ${state.xpToNext + state.xp} XP`;
+    els.xpFill.style.width = xpNext + '%';
+    els.hudHP.textContent = state.hp;
+    if (worldName) els.hudWorld.textContent = worldName;
+
+    /* Color HP según salud */
+    const hpRatio = state.hp / state.maxHp;
+    els.hudHP.style.color = hpRatio > 0.5 ? '#00F5C4' : hpRatio > 0.25 ? '#FFD700' : '#FF3C6F';
+  }
+
+  /* ── DIALOG ── */
+  function showDialog(npcName, dialogLines, onFinish) {
+    currentDialog = { lines: dialogLines, index: 0, npcName };
+    dialogCallback = onFinish || null;
+    _renderDialog();
+    els.dialogBox.classList.add('visible');
+  }
+
+  function _renderDialog() {
+    if (!currentDialog) return;
+    const line = currentDialog.lines[currentDialog.index];
+    els.dialogNPC.textContent = `>> ${currentDialog.npcName}`;
+    els.dialogText.textContent = typeof line === 'string' ? line : line.text;
+    els.dialogBtn.textContent = currentDialog.index < currentDialog.lines.length - 1
+      ? 'Continuar →' : 'Cerrar ✓';
+  }
+
+  function advanceDialog() {
+    if (!currentDialog) return;
+    const line = currentDialog.lines[currentDialog.index];
+    /* Ejecutar acción asociada a esta línea */
+    if (line && line.action && dialogCallback) {
+      dialogCallback(line.action);
+    }
+    currentDialog.index++;
+    if (currentDialog.index >= currentDialog.lines.length) {
+      closeDialog();
+    } else {
+      _renderDialog();
+    }
+  }
+
+  function closeDialog() {
+    if (currentDialog) {
+      /* Ejecutar acción de la última línea visible si existe */
+      const line = currentDialog.lines[currentDialog.index];
+      if (line && line.action && dialogCallback) {
+        dialogCallback(line.action);
+      }
+    }
+    els.dialogBox.classList.remove('visible');
+    currentDialog = null;
+  }
+
+  function isDialogOpen() { return els.dialogBox.classList.contains('visible'); }
+
+  /* ── XP NOTIFICATION ── */
+  function showXPNotify(amount) {
+    const el = els.xpNotify;
+    el.textContent = `+${amount} XP`;
+    el.style.opacity = '1';
+    el.style.transform = 'translateY(0)';
+    el.style.transition = 'none';
+    setTimeout(() => {
+      el.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(-30px)';
+    }, 50);
+  }
+
+  /* ── MISSION BANNER ── */
+  function showMissionBanner(text) {
+    els.missionBanner.textContent = `⬡ MISIÓN: ${text}`;
+    els.missionBanner.classList.add('visible');
+  }
+  function hideMissionBanner() {
+    els.missionBanner.classList.remove('visible');
+  }
+
+  /* ── FLASH DAÑO ── */
+  function flashDamage() {
+    if (_flashTimeout) clearTimeout(_flashTimeout);
+    els.flashOverlay.style.opacity = '1';
+    _flashTimeout = setTimeout(() => {
+      els.flashOverlay.style.transition = 'opacity 0.4s';
+      els.flashOverlay.style.opacity = '0';
+    }, 80);
+  }
+
+  /* ── MAPA ── */
+  function showMap(worldList, progressionState) {
+    els.mapGrid.innerHTML = '';
+    for (const world of worldList) {
+      const unlocked = ProgressionSystem.isWorldUnlocked(world.id) && !world.locked;
+      const div = document.createElement('div');
+      div.className = `map-node ${!unlocked ? 'locked' : ''}`;
+
+      const icons = { w_hardware:'🔧', w_files:'📁', w_internet:'🌐', w_security:'🔒', w_data:'🗄️' };
+      div.innerHTML = `
+        <div class="map-node-icon">${icons[world.id]||'🌍'}</div>
+        <div class="map-node-name">${world.name}</div>
+        <div class="map-node-desc">${_worldDesc(world.id)}</div>
+        <div class="map-node-level">${unlocked ? '✓ Desbloqueado' : 'Requiere Nv.' + _worldReqLevel(world.id)}</div>
+      `;
+      if (unlocked) {
+        div.addEventListener('click', () => {
+          closeMap();
+          GAME.loadWorld(world.id);
+        });
+      }
+      els.mapGrid.appendChild(div);
+    }
+    els.worldMap.classList.add('visible');
+  }
+
+  function _worldDesc(id) {
+    return { w_hardware:'CPU, RAM, Almacenamiento', w_files:'Directorios, Rutas, Sistemas', w_internet:'TCP/IP, DNS, HTTP', w_security:'Cifrado, Firewalls, Amenazas', w_data:'SQL, NoSQL, Algoritmos' }[id] || '...';
+  }
+  function _worldReqLevel(id) {
+    return { w_files:1, w_internet:2, w_security:3, w_data:4 }[id] || '?';
+  }
+
+  function closeMap() { els.worldMap.classList.remove('visible'); }
+
+  /* ── LOGROS ── */
+  function showAchievements() {
+    const achievements = ProgressionSystem.getAchievements();
+    els.achGrid.innerHTML = '';
+    for (const ach of achievements) {
+      const div = document.createElement('div');
+      div.className = `ach-item ${ach.unlocked ? 'unlocked' : ''}`;
+      div.innerHTML = `
+        <div class="ach-icon">${ach.icon}</div>
+        <div class="ach-name">${ach.unlocked ? ach.name : '???'}</div>
+        <div class="ach-desc">${ach.unlocked ? ach.desc : 'Bloqueado'}</div>
+      `;
+      els.achGrid.appendChild(div);
+    }
+    els.achievementsPanel.classList.add('visible');
+  }
+  function closeAchievements() { els.achievementsPanel.classList.remove('visible'); }
+
+  /* ── PANEL EDUCATIVO ── */
+  function showEduPanel(content, onClose) {
+    els.eduBadge.textContent   = content.badge;
+    els.eduTitle.textContent   = content.title;
+    els.eduBody.textContent    = content.body;
+    els.eduConcept.textContent = content.concept;
+    els.eduPanel.classList.add('visible');
+    els._eduCloseCallback = onClose;
+  }
+  function closeEdu() {
+    els.eduPanel.classList.remove('visible');
+    if (els._eduCloseCallback) els._eduCloseCallback();
+  }
+
+  /* ── LOGRO NOTIFICATION (toast inline) ── */
+  function showAchievementToast(ach) {
+    const el = document.createElement('div');
+    el.style.cssText = `
+      position:fixed; bottom:80px; left:50%; transform:translateX(-50%);
+      background:rgba(255,215,0,0.15); border:1px solid rgba(255,215,0,0.4);
+      border-radius:8px; padding:10px 20px; z-index:9999;
+      font-family:var(--font-body); font-size:14px; font-weight:600;
+      color:var(--color-accent-4); text-align:center;
+      animation: toastIn 0.3s ease, toastOut 0.4s ease 2.5s forwards;
+    `;
+    el.innerHTML = `${ach.icon} <strong>${ach.name}</strong> — ${ach.desc}`;
+    document.body.appendChild(el);
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes toastIn  { from{opacity:0;transform:translateX(-50%) translateY(10px)} to{opacity:1;transform:translateX(-50%) translateY(0)} }
+      @keyframes toastOut { to{opacity:0;transform:translateX(-50%) translateY(-10px)} }
+    `;
+    document.head.appendChild(style);
+    setTimeout(() => { el.remove(); style.remove(); }, 3200);
+  }
+
+  return {
+    init, updateHUD, showDialog, closeDialog, isDialogOpen,
+    showXPNotify, showMissionBanner, hideMissionBanner,
+    flashDamage, showMap, closeMap, showAchievements,
+    showEduPanel, closeEdu, showAchievementToast,
+    isEduPanelOpen: () => els.eduPanel.classList.contains('visible'),
+  };
+})();
+
+
+/* ──────────────────────────────────────────────────────────────
+   11. GAME LOOP (Core Engine)
+   ──────────────────────────────────────────────────────────────
+   Delta-time fijo con acumulador. 60 FPS target.
+   Separación clara entre update() y render().
+   ────────────────────────────────────────────────────────────── */
+const GameLoop = (() => {
+  const TARGET_FPS  = 60;
+  const FIXED_DT    = 1 / TARGET_FPS;
+  const MAX_ACCUM   = 0.2;
+
+  let _running    = false;
+  let _rafId      = null;
+  let _lastTime   = 0;
+  let _accumulator = 0;
+  let _fpsTimer   = 0;
+  let _fpsCount   = 0;
+  let _fps        = 60;
+
+  let _updateFn = null;
+  let _renderFn = null;
+
+  function start(updateFn, renderFn) {
+    _updateFn = updateFn;
+    _renderFn = renderFn;
+    _running  = true;
+    _lastTime = performance.now();
+    _rafId    = requestAnimationFrame(_loop);
+  }
+
+  function stop() {
+    _running = false;
+    if (_rafId) cancelAnimationFrame(_rafId);
+  }
+
+  function _loop(now) {
+    if (!_running) return;
+    _rafId = requestAnimationFrame(_loop);
+
+    const dt = Math.min((now - _lastTime) / 1000, MAX_ACCUM);
+    _lastTime = now;
+
+    /* Contador de FPS */
+    _fpsTimer += dt; _fpsCount++;
+    if (_fpsTimer >= 1) { _fps = _fpsCount; _fpsTimer = 0; _fpsCount = 0; }
+
+    /* Fixed-step update */
+    _accumulator += dt;
+    while (_accumulator >= FIXED_DT) {
+      if (_updateFn) _updateFn(FIXED_DT);
+      _accumulator -= FIXED_DT;
+    }
+
+    /* Interpolación alpha para render suave */
+    const alpha = _accumulator / FIXED_DT;
+    if (_renderFn) _renderFn(alpha, now / 1000);
+  }
+
+  function getFPS() { return _fps; }
+
+  return { start, stop, getFPS };
+})();
+
+
+/* ──────────────────────────────────────────────────────────────
+   12. PARTICLE SYSTEM (micro-sistema para efectos visuales)
+   ──────────────────────────────────────────────────────────────
+   Pool de partículas de texto y puntos.
+   ────────────────────────────────────────────────────────────── */
+const ParticleSystem = (() => {
+  let particles = [];
+
+  function emit(x, y, opts={}) {
+    particles.push({
+      x, y,
+      vx: (Math.random() - 0.5) * 60,
+      vy: -80 - Math.random() * 60,
+      life: 1,
+      decay: opts.decay || 0.8,
+      text: opts.text || '+5',
+      color: opts.color || '#FFD700',
+      size: opts.size || 12,
+    });
+  }
+
+  function update(dt) {
+    for (let i = particles.length - 1; i >= 0; i--) {
+      const p = particles[i];
+      p.x += p.vx * dt;
+      p.y += p.vy * dt;
+      p.vy += 60 * dt; // leve gravedad en partícula
+      p.life -= p.decay * dt;
+      if (p.life <= 0) particles.splice(i, 1);
+    }
+  }
+
+  function getAll() { return particles; }
+  function clear()  { particles = []; }
+
+  return { emit, update, getAll, clear };
+})();
+
+
+/* ──────────────────────────────────────────────────────────────
+   13. GAME ORCHESTRATOR — GAME
+   ──────────────────────────────────────────────────────────────
+   Orquesta todos los sistemas. Punto de entrada principal.
+   Separación clara: update() solo lógica, render() solo gráficos.
+   ────────────────────────────────────────────────────────────── */
+const GAME = (() => {
+  let state = 'loading'; // loading | title | playing | paused | dead
+  let camera = { x: 0, y: 0 };
+  let damageCooldown = 0;
+  let attackCooldown = 0;
+  let worldId = 'w_hardware';
+  let currentWorldCompleted = false;
+
+  function _checkAllEnemiesDefeated() {
+    if (currentWorldCompleted) return;
+    const world = WorldManager.getCurrentWorld();
+    if (!world) return;
+    currentWorldCompleted = true;
+    
+    /* Mostrar animación de mundo completado */
+    _showWorldCompleteAnimation(world);
+    
+    /* Desbloquear el siguiente mundo basado en completado */
+    const worldOrder = ['w_hardware', 'w_files', 'w_internet', 'w_security', 'w_data'];
+    const currentIdx = worldOrder.indexOf(world.id);
+    if (currentIdx >= 0 && currentIdx < worldOrder.length - 1) {
+      const nextWorld = worldOrder[currentIdx + 1];
+      const state = ProgressionSystem.getState();
+      if (!state.unlockedWorlds.includes(nextWorld)) {
+        state.unlockedWorlds.push(nextWorld);
+        PlayerService.save(state);
+      }
+    }
+  }
+
+  function _showWorldCompleteAnimation(world) {
+    const overlay = document.createElement('div');
+    overlay.id = 'worldCompleteOverlay';
+    overlay.style.cssText = `
+      position: fixed; inset: 0; z-index: 9999;
+      background: rgba(0,0,0,0.9);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      animation: fadeIn 0.5s ease;
+    `;
+    
+    const worldNames = {
+      'w_hardware': 'NÚCLEO DE HARDWARE',
+      'w_files': 'SISTEMA DE ARCHIVOS',
+      'w_internet': 'RED GLOBAL',
+      'w_security': 'FIREWALL - SEGURIDAD',
+      'w_data': 'BASE DE DATOS'
+    };
+    
+    const worldIcons = {
+      'w_hardware': '🔧',
+      'w_files': '📁',
+      'w_internet': '🌐',
+      'w_security': '🛡️',
+      'w_data': '🗄️'
+    };
+    
+    overlay.innerHTML = `
+      <style>
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        @keyframes glow { 0%, 100% { box-shadow: 0 0 20px currentColor; } 50% { box-shadow: 0 0 60px currentColor; } }
+        .wca-icon { font-size: 80px; margin-bottom: 20px; animation: pulse 1s ease infinite; }
+        .wca-title { 
+          font-family: 'Orbitron', monospace; font-size: 36px; font-weight: 900; 
+          color: #00F5C4; letter-spacing: 0.1em; margin-bottom: 16px;
+          animation: slideUp 0.6s ease 0.3s both;
+        }
+        .wca-subtitle { 
+          font-family: 'Rajdhani', sans-serif; font-size: 24px; 
+          color: #FFD700; letter-spacing: 0.05em; margin-bottom: 40px;
+          animation: slideUp 0.6s ease 0.5s both;
+        }
+        .wca-next { 
+          font-family: 'Rajdhani', sans-serif; font-size: 18px; 
+          color: #7B2FFF; animation: slideUp 0.6s ease 0.8s both;
+        }
+        .wca-btn {
+          margin-top: 30px; padding: 14px 40px;
+          background: linear-gradient(135deg, #00F5C4, #7B2FFF);
+          border: none; border-radius: 8px;
+          font-family: 'Orbitron', monospace; font-size: 16px; font-weight: 700;
+          color: #000; cursor: pointer;
+          animation: slideUp 0.6s ease 1s both;
+          transition: transform 0.2s;
+        }
+        .wca-btn:hover { transform: scale(1.05); }
+      </style>
+      <div class="wca-icon">${worldIcons[world.id] || '🏆'}</div>
+      <div class="wca-title">¡MUNDO COMPLETADO!</div>
+      <div class="wca-subtitle">${worldNames[world.id] || world.name}</div>
+      <div class="wca-next">🎉 Has aprendido los conceptos de este mundo 🎉</div>
+      <button class="wca-btn" onclick="this.parentElement.remove(); GAME.loadWorld('${world.id}')">CONTINUAR</button>
+    `;
+    
+    document.body.appendChild(overlay);
+  }
+
+  /* Inicialización completa del juego */
+  async function init() {
+    /* Cargar assets (placeholders en demo) */
+    await AssetLoader.loadAll();
+
+    /* Inicializar sistemas */
+    Renderer.init(document.getElementById('gameCanvas'));
+    InputSystem.init();
+    MissionSystem.init();
+    UIController.init();
+
+    /* Cargar save del jugador */
+    const saved = PlayerService.load();
+    if (saved) ProgressionSystem.load(saved);
+
+    /* Vincular eventos de progresión → UI */
+    ProgressionSystem.on('onXP', (amount) => {
+      UIController.showXPNotify(amount);
+    });
+    ProgressionSystem.on('onLevelUp', (level) => {
+      UIController.showXPNotify(`¡NIVEL ${level}!`);
+    });
+    ProgressionSystem.on('onDamage', (hp) => {
+      UIController.flashDamage();
+      UIController.updateHUD(ProgressionSystem.getState());
+    });
+    ProgressionSystem.on('onAchievement', (ach) => {
+      UIController.showAchievementToast(ach);
+    });
+    ProgressionSystem.on('onWorldUnlock', (wid) => {
+      UIController.showXPNotify('¡MUNDO DESBLOQUEADO!');
+    });
+
+    let eduPanelBlocking = false;
+
+    function isEduPanelOpen() {
+      return UIController.isEduPanelOpen();
+    }
+
+    /* Vincular eventos de misión → UI + progresión */
+    MissionSystem.on('onStart', (m) => {
+      UIController.showMissionBanner(m.title);
+      if (m.eduContent) {
+        UIController.showEduPanel(m.eduContent, () => {
+          eduPanelBlocking = false;
+        });
+        eduPanelBlocking = true;
+      }
+    });
+    MissionSystem.on('onComplete', (m) => {
+      ProgressionSystem.completeMission(m);
+      UIController.hideMissionBanner();
+      /* ⚠️  AQUÍ (no en el loop) es donde se llama Supabase */
+      PlayerService.save(ProgressionSystem.getState());
+      UIController.showXPNotify(`Misión: +${m.xpReward} XP`);
+    });
+    MissionSystem.on('onStepAdvance', (m) => {
+      const prog = MissionSystem.getStepProgress();
+      if (prog) UIController.showMissionBanner(`${m.title}: ${prog.step.description}`);
+    });
+
+    /* Controles de UI: M=mapa, L=logros */
+    window.addEventListener('keydown', e => {
+      if (state !== 'playing') return;
+      if (e.code === 'KeyM') UIController.showMap(WorldManager.getWorldList(), ProgressionSystem.getState());
+      if (e.code === 'KeyL') UIController.showAchievements();
+      if (e.code === 'Escape') togglePause();
+    });
+
+    state = 'title';
+    _showTitle();
+  }
+
+  function _showTitle() {
+    document.getElementById('titleScreen').classList.remove('hidden');
+    document.getElementById('gameScreen').classList.add('hidden');
+  }
+
+  async function startGame() {
+    const titleScreen = document.getElementById('titleScreen');
+    const gameScreen = document.getElementById('gameScreen');
+    const gameLoadingScreen = document.getElementById('gameLoadingScreen');
+    const gameLoadingProgress = document.getElementById('gameLoadingProgress');
+    const gameLoadingStatus = document.getElementById('gameLoadingStatus');
+    const gameLoadingWorld = document.getElementById('gameLoadingWorld');
+
+    titleScreen.classList.add('hidden');
+    titleScreen.style.display = 'none';
+    
+    gameLoadingScreen.style.display = 'flex';
+    
+    const gameParticles = document.querySelector('.game-loading-particles');
+    for (let i = 0; i < 15; i++) {
+      const p = document.createElement('div');
+      p.className = 'game-particle';
+      p.style.left = (50 + (Math.random() - 0.5) * 20) + '%';
+      p.style.top = '50%';
+      p.style.animationDelay = (i * 0.15) + 's';
+      p.style.background = Math.random() > 0.5 ? 'var(--color-accent-1)' : 'var(--color-accent-2)';
+      gameParticles.appendChild(p);
+    }
+    
+    const worldNames = {
+      'w_hardware': 'HARDWARE SECTOR',
+      'w_files': 'FILESYSTEM SECTOR',
+      'w_internet': 'NETWORK SECTOR',
+      'w_security': 'SECURITY SECTOR'
+    };
+    
+    gameLoadingWorld.textContent = worldNames[worldId] || 'SECTOR ' + worldId;
+    
+    const loadSteps = [
+      { status: 'Cargando geometría del nivel...', progress: 20 },
+      { status: 'Generando tiles...', progress: 40 },
+      { status: 'Inicializando entidades...', progress: 60 },
+      { status: 'Compilando física...', progress: 75 },
+      { status: 'Configurando renderizado...', progress: 90 },
+      { status: 'Listo para desplegar', progress: 100 }
+    ];
+    
+    for (const step of loadSteps) {
+      gameLoadingProgress.style.width = step.progress + '%';
+      gameLoadingStatus.textContent = step.status;
+      await new Promise(resolve => setTimeout(resolve, 300 + Math.random() * 200));
+    }
+    
+    await new Promise(resolve => setTimeout(resolve, 400));
+    
+    gameLoadingScreen.style.display = 'none';
+    gameScreen.classList.remove('hidden');
+    gameScreen.style.display = 'flex';
+    
+    _resizeCanvas();
+    window.addEventListener('resize', _resizeCanvas);
+    loadWorld(worldId);
+    state = 'playing';
+    GameLoop.start(_update, _render);
+  }
+
+  function _resizeCanvas() {
+    Renderer.resize();
+  }
+
+  /* Cargar un mundo completo */
+  function loadWorld(wid) {
+    worldId = wid;
+    currentWorldCompleted = false;
+    EntityManager.clear();
+    ParticleSystem.clear();
+    EntityManager.clearProjectiles();
+    UIController.hideMissionBanner();
+
+    const ok = WorldManager.load(wid);
+    if (!ok) return;
+
+    const world = WorldManager.getCurrentWorld();
+    const start = WorldManager.getPlayerStart();
+
+    /* Crear jugador */
+    EntityManager.createPlayer(start);
+
+    /* Crear NPCs desde definición del mundo */
+    for (const npcDef of WorldManager.getNPCDefs()) {
+      EntityManager.createNPC(npcDef);
+    }
+
+    /* Crear items sueltos */
+    for (const itemDef of WorldManager.getItemDefs()) {
+      EntityManager.createItem({ ...itemDef, w:20, h:20 });
+    }
+
+    /* Resetear cámara */
+    camera = { x: 0, y: 0 };
+
+    /* Actualizar HUD con nombre del mundo */
+    UIController.updateHUD(ProgressionSystem.getState(), world.name);
+
+    /* Auto-iniciar primera misión si no hay una activa */
+    if (!MissionSystem.getActive() && world.missions && world.missions.length > 0) {
+      /* Esperar a que el jugador hable con el mentor (la misión se inicia en el diálogo) */
+    }
+  }
+
+  /* ════════════════════════════════════════════════════════
+     UPDATE — Toda la lógica del juego
+     Solo debe contener lógica PURA. Sin DOM aquí.
+     ════════════════════════════════════════════════════════ */
+  function _update(dt) {
+    if (state !== 'playing') return;
+    const player = EntityManager.getPlayer();
+    if (!player) return;
+    const tiles  = WorldManager.getTiles();
+
+    /* Decrementar cooldowns */
+    damageCooldown = Math.max(0, damageCooldown - dt);
+    attackCooldown = Math.max(0, attackCooldown - dt);
+
+    /* ── INPUT DEL JUGADOR ── */
+    if (!UIController.isDialogOpen() && !UIController.isEduPanelOpen()) {
+      const SPEED  = 220;
+      const JUMP   = -480;
+      const mv = InputSystem.moveVector();
+
+      player.vx = mv.x * SPEED;
+      if (mv.x < 0) player.facingLeft = true;
+      if (mv.x > 0) player.facingLeft = false;
+
+      /* Salto */
+      if ((InputSystem.justPressed('Space') || InputSystem.justPressed('KeyW') || InputSystem.justPressed('ArrowUp'))
+          && player.onGround) {
+        player.vy = JUMP;
+        player.onGround = false;
+      }
+
+      /* Interacción con NPC (tecla E) */
+      if (InputSystem.justPressed('KeyE')) {
+        const nearNPC = EntityManager.getNPCs().find(n => n.nearPlayer && n.interactable && n.type === 'npc');
+        if (nearNPC) {
+          const lines = nearNPC.dialog;
+          UIController.showDialog(nearNPC.id.replace('npc_','').toUpperCase(), lines, (action) => {
+            _handleDialogAction(action, nearNPC);
+          });
+        }
+      }
+
+      /* Ataque (tecla F) */
+      if (InputSystem.justPressed('KeyF') && attackCooldown <= 0) {
+        attackCooldown = 0.35;
+        const hits = EntityManager.attackNearbyEnemies(player, 56, 25);
+        for (const enemy of hits) {
+          ParticleSystem.emit(enemy.x + enemy.w/2, enemy.y, {
+            text: '-25', color: '#FF3C6F', size: 14,
+          });
+          if (enemy.hp <= 0) {
+            ProgressionSystem.recordEnemyDefeat();
+            MissionSystem.notifyEvent('defeat_enemies', { tag: enemy.tag || enemy.id });
+            ParticleSystem.emit(enemy.x + enemy.w/2, enemy.y - 10, {
+              text: `+${enemy.xpReward || 10} XP`, color: '#FFD700', size: 16,
+            });
+            /* Mostrar contenido educativo del boss */
+            if (enemy.isBoss && enemy.eduContent) {
+              UIController.showEduPanel(enemy.eduContent, () => {});
+            }
+          }
+        }
+        /* Verificar si quedan enemigos en el mundo */
+        const remainingEnemies = EntityManager.getNPCs().filter(e => e.type === 'enemy' && e.hostile);
+        if (remainingEnemies.length === 0) {
+          _checkAllEnemiesDefeated();
+        }
+      }
+    }
+
+    /* ── FÍSICA DEL JUGADOR ── */
+    Physics.integrate(player, dt, tiles);
+
+    /* Límites del mundo */
+    const world = WorldManager.getCurrentWorld();
+    if (world) {
+      if (player.x < 0) { player.x = 0; player.vx = 0; }
+      if (player.x > world.width - player.w) { player.x = world.width - player.w; player.vx = 0; }
+    }
+
+    /* ── NPCs con IA avanzada ── */
+    EntityManager.updateNPCs(dt, tiles, (projectile) => {
+      EntityManager.createProjectile(projectile);
+    });
+    EntityManager.updateProximity(player);
+
+    /* ── PROYECTILES ── */
+    EntityManager.updateProjectiles(dt, player, (damage) => {
+      ProgressionSystem.takeDamage(damage);
+      damageCooldown = 1.0;
+    });
+
+    /* ── COLISIONES CON ENEMIGOS ── */
+    if (damageCooldown <= 0) {
+      EntityManager.checkEnemyCollisions(player, (enemy) => {
+        ProgressionSystem.takeDamage(15);
+        damageCooldown = 1.0; // 1s de invulnerabilidad
+      });
+    }
+
+    /* ── RECOGER ITEMS ── */
+    EntityManager.checkItemPickups(player, (item) => {
+      ProgressionSystem.recordItemCollect();
+      ParticleSystem.emit(item.x, item.y, {
+        text: `+${item.xpValue || 5}`, color: item.glowColor || '#FFD700',
+      });
+      MissionSystem.notifyEvent('collect_items', { tag: item.tag });
+    });
+
+    /* ── VERIFICAR ZONAS ── */
+    const zone = WorldManager.checkZones(player);
+    if (zone) {
+      MissionSystem.notifyEvent('reach_zone', { zoneId: zone.id });
+    }
+
+    /* ── PARTÍCULAS ── */
+    ParticleSystem.update(dt);
+
+    /* ── CÁMARA ── (sigue al jugador con suavizado) */
+    const targetCamX = player.x - Renderer.W / 2 + player.w / 2;
+    const targetCamY = 0;
+    camera.x += (targetCamX - camera.x) * 0.1;
+    camera.y += (targetCamY - camera.y) * 0.1;
+
+    /* Clamp cámara */
+    const worldW = WorldManager.getCurrentWorld()?.width || 2400;
+    const maxCamX = Math.max(0, worldW - Renderer.W);
+    camera.x = Math.max(0, Math.min(camera.x, maxCamX));
+    camera.y = Math.max(0, camera.y);
+
+    /* ── HUD update (solo cuando cambia) ── */
+    UIController.updateHUD(ProgressionSystem.getState());
+
+    InputSystem.flush();
+  }
+
+  /* Manejar acciones de diálogo → sistema de misiones */
+  function _handleDialogAction(action, npc) {
+    if (!action) return;
+    if (action.type === 'start_mission') {
+      MissionSystem.start(action.missionId);
+      MissionSystem.notifyEvent('talk_npc', { npcId: npc.id });
+    } else if (action.type === 'complete_step') {
+      MissionSystem.notifyEvent(action.stepType, { zoneId: action.zoneId, npcId: npc.id });
+    }
+  }
+
+  /* ════════════════════════════════════════════════════════
+     RENDER — Solo gráficos. Sin lógica aquí.
+     ════════════════════════════════════════════════════════ */
+  function _render(alpha, time) {
+    Renderer.clear();
+
+    /* ── PARALLAX (3 capas mínimo) ── */
+    const layers = WorldManager.getParallaxLayers();
+    Renderer.drawParallax(layers, camera.x);
+
+    /* ── TILES ── */
+    for (const tile of WorldManager.getTiles()) {
+      Renderer.drawTile(tile, camera.x, camera.y);
+    }
+
+    /* ── ITEMS ── */
+    for (const item of EntityManager.getItems()) {
+      Renderer.drawItem(item, camera.x, camera.y, time);
+    }
+
+    /* ── ENTIDADES (NPCs + player) ── */
+    for (const e of EntityManager.getAll()) {
+      if (e.type !== 'item') Renderer.drawEntity(e, camera.x, camera.y);
+    }
+
+    /* ── PROYECTILES ── */
+    Renderer.drawProjectiles(EntityManager.getProjectiles(), camera.x, camera.y, time);
+
+    /* ── PARTÍCULAS ── */
+    Renderer.drawParticles(ParticleSystem.getAll(), camera.x, camera.y);
+
+    /* ── VIÑETA ── */
+    Renderer.drawVignette();
+
+    /* ── DEBUG INFO (opcional, en desarrollo) ── */
+    /* Renderer.drawText(`FPS: ${GameLoop.getFPS()}`, 8, 80, { size:10, color:'#5A7BA0' }); */
+  }
+
+  function togglePause() {
+    if (state === 'playing') { state = 'paused'; GameLoop.stop(); }
+    else if (state === 'paused') { state = 'playing'; GameLoop.start(_update, _render); }
+  }
+
+  return { init, startGame, loadWorld };
+})();
+
+
+/* ──────────────────────────────────────────────────────────────
+   BOOTSTRAP
+   ──────────────────────────────────────────────────────────────
+   Punto de entrada. Conecta UI de título con el motor.
+   ────────────────────────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', async () => {
+  const loadingScreen = document.getElementById('loadingScreen');
+  const titleScreen = document.getElementById('titleScreen');
+  const progressBar = document.getElementById('progressBar');
+  const progressPercent = document.getElementById('progressPercent');
+  const progressStatus = document.getElementById('progressStatus');
+  const terminalBody = document.getElementById('terminalBody');
+  const cpuLoad = document.getElementById('cpuLoad');
+  const memLoad = document.getElementById('memLoad');
+  const netStatus = document.getElementById('netStatus');
+  const uptime = document.getElementById('uptime');
+  const loadingParticles = document.getElementById('loadingParticles');
+
+  const bootSteps = [
+    { status: 'Inicializando kernel...', output: 'Loading NEXUS kernel v2.4.1', type: 'cmd' },
+    { status: 'Verificando memoria...', output: 'RAM Check: 8192MB OK', type: 'success' },
+    { status: 'Cargando módulos...', output: 'Loading modules: [CORE, PHYSICS, RENDERER]', type: 'cmd' },
+    { status: 'Inicializando GPU...', output: 'GPU initialized: WebGL2 context created', type: 'success' },
+    { status: 'Cargando assets...', output: 'Loading assets: 24 sprites loaded', type: 'success' },
+    { status: 'Compilando shaders...', output: 'Shader compilation: complete', type: 'success' },
+    { status: 'Cargando datos del mundo...', output: 'World data: 4 sectors loaded', type: 'success' },
+    { status: 'Estableciendo conexiones...', output: 'Network: establishing secure channel...', type: 'warning' },
+    { status: 'Inicializando sistemas...', output: 'All systems nominal. Ready for deployment.', type: 'success' },
+    { status: 'Listo', output: '> Boot sequence complete. System ready.', type: 'success' }
+  ];
+
+  let currentStep = 0;
+  let progress = 0;
+  let uptimeSeconds = 0;
+
+  function addTerminalLine(text, type = 'output') {
+    const line = document.createElement('div');
+    line.className = 'terminal-line';
+    line.innerHTML = `<span class="output ${type}">${text}</span>`;
+    terminalBody.appendChild(line);
+    terminalBody.scrollTop = terminalBody.scrollHeight;
+  }
+
+  function createParticles() {
+    for (let i = 0; i < 20; i++) {
+      const particle = document.createElement('div');
+      particle.className = 'loading-particle';
+      particle.style.left = Math.random() * 100 + '%';
+      particle.style.animationDuration = (Math.random() * 3 + 4) + 's';
+      particle.style.animationDelay = Math.random() * 5 + 's';
+      loadingParticles.appendChild(particle);
+    }
+  }
+
+  function updateUptime() {
+    uptimeSeconds++;
+    const hrs = Math.floor(uptimeSeconds / 3600).toString().padStart(2, '0');
+    const mins = Math.floor((uptimeSeconds % 3600) / 60).toString().padStart(2, '0');
+    const secs = (uptimeSeconds % 60).toString().padStart(2, '0');
+    uptime.textContent = `${hrs}:${mins}:${secs}`;
+  }
+
+  function simulateSystemStats() {
+    cpuLoad.textContent = (Math.random() * 30 + 10).toFixed(0) + '%';
+    memLoad.textContent = (Math.random() * 40 + 30).toFixed(0) + '%';
+    if (currentStep >= 7) {
+      netStatus.textContent = 'ONLINE';
+      netStatus.style.color = 'var(--color-accent-1)';
+    }
+  }
+
+  function animateProgress(targetProgress, duration = 300) {
+    const startProgress = progress;
+    const startTime = performance.now();
+    
+    function update(currentTime) {
+      const elapsed = currentTime - startTime;
+      const t = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - t, 3);
+      
+      progress = startProgress + (targetProgress - startProgress) * eased;
+      progressBar.style.width = progress + '%';
+      progressPercent.textContent = Math.round(progress) + '%';
+      
+      if (t < 1) {
+        requestAnimationFrame(update);
+      }
+    }
+    requestAnimationFrame(update);
+  }
+
+  async function runBootSequence() {
+    createParticles();
+    
+    for (let i = 0; i < bootSteps.length; i++) {
+      const step = bootSteps[i];
+      
+      progressStatus.textContent = step.status;
+      addTerminalLine(step.output, step.type === 'cmd' ? '' : step.type);
+      
+      const targetProgress = ((i + 1) / bootSteps.length) * 100;
+      animateProgress(targetProgress, 400);
+      
+      simulateSystemStats();
+      
+      await new Promise(resolve => setTimeout(resolve, 350 + Math.random() * 250));
+      currentStep++;
+    }
+
+    await new Promise(resolve => setTimeout(resolve, 800));
+    
+    loadingScreen.classList.add('loading-complete');
+    
+    await new Promise(resolve => setTimeout(resolve, 600));
+    
+    loadingScreen.style.display = 'none';
+    titleScreen.classList.remove('hidden');
+titleScreen.style.display = 'flex';
+  }
+
+  const uptimeInterval = setInterval(updateUptime, 1000);
+  
+  await GAME.init();
+
+  await runBootSequence();
+  clearInterval(uptimeInterval);
+
+  document.getElementById('btnStart').addEventListener('click', () => {
+    GAME.startGame();
+  });
+
+  document.getElementById('btnCredits').addEventListener('click', () => {
+    alert(`NEXUS: Guardianes del Código\n\nMotor: NEXUS Engine v0.1.0\nArquitectura modular AAA\nDisponible para escalar con Supabase, WebSockets, y más mundos.\n\n© 2024 — Base educativa de videogame`);
+  });
+
+  document.getElementById('btnBackToAppTitle').addEventListener('click', async () => {
+    const loadingScreen = document.getElementById('loadingScreen');
+    const titleScreen = document.getElementById('titleScreen');
+    const gameLoadingScreen = document.getElementById('gameLoadingScreen');
+    const gameLoadingProgress = document.getElementById('gameLoadingProgress');
+    const gameLoadingStatus = document.getElementById('gameLoadingStatus');
+    const gameLoadingWorld = document.getElementById('gameLoadingWorld');
+    
+    titleScreen.classList.add('hidden');
+    titleScreen.style.display = 'none';
+    gameLoadingScreen.style.display = 'flex';
+    
+    gameLoadingWorld.textContent = 'REGRESANDO A INFO-MÁTICA';
+    gameLoadingProgress.style.width = '0%';
+    
+    const exitSteps = [
+      { status: 'Guardando progreso...', progress: 20 },
+      { status: 'Cerrando sesión...', progress: 40 },
+      { status: 'Limpiando memoria...', progress: 60 },
+      { status: 'Cerrando conexiones...', progress: 80 },
+      { status: 'Redireccionando...', progress: 100 }
+    ];
+    
+    for (const step of exitSteps) {
+      gameLoadingProgress.style.width = step.progress + '%';
+      gameLoadingStatus.textContent = step.status;
+      await new Promise(resolve => setTimeout(resolve, 200 + Math.random() * 100));
+    }
+    
+    window.location.href = '../informaticlab/app.html';
+  });
+
+  const btnBackToApp = document.getElementById('btnBackToApp');
+  if (btnBackToApp) {
+    btnBackToApp.addEventListener('click', async () => {
+      const gameScreen = document.getElementById('gameScreen');
+      const gameLoadingScreen = document.getElementById('gameLoadingScreen');
+      const gameLoadingProgress = document.getElementById('gameLoadingProgress');
+      const gameLoadingStatus = document.getElementById('gameLoadingStatus');
+      const gameLoadingWorld = document.getElementById('gameLoadingWorld');
+
+      state = 'paused';
+      GameLoop.stop();
+      
+      gameScreen.style.display = 'none';
+      gameLoadingScreen.style.display = 'flex';
+    
+    gameLoadingWorld.textContent = 'REGRESANDO A INFO-MÁTICA';
+    gameLoadingProgress.style.width = '0%';
+    
+    const exitSteps = [
+      { status: 'Guardando progreso...', progress: 20 },
+      { status: 'Desactivando sistemas del juego...', progress: 40 },
+      { status: 'Cerrando conexiones...', progress: 60 },
+      { status: 'Liberando memoria...', progress: 80 },
+      { status: 'Redireccionando...', progress: 100 }
+    ];
+    
+    for (const step of exitSteps) {
+      gameLoadingProgress.style.width = step.progress + '%';
+      gameLoadingStatus.textContent = step.status;
+      await new Promise(resolve => setTimeout(resolve, 200 + Math.random() * 100));
+    }
+    
+    window.location.href = '../informaticlab/app.html';
+    });
+  }
+
+}); // fin DOMContentLoaded
+
+</script>
+
+<!--
+╔══════════════════════════════════════════════════════════════════════════╗
+║              GUÍA DE ESCALABILIDAD — NEXUS ENGINE                       ║
+╠══════════════════════════════════════════════════════════════════════════╣
+║                                                                          ║
+║  1. CÓMO AGREGAR NUEVOS MUNDOS                                           ║
+║     · Agregar entrada en WorldManager.WORLD_DATA                         ║
+║     · Definir: id, name, width, parallax[], map, npcs[], items[], zones  ║
+║     · Usar _buildPlatformerMap() o crear mapa tile a tile                ║
+║     · Registrar mundos: ProgressionSystem worldReq (nivel de desbloqueo) ║
+║                                                                          ║
+║  2. CÓMO AGREGAR NUEVAS MISIONES                                         ║
+║     · Agregar entrada en MissionSystem.MISSIONS                          ║
+║     · Campos: id, worldId, title, category, xpReward, eduContent, steps  ║
+║     · Tipos de step: talk_npc | collect_items | defeat_enemies | reach_zone ║
+║     · Para nuevos tipos: extender MissionSystem.notifyEvent()            ║
+║                                                                          ║
+║  3. CÓMO CAMBIAR ASSETS                                                  ║
+║     · Antes de init(): AssetLoader.register('player_idle', {             ║
+║         type:'image', src:'/sprites/player.png' })                       ║
+║     · El sistema carga la imagen y la usa automáticamente                ║
+║     · Sin modificar lógica ni renderer                                   ║
+║                                                                          ║
+║  4. CÓMO CONECTAR NUEVOS SISTEMAS                                        ║
+║     MULTIPLAYER:                                                         ║
+║       · Crear MultiplayerService con WebSocket/Supabase Realtime         ║
+║       · Suscribir a eventos de posición del jugador                      ║
+║       · Renderizar jugadores remotos como entidades especiales           ║
+║       · NUNCA poner socket.emit() dentro del game loop directamente      ║
+║         Usar un buffer que se vacía cada N frames                        ║
+║     SUPABASE AUTH:                                                       ║
+║       · supabase.auth.signInWithPassword({ email, password })            ║
+║       · PlayerService.save() → supabase.from('players').upsert()         ║
+║       · ProgressionSystem.on('onLevelUp') → disparar save               ║
+║                                                                          ║
+║  5. CÓMO OPTIMIZAR RENDIMIENTO                                           ║
+║     · Spatial hashing para colisiones (reemplazar loop en Physics)       ║
+║     · OffscreenCanvas para renderizado en worker                         ║
+║     · Frustum culling ya implementado en drawTile() y drawEntity()       ║
+║     · Object pooling: reutilizar entidades en lugar de crear/destruir     ║
+║     · Chunks: dividir el mundo en chunks de 800px, cargar solo visibles  ║
+║     · Para mapas grandes: usar TiledMap JSON + carga por demanda         ║
+║                                                                          ║
+╚══════════════════════════════════════════════════════════════════════════╝
+-->
+
+</body>
+</html>

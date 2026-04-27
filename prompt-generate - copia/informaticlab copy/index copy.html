@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>InfoMática — Aprende Tecnología</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="main.css">
+  <link rel="stylesheet" href="components.css">
+  <link rel="stylesheet" href="layout.css">
+</head>
+<body class="auth-page">
+
+  <!-- Fondo animado -->
+  <div class="bg-grid"></div>
+  <div class="bg-orbs">
+    <span class="orb orb-1"></span>
+    <span class="orb orb-2"></span>
+    <span class="orb orb-3"></span>
+  </div>
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="logo">
+      <span class="logo-icon">⚡</span>
+      <span class="logo-text">Info<strong>Mática</strong></span>
+    </div>
+    <nav class="header-nav">
+      <a href="#features">¿Qué aprendo?</a>
+      <a href="#how">¿Cómo funciona?</a>
+      <button class="btn btn-ghost" id="btnShowLogin">Iniciar sesión</button>
+    </nav>
+  </header>
+
+  <!-- HERO -->
+  <main>
+    <section class="hero">
+      <div class="hero-content">
+        <div class="hero-badge">🎮 Aprende jugando</div>
+        <h1 class="hero-title">
+          Domina la tecnología<br/>
+          <span class="highlight">nivel por nivel</span>
+        </h1>
+        <p class="hero-sub">
+          Cursos interactivos de Word, Excel, Internet y más.
+          Gana XP, sube de nivel y consigue logros reales.
+        </p>
+        <div class="hero-cta">
+          <button class="btn btn-primary btn-xl" id="btnShowRegister">
+            Comenzar gratis →
+          </button>
+          <span class="hero-note">Sin tarjeta de crédito · Para todas las edades</span>
+        </div>
+
+        <!-- Stats -->
+        <div class="hero-stats">
+          <div class="stat"><strong>12</strong><span>Cursos</span></div>
+          <div class="stat-divider"></div>
+          <div class="stat"><strong>80+</strong><span>Lecciones</span></div>
+          <div class="stat-divider"></div>
+          <div class="stat"><strong>🏆</strong><span>Logros</span></div>
+        </div>
+      </div>
+
+      <!-- Módulos preview (grid tipo Google Apps) -->
+      <div class="modules-preview">
+        <div class="module-card" style="--accent:#4F8EF7">
+          <span class="module-icon">📄</span>
+          <span class="module-name">Word</span>
+          <span class="module-level">Básico → Pro</span>
+        </div>
+        <div class="module-card" style="--accent:#22C55E">
+          <span class="module-icon">📊</span>
+          <span class="module-name">Excel</span>
+          <span class="module-level">Fórmulas y más</span>
+        </div>
+        <div class="module-card" style="--accent:#F59E0B">
+          <span class="module-icon">🌐</span>
+          <span class="module-name">Internet</span>
+          <span class="module-level">Seguridad y uso</span>
+        </div>
+        <div class="module-card" style="--accent:#EC4899">
+          <span class="module-icon">📧</span>
+          <span class="module-name">Email</span>
+          <span class="module-level">Gmail y Outlook</span>
+        </div>
+        <div class="module-card" style="--accent:#8B5CF6">
+          <span class="module-icon">💻</span>
+          <span class="module-name">PC Básico</span>
+          <span class="module-level">Desde cero</span>
+        </div>
+        <div class="module-card" style="--accent:#06B6D4">
+          <span class="module-icon">🔒</span>
+          <span class="module-name">Seguridad</span>
+          <span class="module-level">Protégete online</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===================== MODAL AUTH ===================== -->
+  <div class="modal-overlay hidden" id="authModal">
+    <div class="modal auth-modal">
+      <button class="modal-close" id="closeModal">✕</button>
+
+      <!-- Tabs -->
+      <div class="auth-tabs">
+        <button class="tab active" data-tab="login">Iniciar sesión</button>
+        <button class="tab" data-tab="register">Crear cuenta</button>
+      </div>
+
+      <!-- LOGIN -->
+      <div class="tab-content active" id="tab-login">
+        <h2>Bienvenido de vuelta 👋</h2>
+        <p class="auth-sub">Continúa tu aprendizaje</p>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="loginEmail" placeholder="tu@email.com" class="input"/>
+        </div>
+        <div class="form-group">
+          <label>Contraseña</label>
+          <input type="password" id="loginPassword" placeholder="••••••••" class="input"/>
+        </div>
+        <button class="btn btn-primary btn-full" id="btnLogin">Entrar →</button>
+        <div class="auth-error hidden" id="loginError"></div>
+      </div>
+
+      <!-- REGISTER -->
+      <div class="tab-content hidden" id="tab-register">
+        <h2>¡Empieza hoy! 🚀</h2>
+        <p class="auth-sub">Crea tu cuenta gratis</p>
+        <div class="form-group">
+          <label>Nombre</label>
+          <input type="text" id="regName" placeholder="Tu nombre" class="input"/>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="regEmail" placeholder="tu@email.com" class="input"/>
+        </div>
+        <div class="form-group">
+          <label>Contraseña</label>
+          <input type="password" id="regPassword" placeholder="Mínimo 6 caracteres" class="input"/>
+        </div>
+        <div class="form-group">
+          <label>¿Cuántos años tienes?</label>
+          <select id="regAge" class="input" title="Selecciona tu rango de edad">
+            <option value="">Selecciona tu rango</option>
+            <option value="kids">Niño (6-12 años)</option>
+            <option value="teen">Adolescente (13-17)</option>
+            <option value="adult">Adulto (18-60)</option>
+            <option value="senior">Senior (60+)</option>
+          </>
+        </div>
+        <button class="btn btn-primary btn-full" id="btnRegister">Crear cuenta →</button>
+        <div class="auth-error hidden" id="registerError"></div>
+      </div>
+
+      <!-- Loading state -->
+      <div class="auth-loading hidden" id="authLoading">
+        <div class="spinner"></div>
+        <span>Procesando...</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast notifications -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- SCRIPTS -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-client.js"></script>
+  <script src="auth.js"></script>
+  <script src="ui.js"></script>
+  <script>
+    // Modal controls
+    const modal = document.getElementById('authModal');
+    const closeModal = document.getElementById('closeModal');
+
+    function openModal(tab = 'login') {
+      modal.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      switchTab(tab);
+    }
+
+    function closeModalFn() {
+      modal.classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+
+    document.getElementById('btnShowLogin').onclick = () => openModal('login');
+    document.getElementById('btnShowRegister').onclick = () => openModal('register');
+    closeModal.onclick = closeModalFn;
+    modal.addEventListener('click', e => { if(e.target === modal) closeModalFn(); });
+
+    // Tab switching
+    function switchTab(name) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => { c.classList.add('hidden'); c.classList.remove('active'); });
+      document.querySelector(`.tab[data-tab="${name}"]`).classList.add('active');
+      document.getElementById(`tab-${name}`).classList.remove('hidden');
+      document.getElementById(`tab-${name}`).classList.add('active');
+    }
+
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.onclick = () => switchTab(tab.dataset.tab);
+    });
+
+    // Check if already logged in
+    document.addEventListener('DOMContentLoaded', async () => {
+      if (typeof supabase !== 'undefined') {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) window.location.href = 'app.html';
+      }
+    });
+  </script>
+</body>
+</html>

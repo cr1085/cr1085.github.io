@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BgDrop — Quitador de fondos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0a0a0f;
+      --surface:  #13131a;
+      --card:     #1c1c27;
+      --border:   #2a2a3d;
+      --accent:   #7c5cfc;
+      --accent2:  #e040fb;
+      --text:     #f0f0fa;
+      --muted:    #6b6b8a;
+      --success:  #00e5a0;
+      --danger:   #ff4d6d;
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE GRAIN OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 999;
+    }
+
+    /* ── AMBIENT GLOW ── */
+    .glow-orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.15;
+      pointer-events: none;
+      animation: drift 12s ease-in-out infinite alternate;
+    }
+    .glow-orb.a { width: 600px; height: 600px; top: -200px; left: -100px; background: var(--accent); }
+    .glow-orb.b { width: 500px; height: 500px; bottom: -150px; right: -80px; background: var(--accent2); animation-delay: -6s; }
+
+    @keyframes drift { from { transform: translate(0,0) scale(1); } to { transform: translate(40px,30px) scale(1.1); } }
+
+    /* ── LAYOUT ── */
+    .wrapper { max-width: 960px; margin: 0 auto; padding: 48px 24px 80px; }
+
+    /* ── HEADER ── */
+    header { text-align: center; margin-bottom: 56px; }
+    .logo-badge {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: linear-gradient(135deg, rgba(124,92,252,.18), rgba(224,64,251,.12));
+      border: 1px solid rgba(124,92,252,.35);
+      padding: 6px 16px 6px 10px;
+      border-radius: 100px;
+      font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 600;
+      color: #b8a4ff; margin-bottom: 20px;
+    }
+    .logo-badge .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); box-shadow: 0 0 6px var(--success); animation: blink 2s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(36px, 7vw, 72px);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -2px;
+      background: linear-gradient(135deg, #fff 30%, #b8a4ff 70%, var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .tagline { color: var(--muted); margin-top: 12px; font-size: 16px; font-weight: 300; }
+
+    /* ── UPLOAD ZONE ── */
+    .upload-zone {
+      border: 2px dashed var(--border);
+      border-radius: 20px;
+      padding: 60px 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: all .3s ease;
+      background: var(--surface);
+      position: relative;
+      overflow: hidden;
+    }
+    .upload-zone::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(circle at 50% 50%, rgba(124,92,252,.07) 0%, transparent 70%);
+      opacity: 0; transition: opacity .3s;
+    }
+    .upload-zone:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .upload-zone:hover::before { opacity: 1; }
+    .upload-zone.dragover { border-color: var(--accent); background: rgba(124,92,252,.08); }
+
+    .upload-icon {
+      width: 64px; height: 64px; margin: 0 auto 20px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 18px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px;
+      box-shadow: 0 8px 32px rgba(124,92,252,.4);
+    }
+    .upload-zone h3 { font-family: 'Syne', sans-serif; font-size: 20px; margin-bottom: 8px; }
+    .upload-zone p { color: var(--muted); font-size: 14px; }
+    .upload-zone .formats { margin-top: 16px; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+    .format-tag {
+      padding: 4px 12px; border-radius: 100px;
+      background: var(--card); border: 1px solid var(--border);
+      font-size: 11px; color: var(--muted); letter-spacing: .5px;
+    }
+    #fileInput { display: none; }
+
+    /* ── QUEUE ── */
+    .section-title {
+      font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 600;
+      letter-spacing: 2px; text-transform: uppercase; color: var(--muted);
+      margin-bottom: 16px; display: flex; align-items: center; gap: 8px;
+    }
+    .section-title .count {
+      background: var(--accent); color: #fff;
+      border-radius: 100px; padding: 2px 8px; font-size: 11px;
+    }
+
+    .queue { display: flex; flex-direction: column; gap: 12px; margin-top: 40px; }
+
+    .queue-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex; align-items: center; gap: 16px;
+      transition: border-color .2s;
+      animation: slideIn .3s ease;
+    }
+    @keyframes slideIn { from { opacity:0; transform: translateY(10px); } to { opacity:1; transform: translateY(0); } }
+    .queue-item:hover { border-color: rgba(124,92,252,.4); }
+
+    .thumb-wrap {
+      width: 72px; height: 72px; flex-shrink: 0;
+      border-radius: 10px; overflow: hidden; position: relative;
+      background: repeating-conic-gradient(#1e1e2e 0% 25%, #252535 0% 50%) 0 0/16px 16px;
+    }
+    .thumb-wrap img { width: 100%; height: 100%; object-fit: cover; position: relative; z-index: 1; }
+
+    .item-info { flex: 1; min-width: 0; }
+    .item-name { font-size: 14px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .item-meta { font-size: 12px; color: var(--muted); margin-top: 3px; }
+
+    .item-status {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 12px; font-weight: 500; padding: 4px 12px;
+      border-radius: 100px; white-space: nowrap;
+    }
+    .status-waiting  { background: rgba(107,107,138,.15); color: var(--muted); }
+    .status-processing { background: rgba(124,92,252,.15); color: #b8a4ff; }
+    .status-done    { background: rgba(0,229,160,.12); color: var(--success); }
+    .status-error   { background: rgba(255,77,109,.12); color: var(--danger); }
+
+    .spinner { width: 12px; height: 12px; border: 2px solid rgba(124,92,252,.3); border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .btn-dl {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border: none; border-radius: 10px; color: #fff;
+      font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500;
+      padding: 8px 16px; cursor: pointer; white-space: nowrap;
+      transition: opacity .2s, transform .15s;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .btn-dl:hover { opacity: .85; transform: scale(1.04); }
+
+    .btn-remove {
+      background: none; border: 1px solid var(--border); border-radius: 8px;
+      color: var(--muted); cursor: pointer; padding: 6px 10px; font-size: 16px;
+      transition: border-color .2s, color .2s;
+    }
+    .btn-remove:hover { border-color: var(--danger); color: var(--danger); }
+
+    /* ── BOTTOM BAR ── */
+    .bottom-bar {
+      margin-top: 36px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 16px; flex-wrap: wrap;
+    }
+
+    .btn-process {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+      border: none; border-radius: 14px; color: #fff;
+      font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700;
+      padding: 14px 32px; cursor: pointer; letter-spacing: .5px;
+      transition: opacity .2s, transform .2s, box-shadow .2s;
+      box-shadow: 0 4px 24px rgba(124,92,252,.35);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .btn-process:hover:not(:disabled) { opacity: .9; transform: translateY(-2px); box-shadow: 0 8px 32px rgba(124,92,252,.5); }
+    .btn-process:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+
+    .btn-clear {
+      background: none; border: 1px solid var(--border); border-radius: 12px;
+      color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 14px;
+      padding: 12px 24px; cursor: pointer; transition: border-color .2s, color .2s;
+    }
+    .btn-clear:hover { border-color: var(--danger); color: var(--danger); }
+
+    /* ── PROGRESS BAR ── */
+    .progress-wrap { margin-top: 16px; display: none; }
+    .progress-bar-bg {
+      height: 4px; border-radius: 100px;
+      background: var(--border); overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%; border-radius: 100px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      transition: width .4s ease;
+      width: 0%;
+    }
+    .progress-label { font-size: 12px; color: var(--muted); margin-top: 8px; }
+
+    /* ── INFO NOTICE ── */
+    .info-notice {
+      margin-top: 48px;
+      border: 1px dashed rgba(124,92,252,.4);
+      border-radius: 16px;
+      padding: 20px 24px;
+      background: rgba(124,92,252,.05);
+      display: flex; gap: 16px; align-items: flex-start;
+    }
+    .notice-icon { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
+    .notice-content h4 { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; margin-bottom: 6px; color: #b8a4ff; }
+    .notice-content p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+    /* ── EMPTY STATE ── */
+    .empty-state { display: none; text-align: center; padding: 48px 0; color: var(--muted); font-size: 14px; }
+
+    /* ── RESULT PREVIEW MODAL ── */
+    .modal-bg {
+      position: fixed; inset: 0; background: rgba(0,0,0,.7); backdrop-filter: blur(10px);
+      z-index: 1000; display: none; align-items: center; justify-content: center;
+    }
+    .modal-bg.open { display: flex; }
+    .modal {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 24px; padding: 28px; max-width: 500px; width: 90%;
+      animation: popIn .25s cubic-bezier(.34,1.56,.64,1);
+    }
+    @keyframes popIn { from { opacity:0; transform:scale(.9); } to { opacity:1; transform:scale(1); } }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .modal-header h3 { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; }
+    .modal-close { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 22px; line-height: 1; }
+    .modal-img-wrap {
+      border-radius: 14px; overflow: hidden;
+      background: repeating-conic-gradient(#1e1e2e 0% 25%, #252535 0% 50%) 0 0/24px 24px;
+      margin-bottom: 16px; max-height: 340px; display: flex; align-items: center; justify-content: center;
+    }
+    .modal-img-wrap img { max-width: 100%; max-height: 340px; object-fit: contain; }
+
+    @media (max-width: 600px) {
+      .bottom-bar { flex-direction: column; align-items: stretch; }
+      .btn-process, .btn-clear { width: 100%; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="glow-orb a"></div>
+<div class="glow-orb b"></div>
+
+<!-- MODAL PREVIEW -->
+<div class="modal-bg" id="modalBg">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>✨ Resultado</h3>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-img-wrap"><img id="modalImg" src="" alt="resultado"/></div>
+    <button class="btn-dl" id="modalDlBtn" style="width:100%;justify-content:center;padding:12px;">
+      ⬇ Descargar PNG sin fondo
+    </button>
+  </div>
+</div>
+
+<div class="wrapper">
+
+  <header>
+    <div class="logo-badge"><span class="dot"></span> Procesamiento local · TensorFlow.js</div>
+    <h1>BgDrop</h1>
+    <p class="tagline">Elimina fondos automáticamente · 100% en tu navegador, sin APIs</p>
+  </header>
+
+  <!-- UPLOAD ZONE -->
+  <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
+    <div class="upload-icon">🪄</div>
+    <h3>Arrastra tus imágenes aquí</h3>
+    <p>o haz clic para seleccionar archivos</p>
+    <div class="formats">
+      <span class="format-tag">JPG</span>
+      <span class="format-tag">PNG</span>
+      <span class="format-tag">WEBP</span>
+      <span class="format-tag">hasta 12 MB</span>
+    </div>
+    <input type="file" id="fileInput" multiple accept="image/jpeg,image/png,image/webp"/>
+  </div>
+
+  <!-- QUEUE -->
+  <div id="queueSection" style="display:none;">
+    <div class="queue" id="queueList"></div>
+
+    <div class="progress-wrap" id="progressWrap">
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progressFill"></div>
+      </div>
+      <p class="progress-label" id="progressLabel">Procesando...</p>
+    </div>
+
+    <div class="bottom-bar">
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn-process" id="processBtn" onclick="processAll()">
+          <span>🚀</span> Quitar fondos
+        </button>
+        <button class="btn-clear" onclick="clearAll()">Limpiar todo</button>
+      </div>
+      <span style="font-size:13px;color:var(--muted);" id="summaryText"></span>
+    </div>
+  </div>
+
+  <!-- INFO NOTICE -->
+  <div class="info-notice">
+    <div class="notice-icon">🧠</div>
+    <div class="notice-content">
+      <h4>Procesamiento 100% local con IA</h4>
+      <p>
+        Esta herramienta usa <strong>TensorFlow.js</strong> con el modelo
+        <strong>MediaPipe Selfie Segmentation</strong> para eliminar fondos
+        directamente en tu navegador. No se envía ninguna imagen a servidores externos.
+        La primera imagen puede tardar unos segundos mientras se carga el modelo de IA (~5 MB).
+      </p>
+    </div>
+  </div>
+
+</div>
+
+<!-- TensorFlow.js + Body Segmentation -->
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/body-segmentation"></script>
+
+<!-- ═══════════════════════════════════════════ SCRIPT ═══════════════════════════════ -->
+<script>
+  /* ─────────────────────────────────────────
+     Estado interno
+  ───────────────────────────────────────── */
+  let items = [];   // { id, file, name, size, status, resultBlob, resultUrl }
+  let idCounter = 0;
+  let segmenterModel = null; // Modelo cacheado
+
+  /* ─────────────────────────────────────────
+     Cargar modelo de segmentación (una sola vez)
+  ───────────────────────────────────────── */
+  async function getSegmenter() {
+    if (segmenterModel) return segmenterModel;
+
+    const model = bodySegmentation.SupportedModels.MediaPipeSelfieSegmentation;
+    segmenterModel = await bodySegmentation.createSegmenter(model, {
+      runtime: 'tfjs',
+      modelType: 'general', // 'general' = mejor calidad, 'landscape' = más rápido
+    });
+    return segmenterModel;
+  }
+
+  /* ─────────────────────────────────────────
+     Eliminar fondo localmente con TensorFlow.js
+  ───────────────────────────────────────── */
+  async function removeBackgroundLocal(file) {
+    // 1) Cargar archivo como imagen HTMLImageElement
+    const img = await loadImageFromFile(file);
+
+    // 2) Obtener segmentador
+    const segmenter = await getSegmenter();
+
+    // 3) Ejecutar segmentación
+    const segmentation = await segmenter.segmentPeople(img, {
+      flipHorizontal: false,
+      multiSegmentation: false,
+      segmentBodyParts: false,
+    });
+
+    if (!segmentation || segmentation.length === 0) {
+      throw new Error('No se detectó ninguna persona en la imagen.');
+    }
+
+    // 4) Crear máscara binaria (persona = opaco, fondo = transparente)
+    const foregroundThreshold = 0.5;
+    const mask = await segmentation[0].mask.toImage();
+
+    // 5) Dibujar en canvas con transparencia
+    const canvas = document.createElement('canvas');
+    canvas.width = img.naturalWidth;
+    canvas.height = img.naturalHeight;
+    const ctx = canvas.getContext('2d');
+
+    // Dibujar imagen original
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+    // Obtener datos de píxeles
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const pixels = imageData.data;
+
+    // Redimensionar máscara al tamaño de la imagen si es necesario
+    const maskCanvas = document.createElement('canvas');
+    maskCanvas.width = canvas.width;
+    maskCanvas.height = canvas.height;
+    const maskCtx = maskCanvas.getContext('2d');
+    maskCtx.drawImage(mask, 0, 0, canvas.width, canvas.height);
+    const maskData = maskCtx.getImageData(0, 0, canvas.width, canvas.height).data;
+
+    // Aplicar máscara: hacer transparente el fondo
+    for (let i = 0; i < pixels.length; i += 4) {
+      // La máscara de MediaPipe viene en escala de grises (R=G=B=valor, A=255)
+      const maskValue = maskData[i] / 255;
+      if (maskValue < foregroundThreshold) {
+        pixels[i + 3] = 0; // Alpha = 0 (transparente)
+      }
+    }
+
+    ctx.putImageData(imageData, 0, 0);
+
+    // 6) Liberar recursos de la máscara
+    mask.remove();
+
+    // 7) Convertir canvas a Blob PNG
+    return new Promise((resolve, reject) => {
+      canvas.toBlob(
+        blob => {
+          if (blob) resolve(blob);
+          else reject(new Error('Error al generar la imagen PNG.'));
+        },
+        'image/png'
+      );
+    });
+  }
+
+  /* ─────────────────────────────────────────
+     Cargar archivo como imagen HTML
+  ───────────────────────────────────────── */
+  function loadImageFromFile(file) {
+    return new Promise((resolve, reject) => {
+      const url = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = () => {
+        URL.revokeObjectURL(url);
+        resolve(img);
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(url);
+        reject(new Error('No se pudo cargar la imagen.'));
+      };
+      img.src = url;
+    });
+  }
+
+  /* ─────────────────────────────────────────
+     Drag & drop
+  ───────────────────────────────────────── */
+  const zone = document.getElementById('uploadZone');
+  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+  zone.addEventListener('drop', e => {
+    e.preventDefault(); zone.classList.remove('dragover');
+    handleFiles([...e.dataTransfer.files]);
+  });
+  document.getElementById('fileInput').addEventListener('change', e => handleFiles([...e.target.files]));
+
+  function handleFiles(files) {
+    const valid = files.filter(f => f.type.match(/image\/(jpeg|png|webp)/) && f.size <= 12 * 1024 * 1024);
+    if (!valid.length) return alert('Solo se aceptan JPG, PNG o WEBP de hasta 12 MB.');
+    valid.forEach(addItem);
+    renderQueue();
+  }
+
+  function addItem(file) {
+    items.push({ id: ++idCounter, file, name: file.name, size: file.size, status: 'waiting', resultBlob: null, resultUrl: null });
+  }
+
+  /* ─────────────────────────────────────────
+     Render cola
+  ───────────────────────────────────────── */
+  function renderQueue() {
+    const section = document.getElementById('queueSection');
+    const list    = document.getElementById('queueList');
+    if (!items.length) { section.style.display = 'none'; return; }
+    section.style.display = 'block';
+
+    list.innerHTML = '';
+    items.forEach(item => {
+      const el = document.createElement('div');
+      el.className = 'queue-item'; el.id = `item-${item.id}`;
+      el.innerHTML = `
+        <div class="thumb-wrap"><img id="thumb-${item.id}" src="" alt=""/></div>
+        <div class="item-info">
+          <div class="item-name">${escHtml(item.name)}</div>
+          <div class="item-meta">${formatBytes(item.size)}</div>
+        </div>
+        <div id="status-${item.id}">${statusBadge(item.status)}</div>
+        <div id="actions-${item.id}">${itemActions(item)}</div>
+      `;
+      list.appendChild(el);
+      // Thumbnail preview
+      const reader = new FileReader();
+      reader.onload = e => { const img = document.getElementById(`thumb-${item.id}`); if(img) img.src = e.target.result; };
+      reader.readAsDataURL(item.file);
+    });
+
+    updateSummary();
+  }
+
+  function statusBadge(status) {
+    const map = {
+      waiting:    ['⏳','Esperando','status-waiting'],
+      processing: ['<span class="spinner"></span>','Procesando','status-processing'],
+      done:       ['✓','Listo','status-done'],
+      error:      ['✕','Error','status-error'],
+    };
+    const [icon,label,cls] = map[status] || map.waiting;
+    return `<span class="item-status ${cls}">${icon} ${label}</span>`;
+  }
+
+  function itemActions(item) {
+    if (item.status === 'done' && item.resultUrl) {
+      return `<button class="btn-dl" onclick="previewResult(${item.id})">👁 Ver</button>
+              <button class="btn-remove" onclick="removeItem(${item.id})" title="Quitar">×</button>`;
+    }
+    return `<button class="btn-remove" onclick="removeItem(${item.id})" title="Quitar">×</button>`;
+  }
+
+  function updateItemUI(id) {
+    const item = items.find(i => i.id === id);
+    if (!item) return;
+    const s = document.getElementById(`status-${id}`);
+    const a = document.getElementById(`actions-${id}`);
+    if (s) s.innerHTML = statusBadge(item.status);
+    if (a) a.innerHTML = itemActions(item);
+  }
+
+  function updateSummary() {
+    const done  = items.filter(i => i.status === 'done').length;
+    const total = items.length;
+    document.getElementById('summaryText').textContent = total ? `${done} / ${total} procesadas` : '';
+  }
+
+  function removeItem(id) {
+    items = items.filter(i => i.id !== id);
+    renderQueue();
+  }
+
+  function clearAll() {
+    items = [];
+    document.getElementById('fileInput').value = '';
+    renderQueue();
+  }
+
+  /* ─────────────────────────────────────────
+     Procesar todas
+  ───────────────────────────────────────── */
+  async function processAll() {
+    const pending = items.filter(i => i.status === 'waiting');
+    if (!pending.length) return alert('No hay imágenes pendientes.');
+
+    const btn = document.getElementById('processBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Procesando...';
+
+    const wrap  = document.getElementById('progressWrap');
+    const fill  = document.getElementById('progressFill');
+    const label = document.getElementById('progressLabel');
+    wrap.style.display = 'block';
+
+    // Precargar modelo antes de procesar
+    label.textContent = 'Cargando modelo de IA...';
+    try {
+      await getSegmenter();
+    } catch (err) {
+      label.textContent = '❌ Error al cargar el modelo de IA';
+      btn.disabled = false;
+      btn.innerHTML = '<span>🚀</span> Quitar fondos';
+      console.error(err);
+      return;
+    }
+
+    let done = 0;
+    for (const item of pending) {
+      label.textContent = `Procesando "${item.name}" (${done+1}/${pending.length})…`;
+      fill.style.width  = `${(done / pending.length) * 100}%`;
+      await processItem(item);
+      done++;
+      fill.style.width = `${(done / pending.length) * 100}%`;
+    }
+
+    label.textContent = `✅ Completado — ${done} imagen(es) procesada(s)`;
+    btn.disabled = false;
+    btn.innerHTML = '<span>🚀</span> Quitar fondos';
+    updateSummary();
+  }
+
+  /* ─────────────────────────────────────────
+     Procesar una imagen (local con TensorFlow.js)
+  ───────────────────────────────────────── */
+  async function processItem(item) {
+    item.status = 'processing';
+    updateItemUI(item.id);
+
+    try {
+      const blob = await removeBackgroundLocal(item.file);
+      item.resultBlob = blob;
+      item.resultUrl = URL.createObjectURL(blob);
+      item.status = 'done';
+    } catch (err) {
+      console.error(`Error procesando ${item.name}:`, err);
+      item.status = 'error';
+      item.errorMsg = err.message;
+    }
+
+    updateItemUI(item.id);
+    updateSummary();
+  }
+
+  /* ─────────────────────────────────────────
+     Modal preview
+  ───────────────────────────────────────── */
+  let currentDownloadUrl = null;
+  let currentDownloadName = null;
+
+  function previewResult(id) {
+    const item = items.find(i => i.id === id);
+    if (!item || !item.resultUrl) return;
+    document.getElementById('modalImg').src = item.resultUrl;
+    currentDownloadUrl  = item.resultBlob ? URL.createObjectURL(item.resultBlob) : item.resultUrl;
+    currentDownloadName = item.name.replace(/\.[^.]+$/, '') + '_sin_fondo.png';
+    document.getElementById('modalDlBtn').onclick = downloadResult;
+    document.getElementById('modalBg').classList.add('open');
+  }
+
+  function downloadResult() {
+    if (!currentDownloadUrl) return;
+    const a = document.createElement('a');
+    a.href = currentDownloadUrl; a.download = currentDownloadName;
+    a.click();
+  }
+
+  function closeModal() {
+    document.getElementById('modalBg').classList.remove('open');
+  }
+  document.getElementById('modalBg').addEventListener('click', e => { if(e.target === e.currentTarget) closeModal(); });
+
+  /* ─────────────────────────────────────────
+     Utilidades
+  ───────────────────────────────────────── */
+  function formatBytes(bytes) {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024*1024) return (bytes/1024).toFixed(1) + ' KB';
+    return (bytes/(1024*1024)).toFixed(1) + ' MB';
+  }
+  function escHtml(str) {
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+</script>
+</body>
+</html>

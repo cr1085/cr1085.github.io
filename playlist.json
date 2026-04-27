@@ -1,0 +1,10 @@
+{
+  "station": "Weird-Core Radio",
+  "mood": "dreamcore",
+  "loop": true,
+  "tracks": [
+    "dreamcore-01.mp3",
+    "dreamcore-02.mp3",
+    "dreamcore-03.mp3"
+  ]
+}

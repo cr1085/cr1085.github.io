@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 48" fill="none">
+  <!-- Shield/Book base -->
+  <rect x="2" y="4" width="40" height="40" rx="10" fill="url(#grad1)"/>
+  <path d="M12 14 h16 a2 2 0 0 1 2 2 v20 a2 2 0 0 1-2 2 h-16 a2 2 0 0 1-2-2 v-20 a2 2 0 0 1 2-2z" fill="white" opacity="0.2"/>
+  <!-- Binary/code lines inside shield -->
+  <rect x="16" y="18" width="10" height="2.5" rx="1" fill="white" opacity="0.9"/>
+  <rect x="16" y="23" width="14" height="2.5" rx="1" fill="white" opacity="0.7"/>
+  <rect x="16" y="28" width="8" height="2.5" rx="1" fill="white" opacity="0.5"/>
+  <rect x="16" y="33" width="12" height="2.5" rx="1" fill="white" opacity="0.6"/>
+  <!-- Circuit dot -->
+  <circle cx="36" cy="12" r="4" fill="#22D3EE" stroke="white" stroke-width="1.5"/>
+  <circle cx="36" cy="12" r="1.5" fill="white"/>
+  <!-- Text: Info -->
+  <text x="50" y="32" font-family="DM Sans, sans-serif" font-size="22" font-weight="400" fill="#C7D2FE">Info</text>
+  <!-- Text: MáticLab -->
+  <text x="103" y="32" font-family="Syne, sans-serif" font-size="22" font-weight="800" fill="white">MáticLab</text>
+  <!-- Underline accent -->
+  <rect x="50" y="36" width="165" height="2.5" rx="1.25" fill="url(#grad2)"/>
+  <defs>
+    <linearGradient id="grad1" x1="2" y1="4" x2="42" y2="44" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#4F46E5"/>
+      <stop offset="1" stop-color="#7C3AED"/>
+    </linearGradient>
+    <linearGradient id="grad2" x1="50" y1="36" x2="215" y2="36" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#4F46E5"/>
+      <stop offset="0.5" stop-color="#7C3AED"/>
+      <stop offset="1" stop-color="#06B6D4"/>
+    </linearGradient>
+  </defs>
+</svg>

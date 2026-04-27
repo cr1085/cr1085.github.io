@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Lumi — Tu Tutor Inteligente</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+
+<!-- ══════════════════════ PANTALLA DE BIENVENIDA ══════════════════════ -->
+<div id="welcome-screen" class="screen active">
+  <div class="welcome-bg">
+    <div class="star s1">⭐</div>
+    <div class="star s2">🌟</div>
+    <div class="star s3">✨</div>
+    <div class="star s4">💫</div>
+    <div class="star s5">⭐</div>
+  </div>
+  <div class="welcome-card">
+    <div class="lumi-intro">
+      <div class="avatar-big" id="avatar-welcome">
+        <div class="avatar-face">
+          <div class="avatar-eyes">
+            <div class="eye left-eye"><div class="pupil"></div></div>
+            <div class="eye right-eye"><div class="pupil"></div></div>
+          </div>
+          <div class="avatar-mouth happy"></div>
+          <div class="avatar-cheeks">
+            <div class="cheek left-cheek"></div>
+            <div class="cheek right-cheek"></div>
+          </div>
+        </div>
+        <div class="avatar-body-welcome"></div>
+      </div>
+      <div class="speech-bubble intro-bubble">
+        <p>¡Hola! Soy <strong>Lumi</strong> 🌟</p>
+        <p>¡Tu tutor personal, listo para aprender juntos!</p>
+      </div>
+    </div>
+    <h1 class="welcome-title">¡Bienvenido a <span>Lumi</span>!</h1>
+    <p class="welcome-sub">El tutor inteligente que aprende contigo, ¡paso a paso!</p>
+
+    <div class="setup-form">
+      <div class="form-group">
+        <label>👤 ¿Cómo te llamas?</label>
+        <input type="text" id="student-name" placeholder="Tu nombre aquí..." maxlength="30"/>
+      </div>
+      <div class="form-group">
+        <label>🎂 ¿Cuántos años tienes?</label>
+        <div class="age-selector">
+          <button class="age-btn" data-age="6">6</button>
+          <button class="age-btn" data-age="7">7</button>
+          <button class="age-btn" data-age="8">8</button>
+          <button class="age-btn" data-age="9">9</button>
+          <button class="age-btn" data-age="10">10</button>
+          <button class="age-btn" data-age="11">11</button>
+          <button class="age-btn" data-age="12">12</button>
+          <button class="age-btn" data-age="13">13</button>
+          <button class="age-btn" data-age="14">14</button>
+          <button class="age-btn" data-age="15">15</button>
+          <button class="age-btn" data-age="16">16</button>
+          <button class="age-btn" data-age="17">17+</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>📚 ¿Qué quieres aprender hoy?</label>
+        <div class="subject-grid">
+          <button class="subject-btn" data-subject="matemáticas">🔢 Matemáticas</button>
+          <button class="subject-btn" data-subject="ciencias naturales">🌿 Ciencias</button>
+          <button class="subject-btn" data-subject="sociales">🌍 Sociales</button>
+          <button class="subject-btn" data-subject="español">📖 Español</button>
+          <button class="subject-btn" data-subject="inglés">🗣️ Inglés</button>
+          <button class="subject-btn" data-subject="religión">✝️ Religión</button>
+        </div>
+      </div>
+      <button class="btn-start" id="btn-start" onclick="startSession()">
+        ¡Empezar a Aprender! 🚀
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════ PANTALLA PRINCIPAL DE CHAT ══════════════════════ -->
+<div id="chat-screen" class="screen">
+
+  <!-- HEADER -->
+  <header class="app-header">
+    <button class="btn-back" onclick="goBack()">← Inicio</button>
+    <div class="header-center">
+      <div class="header-avatar" id="header-avatar">
+        <div class="avatar-face small">
+          <div class="avatar-eyes small-eyes">
+            <div class="eye small-eye left-eye"><div class="pupil"></div></div>
+            <div class="eye small-eye right-eye"><div class="pupil"></div></div>
+          </div>
+          <div class="avatar-mouth happy small-mouth"></div>
+        </div>
+      </div>
+      <div class="header-info">
+        <span class="header-name">Lumi</span>
+        <span class="header-status" id="header-status">✨ Listo para aprender</span>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="points-display">
+        <span class="points-icon">⭐</span>
+        <span class="points-count" id="points-display">0</span>
+      </div>
+      <button class="btn-voice-toggle" id="btn-voice-toggle" onclick="toggleVoice()" title="Activar/Desactivar voz">🔊</button>
+    </div>
+  </header>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <div class="main-content">
+
+    <!-- BARRA LATERAL -->
+    <aside class="sidebar">
+      <div class="student-card">
+        <div class="student-avatar-mini">👤</div>
+        <div class="student-info">
+          <strong id="sidebar-name">Estudiante</strong>
+          <span id="sidebar-subject">📚 Materia</span>
+        </div>
+      </div>
+
+      <div class="progress-section">
+        <h3>🏆 Tu Progreso</h3>
+        <div class="level-badge" id="level-badge">
+          <span class="level-icon">🌱</span>
+          <span class="level-text" id="level-text">Nivel 1 - Semilla</span>
+        </div>
+        <div class="xp-bar-container">
+          <div class="xp-bar" id="xp-bar" style="width:0%"></div>
+        </div>
+        <p class="xp-text"><span id="current-xp">0</span> / <span id="max-xp">100</span> XP</p>
+      </div>
+
+      <div class="achievements-section">
+        <h3>🎖️ Logros</h3>
+        <div class="achievements-grid" id="achievements-grid">
+          <div class="achievement locked" title="Primera Pregunta">❓</div>
+          <div class="achievement locked" title="5 Respuestas Correctas">✅</div>
+          <div class="achievement locked" title="Explorador">🔭</div>
+          <div class="achievement locked" title="Super Estudiante">🌟</div>
+          <div class="achievement locked" title="Matemático">🔢</div>
+          <div class="achievement locked" title="Científico">🔬</div>
+        </div>
+      </div>
+
+      <div class="topics-section">
+        <h3>📋 Temas Vistos</h3>
+        <div id="topics-list" class="topics-list">
+          <p class="no-topics">¡Aún no hemos estudiado temas!</p>
+        </div>
+      </div>
+
+      <div class="quick-subjects">
+        <h3>🚀 Cambiar Materia</h3>
+        <div class="quick-btns">
+          <button onclick="quickSubject('matemáticas')">🔢</button>
+          <button onclick="quickSubject('ciencias naturales')">🌿</button>
+          <button onclick="quickSubject('sociales')">🌍</button>
+          <button onclick="quickSubject('español')">📖</button>
+          <button onclick="quickSubject('inglés')">🗣️</button>
+          <button onclick="quickSubject('religión')">✝️</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ÁREA DE CHAT -->
+    <div class="chat-area">
+
+      <!-- AVATAR FLOTANTE -->
+      <div class="floating-avatar" id="floating-avatar">
+        <div class="avatar-container" id="avatar-container">
+          <div class="avatar-glow"></div>
+          <div class="avatar-main">
+            <div class="avatar-face">
+              <div class="avatar-eyes">
+                <div class="eye left-eye"><div class="pupil"></div></div>
+                <div class="eye right-eye"><div class="pupil"></div></div>
+              </div>
+              <div class="avatar-mouth happy" id="avatar-mouth"></div>
+              <div class="avatar-cheeks">
+                <div class="cheek left-cheek"></div>
+                <div class="cheek right-cheek"></div>
+              </div>
+            </div>
+          </div>
+          <div class="avatar-name-tag">✨ Lumi</div>
+        </div>
+        <!-- Partículas de celebración -->
+        <div class="particles" id="particles"></div>
+      </div>
+
+      <!-- MENSAJES -->
+      <div class="messages-container" id="messages-container">
+        <!-- Los mensajes se insertan aquí dinámicamente -->
+      </div>
+
+      <!-- SUGERENCIAS RÁPIDAS -->
+      <div class="quick-suggestions" id="quick-suggestions">
+        <button class="suggestion-btn" onclick="sendSuggestion(this)">🤔 Explícame con un ejemplo</button>
+        <button class="suggestion-btn" onclick="sendSuggestion(this)">🔄 Repite de otra forma</button>
+        <button class="suggestion-btn" onclick="sendSuggestion(this)">📝 Ponme un ejercicio</button>
+        <button class="suggestion-btn" onclick="sendSuggestion(this)">✅ ¿Cómo lo estoy haciendo?</button>
+      </div>
+
+      <!-- INPUT DE CHAT -->
+      <div class="chat-input-area">
+        <div class="input-wrapper">
+          <textarea id="chat-input" 
+            placeholder="Escribe tu pregunta aquí... ✏️" 
+            rows="1"
+            onkeydown="handleKeyDown(event)"
+            oninput="autoResize(this)"></textarea>
+          <button class="btn-mic" id="btn-mic" onclick="toggleSpeechInput()" title="Hablar">🎤</button>
+          <button class="btn-send" id="btn-send" onclick="sendMessage()">
+            <span>Enviar</span> 🚀
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════ OVERLAY DE RECOMPENSA ══════════════════════ -->
+<div class="reward-overlay" id="reward-overlay">
+  <div class="reward-card">
+    <div class="reward-emoji" id="reward-emoji">🏆</div>
+    <h2 id="reward-title">¡Increíble!</h2>
+    <p id="reward-desc">Has desbloqueado un logro</p>
+    <div class="reward-confetti" id="reward-confetti"></div>
+    <button onclick="closeReward()">¡Genial! ✨</button>
+  </div>
+</div>
+
+<!-- ══════════════════════ OVERLAY DE CARGA ══════════════════════ -->
+<div class="loading-overlay" id="loading-overlay" style="display:none">
+  <div class="loading-spinner">
+    <div class="spinner-dot"></div>
+    <div class="spinner-dot"></div>
+    <div class="spinner-dot"></div>
+  </div>
+  <p>Lumi está pensando... 🤔</p>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
