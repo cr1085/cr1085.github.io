@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LogiTrack — Sistema Logístico Inteligente</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     SIDEBAR NAV
+════════════════════════════════════════ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <span class="logo-icon">⬡</span>
+    <span class="logo-text">LogiTrack</span>
+  </div>
+  <nav class="sidebar-nav">
+    <button class="nav-item active" data-module="dashboard" onclick="showModule('dashboard')">
+      <span class="nav-icon">◈</span><span>Dashboard</span>
+    </button>
+    <button class="nav-item" data-module="cubicaje" onclick="showModule('cubicaje')">
+      <span class="nav-icon">⬛</span><span>Cubicaje</span>
+    </button>
+    <button class="nav-item" data-module="citas" onclick="showModule('citas')">
+      <span class="nav-icon">◷</span><span>Enturnamiento</span>
+    </button>
+    <button class="nav-item" data-module="rutas" onclick="showModule('rutas')">
+      <span class="nav-icon">◉</span><span>Enrutamiento</span>
+    </button>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="connection-badge" id="connBadge">
+      <span class="conn-dot"></span>
+      <span id="connText">Demo Mode</span>
+    </div>
+  </div>
+</aside>
+
+<!-- ══════════════════════════════════════
+     MAIN CONTENT
+════════════════════════════════════════ -->
+<main class="main-content">
+
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <h1 class="page-title" id="pageTitle">Dashboard</h1>
+      <span class="page-subtitle" id="pageSubtitle">Vista general de operaciones</span>
+    </div>
+    <div class="topbar-right">
+      <div class="date-chip">
+        <span id="currentDate"></span>
+      </div>
+      <div class="user-chip">
+        <span>Admin Logístico</span>
+        <div class="user-avatar">AL</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── DASHBOARD MODULE ── -->
+  <section class="module active" id="mod-dashboard">
+    <div class="kpi-grid">
+      <div class="kpi-card kpi-blue">
+        <div class="kpi-top"><span class="kpi-label">Citas Hoy</span><span class="kpi-icon">◷</span></div>
+        <div class="kpi-value" id="kpi-citas">8</div>
+        <div class="kpi-trend up">↑ 3 vs ayer</div>
+      </div>
+      <div class="kpi-card kpi-green">
+        <div class="kpi-top"><span class="kpi-label">Capacidad Usada</span><span class="kpi-icon">⬛</span></div>
+        <div class="kpi-value">73<span class="kpi-unit">%</span></div>
+        <div class="kpi-trend up">↑ 5% esta semana</div>
+      </div>
+      <div class="kpi-card kpi-amber">
+        <div class="kpi-top"><span class="kpi-label">Rutas Activas</span><span class="kpi-icon">◉</span></div>
+        <div class="kpi-value" id="kpi-rutas">4</div>
+        <div class="kpi-trend neutral">→ igual que ayer</div>
+      </div>
+      <div class="kpi-card kpi-red">
+        <div class="kpi-top"><span class="kpi-label">Pendientes</span><span class="kpi-icon">!</span></div>
+        <div class="kpi-value">2</div>
+        <div class="kpi-trend down">↓ 1 vs ayer</div>
+      </div>
+    </div>
+
+    <div class="dash-grid">
+      <div class="dash-card">
+        <div class="card-header"><h3>Próximas Citas</h3><button class="btn-link" onclick="showModule('citas')">Ver todo →</button></div>
+        <div class="citas-mini" id="citasMini"></div>
+      </div>
+      <div class="dash-card">
+        <div class="card-header"><h3>Carga Actual de Contenedores</h3></div>
+        <div class="container-bars" id="containerBars"></div>
+      </div>
+      <div class="dash-card wide">
+        <div class="card-header"><h3>Actividad Semanal</h3></div>
+        <div class="activity-chart" id="activityChart"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CUBICAJE MODULE ── -->
+  <section class="module" id="mod-cubicaje">
+    <div class="module-layout">
+      <div class="form-panel">
+        <div class="panel-header">
+          <h3>Agregar Producto</h3>
+          <p>Ingresa las dimensiones y peso del producto</p>
+        </div>
+        <form id="cubicajeForm" onsubmit="addProduct(event)">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Nombre del Producto</label>
+              <input type="text" id="prodName" placeholder="Ej: Caja estándar" required>
+            </div>
+          </div>
+          <div class="form-row trio">
+            <div class="form-group">
+              <label>Largo (cm)</label>
+              <input type="number" id="prodL" placeholder="120" min="1" required>
+            </div>
+            <div class="form-group">
+              <label>Ancho (cm)</label>
+              <input type="number" id="prodW" placeholder="80" min="1" required>
+            </div>
+            <div class="form-group">
+              <label>Alto (cm)</label>
+              <input type="number" id="prodH" placeholder="60" min="1" required>
+            </div>
+          </div>
+          <div class="form-row duo">
+            <div class="form-group">
+              <label>Peso (kg)</label>
+              <input type="number" id="prodWeight" placeholder="25" min="0.1" step="0.1" required>
+            </div>
+            <div class="form-group">
+              <label>Cantidad</label>
+              <input type="number" id="prodQty" placeholder="10" min="1" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Tipo de Contenedor</label>
+            <select id="containerType">
+              <option value="20ft">Contenedor 20 pies (33.2 m³)</option>
+              <option value="40ft">Contenedor 40 pies (67.7 m³)</option>
+              <option value="camion">Camión (Mula) (90 m³)</option>
+              <option value="furgon">Furgón pequeño (15 m³)</option>
+            </select>
+          </div>
+          <button type="submit" class="btn-primary">+ Calcular y Agregar</button>
+        </form>
+
+        <div class="quick-load">
+          <p class="quick-title">Cargar ejemplo rápido:</p>
+          <div class="quick-btns">
+            <button onclick="loadExample('pallets')" class="btn-ghost">Pallets</button>
+            <button onclick="loadExample('cajas')" class="btn-ghost">Cajas mixtas</button>
+            <button onclick="loadExample('electrodomesticos')" class="btn-ghost">Electrodomésticos</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="results-panel">
+        <div class="panel-header">
+          <h3>Simulación de Carga</h3>
+          <button class="btn-ghost-sm" onclick="clearProducts()">Limpiar</button>
+        </div>
+
+        <!-- Container Visual -->
+        <div class="container-visual" id="containerVisual">
+          <!-- 2D View (default) -->
+          <div class="container-2d-view" id="container2DView">
+            <div class="container-box">
+              <div class="container-fill" id="containerFill"></div>
+              <div class="container-label" id="containerLabel">0%</div>
+            </div>
+            <div class="view-toggle">
+              <button class="btn-ghost-sm" id="toggle3DView" onclick="toggle3DView()">🎬 Ver 3D</button>
+            </div>
+          </div>
+          <!-- 3D View (hidden by default) -->
+          
+          <div class="container-3d-view" id="container3DView" style="display:none">
+             <p style="color:#9ca3af; font-size:12px;">
+🏗️ Distribución automática optimizada en tiempo real
+</p>
+            <div id="threeContainer"></div>
+            <div class="view-toggle">
+              <button class="btn-ghost-sm" onclick="toggle3DView()">📊 Ver 2D</button>
+              <button class="btn-ghost-sm" onclick="resetCamera()">🔄 Reset Vista</button>
+            </div>
+          </div>
+          <div class="container-info">
+            <div class="info-chip" id="infoCapacity">Capacidad: —</div>
+            <div class="info-chip" id="infoUsed">Usado: — m³</div>
+            <div class="info-chip" id="infoFit">Caben: —</div>
+            <div class="info-chip" id="infoWeight">Peso total: —</div>
+          </div>
+        </div>
+
+        <div class="truck-load-visual">
+  <h4>Distribución sobre Tractomula</h4>
+  <div id="truckLayout"></div>
+</div>
+
+        <!-- Products table -->
+        <div class="products-table">
+          <div class="table-header">
+            <span>Producto</span><span>Dimensiones</span><span>Vol. Unit</span><span>Qty</span><span>Total</span><span></span>
+          </div>
+          <div id="productsBody">
+            <div class="empty-state">Agrega productos para calcular la carga</div>
+          </div>
+        </div>
+
+        <div class="summary-bar" id="summaryBar" style="display:none">
+          <div class="summary-item">
+            <span class="s-label">Vol. Total Carga</span>
+            <span class="s-val" id="sumVol">—</span>
+          </div>
+          <div class="summary-item">
+            <span class="s-label">Peso Total</span>
+            <span class="s-val" id="sumWeight">—</span>
+          </div>
+          <div class="summary-item">
+            <span class="s-label">Eficiencia</span>
+            <span class="s-val" id="sumEff">—</span>
+          </div>
+          <button class="btn-primary-sm" onclick="saveCubicaje()">💾 Guardar</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CITAS MODULE ── -->
+  <section class="module" id="mod-citas">
+    <div class="module-layout">
+      <div class="form-panel">
+        <div class="panel-header">
+          <h3>Nueva Cita</h3>
+          <p>Programa una cita de carga o descarga</p>
+        </div>
+        <form id="citaForm" onsubmit="addCita(event)">
+          <div class="form-group">
+            <label>Empresa / Cliente</label>
+            <input type="text" id="citaEmpresa" placeholder="Ej: Almacenes Éxito S.A." required>
+          </div>
+          <div class="form-group">
+            <label>Tipo de Operación</label>
+            <select id="citaTipo">
+              <option value="carga">🟢 Carga</option>
+              <option value="descarga">🔴 Descarga</option>
+              <option value="mixto">🟡 Mixto</option>
+            </select>
+          </div>
+          <div class="form-row duo">
+            <div class="form-group">
+              <label>Fecha</label>
+              <input type="date" id="citaFecha" required>
+            </div>
+            <div class="form-group">
+              <label>Hora</label>
+              <input type="time" id="citaHora" required>
+            </div>
+          </div>
+          <div class="form-row duo">
+            <div class="form-group">
+              <label>Muelle / Bahía</label>
+              <select id="citaMuelle">
+                <option>Muelle 1</option>
+                <option>Muelle 2</option>
+                <option>Muelle 3</option>
+                <option>Muelle 4</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Duración (min)</label>
+              <input type="number" id="citaDuracion" placeholder="60" min="15" step="15" value="60">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Notas</label>
+            <textarea id="citaNotas" placeholder="Instrucciones especiales, número de contenedor, etc." rows="2"></textarea>
+          </div>
+          <button type="submit" class="btn-primary">+ Agendar Cita</button>
+        </form>
+      </div>
+
+      <div class="results-panel">
+        <div class="panel-header">
+          <h3>Agenda de Citas</h3>
+          <div class="filter-chips">
+            <button class="chip active" onclick="filterCitas('all', this)">Todas</button>
+            <button class="chip" onclick="filterCitas('pendiente', this)">Pendientes</button>
+            <button class="chip" onclick="filterCitas('confirmado', this)">Confirmadas</button>
+            <button class="chip" onclick="filterCitas('completado', this)">Completadas</button>
+          </div>
+        </div>
+
+        <!-- Weekly calendar strip -->
+        <div class="week-strip" id="weekStrip"></div>
+
+        <!-- Citas list -->
+        <div class="citas-list" id="citasList"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── RUTAS MODULE ── -->
+  <section class="module" id="mod-rutas">
+    <div class="module-layout">
+      <div class="form-panel">
+        <div class="panel-header">
+          <h3>Planificar Ruta</h3>
+          <p>Ingresa los puntos de entrega o recogida</p>
+        </div>
+
+        <div class="form-group">
+          <label>Punto de Origen</label>
+          <input type="text" id="routeOrigin" placeholder="Ej: Bodega Central, Bogotá" value="Bodega Central, Bogotá, Colombia">
+        </div>
+
+        <div class="stops-container" id="stopsContainer">
+          <label>Paradas / Destinos</label>
+          <div id="stopsList">
+            <div class="stop-item">
+              <span class="stop-num">1</span>
+              <input type="text" placeholder="Dirección de entrega" value="Almacén Éxito, Medellín">
+              <button type="button" class="btn-remove" onclick="removeStop(this)">×</button>
+            </div>
+            <div class="stop-item">
+              <span class="stop-num">2</span>
+              <input type="text" placeholder="Dirección de entrega" value="Centro Distribución, Cali">
+              <button type="button" class="btn-remove" onclick="removeStop(this)">×</button>
+            </div>
+            <div class="stop-item">
+              <span class="stop-num">3</span>
+              <input type="text" placeholder="Dirección de entrega" value="Supermercado Olímpica, Barranquilla">
+              <button type="button" class="btn-remove" onclick="removeStop(this)">×</button>
+            </div>
+          </div>
+          <button type="button" class="btn-ghost" onclick="addStop()">+ Agregar parada</button>
+        </div>
+
+        <div class="form-group mt-16">
+          <label>Tipo de Vehículo</label>
+          <select id="vehicleType">
+            <option value="camion">🚛 Camión (Mula)</option>
+            <option value="furgon">🚐 Furgón</option>
+            <option value="moto">🏍️ Moto mensajería</option>
+          </select>
+        </div>
+
+        <div class="form-row duo">
+          <div class="form-group">
+            <label>Prioridad</label>
+            <select id="routePriority">
+              <option>Distancia</option>
+              <option>Tiempo</option>
+              <option>Combustible</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Salida</label>
+            <input type="time" id="routeTime" value="06:00">
+          </div>
+        </div>
+
+        <button class="btn-primary" onclick="calculateRoute()">⚡ Calcular Ruta Óptima</button>
+
+        <!-- Route summary (hidden until calculated) -->
+        <div class="route-summary" id="routeSummary" style="display:none">
+          <div class="rs-item"><span>Distancia total</span><strong id="rsDist">—</strong></div>
+          <div class="rs-item"><span>Tiempo estimado</span><strong id="rsTime">—</strong></div>
+          <div class="rs-item"><span>Paradas</span><strong id="rsStops">—</strong></div>
+          <div class="rs-item"><span>Combustible est.</span><strong id="rsFuel">—</strong></div>
+        </div>
+      </div>
+
+      <div class="results-panel map-panel">
+        <div class="panel-header">
+          <h3>Visualización de Ruta</h3>
+          <div class="map-controls">
+            <button class="btn-ghost-sm" onclick="toggleMapView()">🗺️ Mapa / Lista</button>
+          </div>
+        </div>
+        <!-- Map container -->
+        <div class="map-container" id="mapContainer">
+          <div id="routeMap"></div>
+          <div class="map-overlay" id="mapOverlay">
+            <p>Ingresa las paradas y presiona<br><strong>"Calcular Ruta Óptima"</strong></p>
+          </div>
+        </div>
+        <!-- Route steps list -->
+        <div class="route-steps" id="routeSteps" style="display:none"></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Toast notifications -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- Supabase config modal (shown on first load) -->
+<div class="modal-overlay" id="supabaseModal">
+  <div class="modal-box">
+    <div class="modal-logo">⬡ LogiTrack</div>
+    <h2>Configuración de Base de Datos</h2>
+    <p>Conecta tu proyecto Supabase para persistencia de datos, o continúa en modo demo.</p>
+    <div class="form-group">
+      <label>Supabase URL</label>
+      <input type="text" id="sbUrl" placeholder="https://xxxx.supabase.co">
+    </div>
+    <div class="form-group">
+      <label>Anon Key</label>
+      <input type="text" id="sbKey" placeholder="eyJ...">
+    </div>
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="skipSupabase()">Continuar en Demo</button>
+      <button class="btn-primary" onclick="connectSupabase()">Conectar Supabase</button>
+    </div>
+    <p class="modal-note">💡 Los datos demo se cargan automáticamente. <a href="#" onclick="skipSupabase()">Saltar configuración →</a></p>
+  </div>
+</div>
+
+
+<div id="loadingOverlay" style="
+position:fixed;
+top:0;left:0;
+width:100%;height:100%;
+background:#0f172a;
+display:none;
+align-items:center;
+justify-content:center;
+z-index:9999;
+flex-direction:column;
+">
+
+<div class="truck">
+  <div class="cab"></div>
+  <div class="trailer"></div>
+  <div class="wheels">
+    <div></div><div></div><div></div>
+  </div>
+</div>
+
+<p style="margin-top:20px;color:#94a3b8;">
+Optimizando carga...
+</p>
+
+</div>
+
+
+<!-- Mapbox (free tier) -->
+<script src='https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js'></script>
+<link href='https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css' rel='stylesheet' />
+
+<!-- Three.js for 3D Viewer -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128/examples/js/controls/OrbitControls.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
