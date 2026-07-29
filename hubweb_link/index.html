@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel de Lanzamiento</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#12161f;
+    --panel:#1b2130;
+    --panel-hover:#222a3d;
+    --line:#2c3549;
+    --amber:#e8a94a;
+    --amber-dim:#8a6a37;
+    --mist:#8b93a7;
+    --paper:#eef0f4;
+    --ok:#5fb488;
+    --danger:#d9695a;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(circle at 12% 8%, rgba(232,169,74,0.07), transparent 40%),
+      radial-gradient(circle at 88% 92%, rgba(95,180,136,0.05), transparent 45%),
+      var(--ink);
+    color:var(--paper);
+    font-family:'Inter',sans-serif;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{
+    max-width:920px;
+    margin:0 auto;
+    padding:48px 24px 100px;
+  }
+  header{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    margin-bottom:36px;
+  }
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--amber);
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .eyebrow .dot{
+    width:6px;height:6px;border-radius:50%;
+    background:var(--ok);
+    box-shadow:0 0 0 3px rgba(95,180,136,0.15);
+  }
+  h1{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:clamp(28px,4vw,40px);
+    font-weight:700;
+    margin:0;
+    letter-spacing:-0.01em;
+  }
+  .sub{
+    color:var(--mist);
+    font-size:15px;
+    margin:0;
+    max-width:520px;
+  }
+
+  .search-row{
+    display:flex;
+    gap:10px;
+    margin-bottom:28px;
+  }
+  .search-box{
+    flex:1;
+    position:relative;
+    display:flex;
+    align-items:center;
+  }
+  .search-box svg{
+    position:absolute;
+    left:16px;
+    width:16px;height:16px;
+    color:var(--mist);
+    pointer-events:none;
+  }
+  .search-box input{
+    width:100%;
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:14px 16px 14px 42px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:14px;
+    color:var(--paper);
+    outline:none;
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .search-box input::placeholder{color:var(--mist);}
+  .search-box input:focus{border-color:var(--amber);background:var(--panel-hover);}
+
+  .add-btn{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:600;
+    font-size:14px;
+    background:var(--amber);
+    color:#231607;
+    border:none;
+    border-radius:12px;
+    padding:0 20px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    transition:transform .12s ease, filter .12s ease;
+    white-space:nowrap;
+  }
+  .add-btn:hover{filter:brightness(1.08);}
+  .add-btn:active{transform:scale(0.96);}
+
+  .count-row{
+    color:var(--mist);
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    margin-bottom:16px;
+    letter-spacing:0.02em;
+  }
+
+  .backup-row{
+    display:flex;
+    gap:10px;
+    margin:-6px 0 20px;
+  }
+  .backup-btn{
+    background:transparent;
+    border:1px solid var(--line);
+    color:var(--mist);
+    font-family:'JetBrains Mono',monospace;
+    font-size:11.5px;
+    padding:7px 12px;
+    border-radius:8px;
+    cursor:pointer;
+    transition:color .15s ease, border-color .15s ease;
+  }
+  .backup-btn:hover{color:var(--paper);border-color:var(--amber-dim);}
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(220px, 1fr));
+    gap:14px;
+  }
+
+  .card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:18px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    cursor:pointer;
+    position:relative;
+    transition:transform .15s ease, border-color .15s ease, background .15s ease;
+    text-align:left;
+    overflow:hidden;
+  }
+  .card:hover{
+    border-color:var(--amber-dim);
+    background:var(--panel-hover);
+    transform:translateY(-2px);
+  }
+  .card.launching{
+    animation:launch-pulse .5s ease;
+  }
+  @keyframes launch-pulse{
+    0%{box-shadow:0 0 0 0 rgba(232,169,74,0.5);}
+    60%{box-shadow:0 0 0 14px rgba(232,169,74,0);}
+    100%{box-shadow:0 0 0 0 rgba(232,169,74,0);}
+  }
+
+  .card-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+  }
+  .icon{
+    width:38px;height:38px;
+    border-radius:9px;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;
+    font-size:15px;
+    color:#171c26;
+    flex-shrink:0;
+  }
+  .switch{
+    width:34px;height:18px;
+    border-radius:20px;
+    background:#2a3346;
+    position:relative;
+    flex-shrink:0;
+    transition:background .2s ease;
+  }
+  .switch::after{
+    content:'';
+    position:absolute;
+    top:2px;left:2px;
+    width:14px;height:14px;
+    border-radius:50%;
+    background:var(--mist);
+    transition:transform .2s ease, background .2s ease;
+  }
+  .card:hover .switch{background:rgba(232,169,74,0.25);}
+  .card:hover .switch::after{transform:translateX(16px);background:var(--amber);}
+
+  .card-name{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:600;
+    font-size:15px;
+    color:var(--paper);
+    line-height:1.3;
+  }
+  .card-url{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11.5px;
+    color:var(--mist);
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+
+  .card-actions{
+    position:absolute;
+    top:10px;
+    right:10px;
+    display:none;
+    gap:4px;
+  }
+  .card:hover .card-actions{display:flex;}
+  .mini-btn{
+    width:24px;height:24px;
+    border-radius:7px;
+    border:none;
+    background:rgba(18,22,31,0.7);
+    color:var(--mist);
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+    font-size:13px;
+    transition:color .15s ease, background .15s ease;
+  }
+  .mini-btn:hover{color:var(--paper);background:rgba(18,22,31,0.95);}
+  .mini-btn.danger:hover{color:var(--danger);}
+
+  .empty{
+    grid-column:1/-1;
+    text-align:center;
+    padding:60px 20px;
+    color:var(--mist);
+    border:1px dashed var(--line);
+    border-radius:var(--radius);
+  }
+  .empty strong{
+    display:block;
+    font-family:'Space Grotesk',sans-serif;
+    color:var(--paper);
+    font-size:17px;
+    margin-bottom:6px;
+  }
+
+  /* Modal */
+  .overlay{
+    position:fixed;inset:0;
+    background:rgba(10,12,18,0.7);
+    -webkit-backdrop-filter:blur(3px);
+    backdrop-filter:blur(3px);
+    display:none;
+    align-items:center;justify-content:center;
+    z-index:50;
+    padding:20px;
+  }
+  .overlay.open{display:flex;}
+  .modal{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:26px;
+    width:100%;
+    max-width:400px;
+  }
+  .modal h2{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:19px;
+    margin:0 0 18px;
+  }
+  .field{
+    margin-bottom:14px;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+  .field label{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    color:var(--mist);
+  }
+  .field input{
+    background:var(--ink);
+    border:1px solid var(--line);
+    border-radius:9px;
+    padding:11px 12px;
+    color:var(--paper);
+    font-size:14px;
+    outline:none;
+    font-family:'Inter',sans-serif;
+  }
+  .field input:focus{border-color:var(--amber);}
+  .field-error{color:var(--danger);font-size:12px;display:none;}
+
+  .modal-actions{
+    display:flex;
+    gap:10px;
+    margin-top:20px;
+  }
+  .btn{
+    flex:1;
+    padding:11px;
+    border-radius:9px;
+    border:none;
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:600;
+    font-size:14px;
+    cursor:pointer;
+  }
+  .btn-primary{background:var(--amber);color:#231607;}
+  .btn-primary:hover{filter:brightness(1.08);}
+  .btn-secondary{background:transparent;color:var(--mist);border:1px solid var(--line);}
+  .btn-secondary:hover{color:var(--paper);border-color:var(--mist);}
+
+  .status-line{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    color:var(--mist);
+    text-align:center;
+    padding:20px;
+  }
+
+  @media (max-width:480px){
+    .search-row{flex-direction:column;}
+    .add-btn{padding:12px 20px;justify-content:center;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow"><span class="dot"></span>panel-de-lanzamiento · v1</div>
+    <h1>Todo tu mundo, un solo clic</h1>
+    <p class="sub">Guarda aquí los enlaces de tus apps y páginas favoritas. Búscalos y dispáralos desde un solo lugar, nunca más los pierdas entre pestañas.</p>
+  </header>
+
+  <div class="search-row">
+    <div class="search-box">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="searchInput" placeholder="Buscar por nombre o URL…" autocomplete="off">
+    </div>
+    <button class="add-btn" id="openAddBtn">+ Agregar enlace</button>
+  </div>
+
+  <div class="count-row" id="countRow"></div>
+  <div class="backup-row">
+    <button class="backup-btn" id="exportBtn">⇩ Exportar respaldo</button>
+    <button class="backup-btn" id="importBtn">⇧ Importar respaldo</button>
+    <input type="file" id="importFile" accept="application/json" style="display:none;">
+  </div>
+
+  <div class="grid" id="grid">
+    <div class="status-line">Cargando tus enlaces…</div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <h2 id="modalTitle">Nuevo enlace</h2>
+    <div class="field">
+      <label for="nameInput">Nombre</label>
+      <input type="text" id="nameInput" placeholder="Ej. Gmail, Notion, Mi banco…">
+    </div>
+    <div class="field">
+      <label for="urlInput">URL</label>
+      <input type="text" id="urlInput" placeholder="Ej. gmail.com o https://gmail.com">
+      <span class="field-error" id="urlError">Escribe una URL válida.</span>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" id="cancelBtn">Cancelar</button>
+      <button class="btn btn-primary" id="saveBtn">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const grid = document.getElementById('grid');
+const countRow = document.getElementById('countRow');
+const searchInput = document.getElementById('searchInput');
+const overlay = document.getElementById('overlay');
+const openAddBtn = document.getElementById('openAddBtn');
+const cancelBtn = document.getElementById('cancelBtn');
+const saveBtn = document.getElementById('saveBtn');
+const nameInput = document.getElementById('nameInput');
+const urlInput = document.getElementById('urlInput');
+const urlError = document.getElementById('urlError');
+const modalTitle = document.getElementById('modalTitle');
+
+let links = [];
+let editingId = null;
+const STORAGE_KEY = 'panel-links';
+
+const palette = ['#e8a94a','#5fb488','#7d9be8','#d9695a','#c98be0','#5fc4b4','#e0b95f'];
+
+function colorFor(name){
+  let hash = 0;
+  for(let i=0;i<name.length;i++){ hash = name.charCodeAt(i) + ((hash<<5)-hash); }
+  return palette[Math.abs(hash) % palette.length];
+}
+
+function normalizeUrl(raw){
+  let u = raw.trim();
+  if(!u) return null;
+  if(!/^https?:\/\//i.test(u)){
+    u = 'https://' + u;
+  }
+  try{
+    new URL(u);
+    return u;
+  }catch(e){
+    return null;
+  }
+}
+
+function hostFor(url){
+  try{ return new URL(url).hostname.replace('www.',''); }catch(e){ return url; }
+}
+
+async function loadLinks(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    links = raw ? JSON.parse(raw) : [];
+  }catch(e){
+    links = [];
+  }
+  render();
+}
+
+async function saveLinks(){
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(links));
+  }catch(e){
+    console.error('No se pudo guardar', e);
+    alert('No se pudo guardar en este navegador. Puede que el almacenamiento esté lleno o bloqueado.');
+  }
+}
+
+function exportBackup(){
+  const blob = new Blob([JSON.stringify(links, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'mis-enlaces-respaldo.json';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+function importBackup(file){
+  const reader = new FileReader();
+  reader.onload = async (e)=>{
+    try{
+      const imported = JSON.parse(e.target.result);
+      if(!Array.isArray(imported)) throw new Error('formato inválido');
+      const existingUrls = new Set(links.map(l=>l.url));
+      const merged = [...links];
+      imported.forEach(item=>{
+        if(item && item.url && item.name && !existingUrls.has(item.url)){
+          merged.push({ id: item.id || (Date.now().toString(36)+Math.random().toString(36).slice(2,6)), name:item.name, url:item.url });
+          existingUrls.add(item.url);
+        }
+      });
+      links = merged;
+      await saveLinks();
+      render();
+      alert('Respaldo importado. Se agregaron los enlaces nuevos que no tenías.');
+    }catch(err){
+      alert('Ese archivo no es un respaldo válido.');
+    }
+  };
+  reader.readAsText(file);
+}
+
+function render(){
+  const query = searchInput.value.trim().toLowerCase();
+  const filtered = links.filter(l =>
+    l.name.toLowerCase().includes(query) || l.url.toLowerCase().includes(query)
+  );
+
+  countRow.textContent = links.length === 0
+    ? ''
+    : `${filtered.length} de ${links.length} enlace${links.length===1?'':'s'}`;
+
+  grid.innerHTML = '';
+
+  if(links.length === 0){
+    grid.innerHTML = `<div class="empty"><strong>Aún no hay nada aquí</strong>Agrega tu primer enlace y empieza a construir tu panel de lanzamiento.</div>`;
+    return;
+  }
+
+  if(filtered.length === 0){
+    grid.innerHTML = `<div class="empty"><strong>Sin resultados</strong>Ningún enlace coincide con "${query}".</div>`;
+    return;
+  }
+
+  filtered.forEach(link => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    const initial = link.name.trim().charAt(0).toUpperCase() || '?';
+    const color = colorFor(link.name);
+    card.innerHTML = `
+      <div class="card-actions">
+        <button class="mini-btn edit-btn" title="Editar">✎</button>
+        <button class="mini-btn danger delete-btn" title="Eliminar">✕</button>
+      </div>
+      <div class="card-top">
+        <div class="icon" style="background:${color}">${initial}</div>
+        <div class="switch"></div>
+      </div>
+      <div>
+        <div class="card-name">${escapeHtml(link.name)}</div>
+        <div class="card-url">${escapeHtml(hostFor(link.url))}</div>
+      </div>
+    `;
+
+    card.addEventListener('click', (e) => {
+      if(e.target.closest('.card-actions')) return;
+      card.classList.add('launching');
+      window.open(link.url, '_blank', 'noopener');
+      setTimeout(()=>card.classList.remove('launching'), 500);
+    });
+
+    card.querySelector('.edit-btn').addEventListener('click', (e)=>{
+      e.stopPropagation();
+      openModal(link);
+    });
+    card.querySelector('.delete-btn').addEventListener('click', async (e)=>{
+      e.stopPropagation();
+      links = links.filter(l => l.id !== link.id);
+      await saveLinks();
+      render();
+    });
+
+    grid.appendChild(card);
+  });
+}
+
+function escapeHtml(str){
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function openModal(link){
+  editingId = link ? link.id : null;
+  modalTitle.textContent = link ? 'Editar enlace' : 'Nuevo enlace';
+  nameInput.value = link ? link.name : '';
+  urlInput.value = link ? link.url : '';
+  urlError.style.display = 'none';
+  overlay.classList.add('open');
+  setTimeout(()=>nameInput.focus(), 50);
+}
+
+function closeModal(){
+  overlay.classList.remove('open');
+}
+
+openAddBtn.addEventListener('click', ()=>openModal(null));
+cancelBtn.addEventListener('click', closeModal);
+overlay.addEventListener('click', (e)=>{ if(e.target === overlay) closeModal(); });
+
+saveBtn.addEventListener('click', async ()=>{
+  const name = nameInput.value.trim();
+  const normalized = normalizeUrl(urlInput.value);
+
+  if(!normalized){
+    urlError.style.display = 'block';
+    urlInput.focus();
+    return;
+  }
+  urlError.style.display = 'none';
+
+  const finalName = name || hostFor(normalized);
+
+  if(editingId){
+    links = links.map(l => l.id === editingId ? {...l, name: finalName, url: normalized} : l);
+  } else {
+    links.push({ id: Date.now().toString(36) + Math.random().toString(36).slice(2,6), name: finalName, url: normalized });
+  }
+
+  await saveLinks();
+  closeModal();
+  render();
+});
+
+[nameInput, urlInput].forEach(el=>{
+  el.addEventListener('keydown', (e)=>{
+    if(e.key === 'Enter') saveBtn.click();
+  });
+});
+
+searchInput.addEventListener('input', render);
+
+document.addEventListener('keydown', (e)=>{
+  if(e.key === '/' && document.activeElement !== searchInput && document.activeElement !== nameInput && document.activeElement !== urlInput){
+    e.preventDefault();
+    searchInput.focus();
+  }
+  if(e.key === 'Escape' && overlay.classList.contains('open')){
+    closeModal();
+  }
+});
+
+document.getElementById('exportBtn').addEventListener('click', exportBackup);
+document.getElementById('importBtn').addEventListener('click', ()=>document.getElementById('importFile').click());
+document.getElementById('importFile').addEventListener('change', (e)=>{
+  const file = e.target.files[0];
+  if(file) importBackup(file);
+  e.target.value = '';
+});
+
+loadLinks();
+</script>
+</body>
+</html>
