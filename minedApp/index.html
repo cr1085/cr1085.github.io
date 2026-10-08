@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guía Interactiva de Minería de Datos</title>
+  <link rel="stylesheet" href="styles.css" />
+  <!-- CDNs imprescindibles -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <!-- Modal de modo -->
+  <div id="modeModal" class="modal">
+    <div class="modal-content">
+      <h2>¡Bienvenido! 👋</h2>
+      <p>Elige el modo de uso. Podrás cambiarlo en cualquier momento.</p>
+      <div class="mode-buttons">
+        <button class="btn btn-primary" data-mode="novato">
+          🌱 Novato
+          <small>Guía paso a paso con explicaciones detalladas</small>
+        </button>
+        <button class="btn btn-secondary" data-mode="experto">
+          ⚡ Experto
+          <small>Interfaz compacta, al grano</small>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de glosario -->
+  <div id="glossaryModal" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>📖 Glosario</h2>
+        <button class="modal-close" data-close="glossaryModal">✕</button>
+      </div>
+      <div id="glossaryContent" class="glossary-content"></div>
+    </div>
+  </div>
+
+  <!-- Modal de error -->
+  <div id="errorModal" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>⚠️ Algo salió mal</h2>
+        <button class="modal-close" data-close="errorModal">✕</button>
+      </div>
+      <p id="errorMessage"></p>
+      <button class="btn btn-primary" data-close="errorModal">Entendido</button>
+    </div>
+  </div>
+
+  <!-- App principal -->
+  <div class="app">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button id="menuToggle" class="icon-btn" aria-label="Menú">☰</button>
+        <h1 class="app-title">📊 Guía de Minería de Datos</h1>
+      </div>
+      <div class="topbar-right">
+        <span id="modeBadge" class="badge">Modo: —</span>
+        <button id="glossaryBtn" class="icon-btn" title="Glosario">?</button>
+        <button id="downloadPyBtn" class="btn btn-ghost" title="Descargar código Python">🐍 .py</button>
+        <button id="resetBtn" class="icon-btn danger" title="Reiniciar progreso">🔄</button>
+      </div>
+    </header>
+
+    <div class="layout">
+      <aside id="sidebar" class="sidebar">
+        <div class="progress-box">
+          <div class="progress-label">
+            <span>Progreso general</span>
+            <span id="progressText">0%</span>
+          </div>
+          <div class="progress-bar">
+            <div id="progressFill" class="progress-fill" style="width: 0%"></div>
+          </div>
+        </div>
+        <nav class="stepper">
+          <button class="step active" data-step="problem">
+            <span class="step-num">1</span>
+            <span class="step-label">Problema</span>
+          </button>
+          <button class="step" data-step="data">
+            <span class="step-num">2</span>
+            <span class="step-label">Datos</span>
+          </button>
+          <button class="step" data-step="preprocess">
+            <span class="step-num">3</span>
+            <span class="step-label">Preprocesamiento</span>
+          </button>
+          <button class="step" data-step="model">
+            <span class="step-num">4</span>
+            <span class="step-label">Modelado</span>
+          </button>
+          <button class="step" data-step="eval">
+            <span class="step-num">5</span>
+            <span class="step-label">Evaluación</span>
+          </button>
+          <button class="step" data-step="report">
+            <span class="step-num">6</span>
+            <span class="step-label">Reporte</span>
+          </button>
+        </nav>
+        <button id="switchModeBtn" class="btn btn-ghost small">Cambiar modo</button>
+      </aside>
+
+      <main class="content">
+        <!-- ETAPA 1: Problema -->
+        <section id="step-problem" class="panel active">
+          <h2>1. Definición del problema</h2>
+          <p class="hint">Describe qué quieres resolver. Esto guiará las recomendaciones posteriores.</p>
+
+          <label>Nombre del proyecto
+            <input type="text" id="projName" placeholder="Ej: Predicción de abandono de clientes" />
+          </label>
+
+          <label>Descripción del problema
+            <textarea id="projDesc" rows="3" placeholder="Describe el contexto, objetivo y qué se espera obtener..."></textarea>
+          </label>
+
+          <fieldset>
+            <legend>Tipo de tarea</legend>
+            <div class="radio-group">
+              <label><input type="radio" name="taskType" value="clasificacion" /> Clasificación</label>
+              <label><input type="radio" name="taskType" value="regresion" /> Regresión</label>
+              <label><input type="radio" name="taskType" value="clustering" /> Clustering</label>
+              <label><input type="radio" name="taskType" value="otro" /> Otro</label>
+            </div>
+          </fieldset>
+
+          <label>Variable objetivo (opcional)
+            <input type="text" id="targetVar" placeholder="Ej: churn, price, segmento..." />
+          </label>
+
+          <div class="panel-actions">
+            <button class="btn btn-primary" data-next="data">Siguiente →</button>
+          </div>
+        </section>
+
+        <!-- ETAPA 2: Datos -->
+        <section id="step-data" class="panel">
+          <h2>2. Carga y exploración de datos</h2>
+          <p class="hint">Sube tu CSV. Se calcularán estadísticas automáticas y se detectarán nulos y outliers.</p>
+
+          <div class="upload-area" id="uploadArea">
+            <input type="file" id="csvFile" accept=".csv,text/csv" />
+            <p>📁 Arrastra un CSV aquí o <label for="csvFile" class="link">selecciónalo</label></p>
+            <p class="small">También puedes <button id="loadSampleBtn" class="link">cargar un dataset de ejemplo</button></p>
+          </div>
+
+          <div id="dataStatus" class="status hidden"></div>
+
+          <div id="dataExplorer" class="hidden">
+            <h3>📋 Preview (primeras 10 filas)</h3>
+            <div class="table-wrapper" id="previewTable"></div>
+
+            <h3>📊 Estadísticas descriptivas</h3>
+            <div class="table-wrapper" id="statsTable"></div>
+
+            <h3>⚠️ Nulos por columna</h3>
+            <div class="table-wrapper" id="nullsTable"></div>
+
+            <h3>🔍 Outliers (método IQR)</h3>
+            <div class="table-wrapper" id="outliersTable"></div>
+
+            <h3>📈 Visualizaciones</h3>
+            <div class="charts-grid">
+              <div class="chart-card">
+                <label>Histograma de:
+                  <select id="histCol"></select>
+                </label>
+                <canvas id="histChart"></canvas>
+              </div>
+              <div class="chart-card">
+                <h4>Matriz de correlación (numéricas)</h4>
+                <div class="table-wrapper" id="corrTable"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel-actions">
+            <button class="btn btn-ghost" data-prev="problem">← Anterior</button>
+            <button class="btn btn-primary" data-next="preprocess">Siguiente →</button>
+          </div>
+        </section>
+
+        <!-- ETAPA 3: Preprocesamiento -->
+        <section id="step-preprocess" class="panel">
+          <h2>3. Preprocesamiento</h2>
+          <p class="hint">Elige las transformaciones a aplicar. Se generará código Python acorde a tus decisiones.</p>
+
+          <div id="noDataWarning" class="warning hidden">
+            ⚠️ Aún no has cargado datos. Ve a la etapa anterior para cargar un CSV.
+          </div>
+
+          <fieldset>
+            <legend>Tratamiento de nulos</legend>
+            <div class="radio-group">
+              <label><input type="radio" name="nullStrategy" value="none" checked /> No hacer nada</label>
+              <label><input type="radio" name="nullStrategy" value="drop" /> Eliminar filas con nulos</label>
+              <label><input type="radio" name="nullStrategy" value="mean" /> Imputar con media (numéricas)</label>
+              <label><input type="radio" name="nullStrategy" value="median" /> Imputar con mediana (numéricas)</label>
+              <label><input type="radio" name="nullStrategy" value="mode" /> Imputar con moda (todas)</label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Tratamiento de outliers</legend>
+            <div class="radio-group">
+              <label><input type="radio" name="outlierStrategy" value="none" checked /> No hacer nada</label>
+              <label><input type="radio" name="outlierStrategy" value="drop" /> Eliminar filas con outliers</label>
+              <label><input type="radio" name="outlierStrategy" value="winsorize" /> Winsorizar (limitar a percentiles 5% y 95%)</label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Escalado de variables numéricas</legend>
+            <div class="radio-group">
+              <label><input type="radio" name="scaling" value="none" checked /> Sin escalar</label>
+              <label><input type="radio" name="scaling" value="standard" /> StandardScaler (media=0, std=1)</label>
+              <label><input type="radio" name="scaling" value="minmax" /> MinMaxScaler (0 a 1)</label>
+              <label><input type="radio" name="scaling" value="robust" /> RobustScaler (resistente a outliers)</label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Codificación de variables categóricas</legend>
+            <div class="radio-group">
+              <label><input type="radio" name="encoding" value="none" checked /> No codificar</label>
+              <label><input type="radio" name="encoding" value="onehot" /> One-Hot Encoding</label>
+              <label><input type="radio" name="encoding" value="label" /> Label Encoding</label>
+            </div>
+          </fieldset>
+
+          <h3>🐍 Código Python generado</h3>
+          <pre class="code-block"><code id="preprocessCode"># Configura tus decisiones arriba para ver el código.</code></pre>
+          <button class="btn btn-ghost small" id="copyPreprocessCode">📋 Copiar</button>
+
+          <div class="panel-actions">
+            <button class="btn btn-ghost" data-prev="data">← Anterior</button>
+            <button class="btn btn-primary" data-next="model">Siguiente →</button>
+          </div>
+        </section>
+
+        <!-- ETAPA 4: Modelado -->
+        <section id="step-model" class="panel">
+          <h2>4. Modelado</h2>
+          <p class="hint">Selecciona el algoritmo. Te mostramos una recomendación según el tipo de tarea.</p>
+
+          <div id="recommendation" class="info-box"></div>
+
+          <fieldset>
+            <legend>Algoritmo</legend>
+            <div class="radio-group" id="algoGroup"></div>
+          </fieldset>
+
+          <label>Proporción de test (0.1 - 0.5)
+            <input type="range" id="testSize" min="0.1" max="0.5" step="0.05" value="0.2" />
+            <span id="testSizeLabel">0.2</span>
+          </label>
+
+          <label>Semilla aleatoria (random_state)
+            <input type="number" id="randomState" value="42" min="0" />
+          </label>
+
+          <h3>🐍 Código Python generado</h3>
+          <pre class="code-block"><code id="modelCode"># Selecciona un algoritmo para ver el código.</code></pre>
+          <button class="btn btn-ghost small" id="copyModelCode">📋 Copiar</button>
+
+          <div class="panel-actions">
+            <button class="btn btn-ghost" data-prev="preprocess">← Anterior</button>
+            <button class="btn btn-primary" data-next="eval">Siguiente →</button>
+          </div>
+        </section>
+
+        <!-- ETAPA 5: Evaluación -->
+        <section id="step-eval" class="panel">
+          <h2>5. Evaluación</h2>
+          <p class="hint">Métricas recomendadas según tu tipo de tarea.</p>
+
+          <div id="metricsList" class="metrics-grid"></div>
+
+          <h3>🐍 Código Python generado</h3>
+          <pre class="code-block"><code id="evalCode"># Define el tipo de tarea en la etapa 1 para ver métricas.</code></pre>
+          <button class="btn btn-ghost small" id="copyEvalCode">📋 Copiar</button>
+
+          <div class="panel-actions">
+            <button class="btn btn-ghost" data-prev="model">← Anterior</button>
+            <button class="btn btn-primary" data-next="report">Siguiente →</button>
+          </div>
+        </section>
+
+        <!-- ETAPA 6: Reporte -->
+        <section id="step-report" class="panel">
+          <h2>6. Reporte final</h2>
+          <p class="hint">Resumen de todas tus decisiones. Descárgalo como Markdown o como script Python completo.</p>
+
+          <div id="reportContent" class="report-box"></div>
+
+          <div class="panel-actions">
+            <button class="btn btn-ghost" data-prev="eval">← Anterior</button>
+            <button class="btn btn-primary" id="downloadMdBtn">📥 Descargar .md</button>
+            <button class="btn btn-primary" id="downloadPyBtn2">🐍 Descargar .py completo</button>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
