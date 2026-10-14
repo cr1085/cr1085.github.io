@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#37e7f5"/><stop offset="1" stop-color="#16b8a7"/></linearGradient></defs>
+<rect width="120" height="120" rx="24" fill="#071827" stroke="#174a65" stroke-width="4"/>
+<path d="M20 35h32l-8 10H29l-4 7h20l-8 10H18l-7-8 9-19zm42 0h26q13 0 8 12l-3 5q7 5 2 13l-5 7H59l7-10h18l3-6H68l7-10h17l2-5H69z" fill="url(#g)"/>
+<text x="60" y="100" fill="#eafcff" font-family="Arial,sans-serif" font-size="22" font-weight="800" text-anchor="middle">ARENA</text>
+</svg>
