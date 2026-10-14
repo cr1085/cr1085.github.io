@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Icono provisional">
+  <rect width="128" height="128" rx="27" fill="#15372e"/>
+  <rect x="5" y="5" width="118" height="118" rx="23" fill="none" stroke="#6be3b0" stroke-opacity=".32" stroke-width="2"/>
+  <text x="64" y="82" text-anchor="middle" font-family="Arial, sans-serif" font-size="64" font-weight="700" fill="#6be3b0">⌘</text>
+  <circle cx="101" cy="27" r="5" fill="#6be3b0"/>
+</svg>
