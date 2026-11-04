@@ -1,0 +1,107 @@
+[
+  {
+    "id": "word-formato-esencial",
+    "programa": "Word",
+    "nivel": "Básico",
+    "titulo": "Formato esencial para documentos claros",
+    "descripcion": "Selecciona texto, aplica negrita y cursiva, alinea párrafos y ajusta el interlineado para que tus documentos luzcan profesionales.",
+    "duracion": "10 minutos",
+    "objetivo": "Aplicar formato de fuente y de párrafo para presentar un documento ordenado y fácil de leer.",
+    "introduccion": "Un documento bien formateado comunica seriedad y facilita la lectura. En esta capacitación aprenderás los controles de formato que se usan a diario: negrita, cursiva, alineación e interlineado.\n\nTodo lo que verás está en la pestaña **Inicio** de Word, en los grupos **Fuente** y **Párrafo**.",
+    "secciones": [
+      {
+        "titulo": "Seleccionar antes de dar formato",
+        "contenido": "Word aplica el formato solo al texto que esté seleccionado. Para seleccionar:\n\n• **Una palabra:** doble clic.\n• **Un párrafo completo:** triple clic.\n• **Todo el documento:** `Ctrl + A`.\n\nEl texto seleccionado se resalta en color; a partir de ahí, cualquier botón de formato actuará sobre él."
+      },
+      {
+        "titulo": "Negrita, cursiva y subrayado",
+        "contenido": "En el grupo **Fuente** encontrarás tres botones clave:\n\n• **N** → negrita, para destacar títulos o datos importantes.\n• **K** → cursiva, para términos, citas o énfasis suaves.\n• **S** → subrayado, solo cuando sea necesario.\n\nAtajos: `Ctrl + N` negrita, `Ctrl + K` cursiva, `Ctrl + S` subrayado.\n\n**Regla de oro:** si todo está destacado, nada está destacado. Usa la negrita con moderación."
+      },
+      {
+        "titulo": "Alineación e interlineado",
+        "contenido": "El grupo **Párrafo** controla cómo se acomodan las líneas:\n\n• **Alinear a la izquierda:** la opción más legible para textos largos.\n• **Centrar:** solo para títulos o portadas.\n• **Justificar:** bordes parejos; útil en documentos formales.\n\nEl **interlineado** (espacio entre líneas) mejora la lectura: un valor de **1,15 a 1,5** es cómodo para casi cualquier documento."
+      },
+      {
+        "titulo": "Guardar con orden",
+        "contenido": "Presiona `Ctrl + G` (o **Archivo → Guardar como**) y nombra el archivo con una regla simple: `fecha_tema_version`. Ejemplo: `2026-11-05_carta-presentacion_v1.docx`.\n\nGuardar temprano y con frecuencia evita sorpresas."
+      }
+    ],
+    "ejemplo": "Mira la diferencia entre dos versiones del mismo encabezado:\n\n```\nAntes:   informe mensual de ventas\nDespués: INFORME MENSUAL DE VENTAS (centrado y negrita)\n```\n\nEl contenido es el mismo, pero la segunda versión comunica importancia y orden desde el primer vistazo.",
+    "actividad": "1. Abre un documento nuevo en Word.\n2. Escribe una carta de presentación breve (4 o 5 líneas): tu nombre, a qué te dedicas y un dato de contacto.\n3. Pon tu nombre en **negrita** y céntralo.\n4. Alinea el resto del texto a la izquierda con interlineado 1,5.\n5. Guarda el archivo como `carta-presentacion_v1.docx`.",
+    "conceptoClave": "El formato no decora el texto: lo hace comprensible. Selección primero, formato después.",
+    "recomendacion": "Antes de enviar cualquier documento, haz una pasada de 30 segundos buscando abusos de negrita o centrados innecesarios. Menos es más.",
+    "referencias": [
+      { "texto": "Microsoft Support: formato de texto básico en Word", "url": "https://support.microsoft.com/es-es/word" }
+    ]
+  },
+  {
+    "id": "excel-formulas-basicas",
+    "programa": "Excel",
+    "nivel": "Básico",
+    "titulo": "Fórmulas esenciales en Excel",
+    "descripcion": "Aprende a realizar cálculos automáticos con fórmulas básicas y las funciones SUMA y PROMEDIO.",
+    "duracion": "12 minutos",
+    "objetivo": "Utilizar fórmulas y referencias de celda para automatizar cálculos simples.",
+    "introduccion": "Excel permite organizar información y realizar cálculos automáticamente. La clave está en las **fórmulas**: instrucciones que le dicen a la hoja qué calcular y con qué datos.\n\nAl terminar, podrás dejar de sumar con calculadora: Excel lo hará por ti y actualizará el resultado si cambian los datos.",
+    "secciones": [
+      {
+        "titulo": "Conociendo las celdas",
+        "contenido": "Las celdas son las unidades donde se almacena información. Cada celda tiene una **referencia** formada por su columna (letra) y su fila (número): `A1`, `B3`, `C10`.\n\nCuando usas una referencia en una fórmula, Excel busca el valor de esa celda automáticamente."
+      },
+      {
+        "titulo": "Tu primera fórmula",
+        "contenido": "Toda fórmula comienza con el signo igual (`=`). Sin el `=`, Excel trata lo que escribes como texto.\n\nEscribe en una celda `=5+3` y presiona **Enter**: verás **8**.\n\nLos operadores básicos son:\n\n• Suma: `+`\n• Resta: `-`\n• Multiplicación: `*`\n• División: `/`"
+      },
+      {
+        "titulo": "Fórmulas con referencias",
+        "contenido": "El verdadero poder aparece al usar referencias en lugar de números fijos. Si `A1` contiene 10 y `A2` contiene 20:\n\n• `=A1+A2` devuelve 30.\n• `=A1*A2` devuelve 200.\n\nSi luego cambias `A1` por 15, el resultado se **recalcula solo**. Eso es automatizar."
+      },
+      {
+        "titulo": "Funciones listas para usar",
+        "contenido": "Las funciones son fórmulas predefinidas. Las dos más usadas:\n\n• `=SUMA(A1:A5)` → suma todo el rango de A1 a A5.\n• `=PROMEDIO(B1:B10)` → calcula la media de esos valores.\n\nLos dos puntos (`:`) indican un rango continuo: desde la primera celda hasta la última."
+      }
+    ],
+    "ejemplo": "Si `A1` contiene 10 y `A2` contiene 20, `=SUMA(A1:A2)` devuelve **30**.\n\nEn una lista de gastos:\n\n```\nB2  Alquiler        350\nB3  Servicios        80\nB4  Internet         45\nB5  Total     =SUMA(B2:B4)        → 475\nB6  Promedio  =PROMEDIO(B2:B4)    → 158,33\n```",
+    "actividad": "1. En una hoja nueva, escribe `Producto` en `A1` y `Precio` en `B1`.\n2. Registra cinco productos con su precio (filas 2 a 6).\n3. En `B7` calcula el total con `=SUMA(B2:B6)`.\n4. En `B8` calcula el promedio con `=PROMEDIO(B2:B6)`.\n5. Cambia cualquier precio y comprueba cómo se actualizan el total y el promedio sin tocar las fórmulas.",
+    "conceptoClave": "Las fórmulas permiten automatizar los cálculos: trabajas con referencias, no con números escritos a mano.",
+    "recomendacion": "Escribe las fórmulas una sola vez y reutilízalas. Si una fórmula funciona, no la repitas: cópiala o arrástrala con el controlador de relleno.",
+    "referencias": [
+      { "texto": "Microsoft Support: crear fórmulas en Excel", "url": "https://support.microsoft.com/es-es/excel" }
+    ]
+  },
+  {
+    "id": "powerpoint-diapositivas-claras",
+    "programa": "PowerPoint",
+    "nivel": "Básico",
+    "titulo": "Diapositivas claras: tu primera presentación",
+    "descripcion": "Construye una presentación corta y legible: una idea por diapositiva, texto breve, imágenes que aportan y efectos con medida.",
+    "duracion": "10 minutos",
+    "objetivo": "Diseñar una presentación breve de tres diapositivas aplicando criterios de claridad visual.",
+    "introduccion": "Una buena presentación no se mide por la cantidad de diapositivas ni de efectos, sino por lo bien que el público entiende el mensaje.\n\nEn esta capacitación verás cuatro decisiones de diseño que separan una presentación clara de una saturada.",
+    "secciones": [
+      {
+        "titulo": "Una idea por diapositiva",
+        "contenido": "Antes de abrir PowerPoint, escribe en papel las ideas de tu presentación: una por línea. Cada línea se convertirá en una diapositiva.\n\nSi una diapositiva tiene dos ideas fuertes, divídela en dos. El público procesa mejor mensajes pequeños y secuenciales."
+      },
+      {
+        "titulo": "Texto breve y legible",
+        "contenido": "Aplica la guía **6 × 6**: no más de 6 líneas por diapositiva, no más de 6 palabras por línea. Las diapositivas son un apoyo, no un documento para leer.\n\nTamaños mínimos recomendados: **36 pt** para títulos y **24 pt** para el texto general. Si el texto no cabe, probablemente sobra."
+      },
+      {
+        "titulo": "Imágenes que apoyan",
+        "contenido": "Usa **Insertar → Imágenes** para sumar fotos o gráficos que refuercen la idea. Una buena imagen reemplaza párrafos enteros.\n\nEvita imágenes pixeladas, con marcas de agua o puramente decorativas en cada diapositiva: si no aporta, distrae."
+      },
+      {
+        "titulo": "Transiciones y animaciones con medida",
+        "contenido": "La **transición** es el efecto entre diapositivas; la **animación** mueve los objetos dentro de una diapositiva.\n\nRegla práctica: una transición suave (por ejemplo, **Desvanecer**) y animaciones solo para revelar puntos por turnos. Si el efecto llama más la atención que el mensaje, sobra."
+      }
+    ],
+    "ejemplo": "La misma información, presentada de dos maneras:\n\n```\nDiapositiva saturada:\n40 palabras en 9 líneas, fuente de 14 pt,\ndos imágenes decorativas y transición de giro.\n\nDiapositiva clara:\nTítulo: \"Tres avances del trimestre\"\n3 líneas de 5 palabras (fuente 28 pt)\nUna gráfica simple a la derecha\nTransición: Desvanecer\n```\n\nEl público recordará la segunda; la primera solo alcanzó a leerla.",
+    "actividad": "Crea una presentación de **tres diapositivas** sobre tu trabajo o un tema que domines:\n\n1. **Portada:** título de 36 pt o más y tu nombre.\n2. **Desarrollo:** tres ideas clave, una por línea, con una imagen o gráfico que las apoye.\n3. **Cierre:** una frase de conclusión y un dato de contacto.\n\nAntes de terminar, revisa: ¿alguna diapositiva tiene más de 6 líneas? ¿Algún efecto compite con el mensaje?",
+    "conceptoClave": "La diapositiva apoya a quien presenta; no lo reemplaza. Si puede leerse completa sin ti, probablemente está saturada.",
+    "recomendacion": "Ensaya tu presentación de pie y sin mirar la pantalla: si las diapositivas te hacen falta para recordar qué sigue, es señal de que cargaste demasiado texto.",
+    "referencias": [
+      { "texto": "Microsoft Support: diseño de presentaciones en PowerPoint", "url": "https://support.microsoft.com/es-es/powerpoint" }
+    ]
+  }
+]

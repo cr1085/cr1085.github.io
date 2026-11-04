@@ -9,22 +9,10 @@
     "objetivo": "Aplicar formato de fuente y de párrafo para presentar un documento ordenado y fácil de leer.",
     "introduccion": "Un documento bien formateado comunica seriedad y facilita la lectura. En esta capacitación aprenderás los controles de formato que se usan a diario: negrita, cursiva, alineación e interlineado.\n\nTodo lo que verás está en la pestaña **Inicio** de Word, en los grupos **Fuente** y **Párrafo**.",
     "secciones": [
-      {
-        "titulo": "Seleccionar antes de dar formato",
-        "contenido": "Word aplica el formato solo al texto que esté seleccionado. Para seleccionar:\n\n• **Una palabra:** doble clic.\n• **Un párrafo completo:** triple clic.\n• **Todo el documento:** `Ctrl + A`.\n\nEl texto seleccionado se resalta en color; a partir de ahí, cualquier botón de formato actuará sobre él."
-      },
-      {
-        "titulo": "Negrita, cursiva y subrayado",
-        "contenido": "En el grupo **Fuente** encontrarás tres botones clave:\n\n• **N** → negrita, para destacar títulos o datos importantes.\n• **K** → cursiva, para términos, citas o énfasis suaves.\n• **S** → subrayado, solo cuando sea necesario.\n\nAtajos: `Ctrl + N` negrita, `Ctrl + K` cursiva, `Ctrl + S` subrayado.\n\n**Regla de oro:** si todo está destacado, nada está destacado. Usa la negrita con moderación."
-      },
-      {
-        "titulo": "Alineación e interlineado",
-        "contenido": "El grupo **Párrafo** controla cómo se acomodan las líneas:\n\n• **Alinear a la izquierda:** la opción más legible para textos largos.\n• **Centrar:** solo para títulos o portadas.\n• **Justificar:** bordes parejos; útil en documentos formales.\n\nEl **interlineado** (espacio entre líneas) mejora la lectura: un valor de **1,15 a 1,5** es cómodo para casi cualquier documento."
-      },
-      {
-        "titulo": "Guardar con orden",
-        "contenido": "Presiona `Ctrl + G` (o **Archivo → Guardar como**) y nombra el archivo con una regla simple: `fecha_tema_version`. Ejemplo: `2026-11-05_carta-presentacion_v1.docx`.\n\nGuardar temprano y con frecuencia evita sorpresas."
-      }
+      { "titulo": "Seleccionar antes de dar formato", "contenido": "Word aplica el formato solo al texto que esté seleccionado. Para seleccionar:\n\n• **Una palabra:** doble clic.\n• **Un párrafo completo:** triple clic.\n• **Todo el documento:** `Ctrl + A`.\n\nEl texto seleccionado se resalta en color; a partir de ahí, cualquier botón de formato actuará sobre él." },
+      { "titulo": "Negrita, cursiva y subrayado", "contenido": "En el grupo **Fuente** encontrarás tres botones clave:\n\n• **N** → negrita, para destacar títulos o datos importantes.\n• **K** → cursiva, para términos, citas o énfasis suaves.\n• **S** → subrayado, solo cuando sea necesario.\n\nAtajos: `Ctrl + N` negrita, `Ctrl + K` cursiva, `Ctrl + S` subrayado.\n\n**Regla de oro:** si todo está destacado, nada está destacado. Usa la negrita con moderación." },
+      { "titulo": "Alineación e interlineado", "contenido": "El grupo **Párrafo** controla cómo se acomodan las líneas:\n\n• **Alinear a la izquierda:** la opción más legible para textos largos.\n• **Centrar:** solo para títulos o portadas.\n• **Justificar:** bordes parejos; útil en documentos formales.\n\nEl **interlineado** (espacio entre líneas) mejora la lectura: un valor de **1,15 a 1,5** es cómodo para casi cualquier documento." },
+      { "titulo": "Guardar con orden", "contenido": "Presiona `Ctrl + G` (o **Archivo → Guardar como**) y nombra el archivo con una regla simple: `fecha_tema_version`. Ejemplo: `2026-11-05_carta-presentacion_v1.docx`.\n\nGuardar temprano y con frecuencia evita sorpresas." }
     ],
     "ejemplo": "Mira la diferencia entre dos versiones del mismo encabezado:\n\n```\nAntes:   informe mensual de ventas\nDespués: INFORME MENSUAL DE VENTAS (centrado y negrita)\n```\n\nEl contenido es el mismo, pero la segunda versión comunica importancia y orden desde el primer vistazo.",
     "actividad": "1. Abre un documento nuevo en Word.\n2. Escribe una carta de presentación breve (4 o 5 líneas): tu nombre, a qué te dedicas y un dato de contacto.\n3. Pon tu nombre en **negrita** y céntralo.\n4. Alinea el resto del texto a la izquierda con interlineado 1,5.\n5. Guarda el archivo como `carta-presentacion_v1.docx`.",
@@ -32,6 +20,52 @@
     "recomendacion": "Antes de enviar cualquier documento, haz una pasada de 30 segundos buscando abusos de negrita o centrados innecesarios. Menos es más.",
     "referencias": [
       { "texto": "Microsoft Support: formato de texto básico en Word", "url": "https://support.microsoft.com/es-es/word" }
+    ]
+  },
+  {
+    "id": "word-estilos-y-tablas",
+    "programa": "Word",
+    "nivel": "Intermedio",
+    "titulo": "Estilos y tablas de contenido automáticas",
+    "descripcion": "Aplica estilos de título y genera una tabla de contenido que se actualiza sola, sin tener que retocar números de página a mano.",
+    "duracion": "12 minutos",
+    "objetivo": "Usar estilos predefinidos y la tabla de contenido automática para estructurar documentos largos con coherencia visual.",
+    "introduccion": "Cuando un documento supera las 5 o 6 páginas, dar formato párrafo por párrafo se vuelve insostenible y propenso a errores.\n\nLos **estilos** y la **tabla de contenido automática** resuelven eso: defines una vez, aplicas muchas veces y Word numera y actualiza todo por ti.",
+    "secciones": [
+      { "titulo": "Qué son los estilos y por qué usarlos", "contenido": "Un estilo es un conjunto guardado de formato: fuente, tamaño, color, espaciado e interlineado.\n\nEn la pestaña **Inicio → Estilos** verás: **Normal**, **Título 1**, **Título 2**, **Título 3**, etc.\n\nAl aplicar un estilo en lugar de dar formato manual, logras tres cosas:\n\n• Consistencia visual automática.\n• Posibilidad de modificar todo el documento cambiando solo el estilo.\n• Que Word pueda generar índices y tablas de contenido." },
+      { "titulo": "Aplicar estilos correctamente", "contenido": "La regla jerárquica es clave:\n\n• **Título 1** → títulos principales del documento.\n• **Título 2** → secciones dentro de un título 1.\n• **Título 3** → subsecciones dentro de un título 2.\n• **Normal** → cuerpo de texto.\n\nPara aplicarlo: selecciona el texto y haz clic en el estilo correspondiente. Nunca saltes niveles (no pongas un Título 3 directamente bajo un Título 1) o la tabla de contenido quedará rota." },
+      { "titulo": "Generar la tabla de contenido", "contenido": "Una vez que tu documento tiene títulos bien jerarquizados:\n\n1. Coloca el cursor donde quieras la tabla (normalmente después de la portada).\n2. Ve a **Referencias → Tabla de contenido**.\n3. Elige un estilo (recomendado: **Tabla automática 1**).\n\nWord recopila todos los títulos aplicados y los lista con su número de página. Si agregas o quitas páginas, la tabla **no se actualiza sola**: haz clic derecho sobre ella y elige **Actualizar campos → Actualizar toda la tabla**." },
+      { "titulo": "Modificar un estilo sin romper nada", "contenido": "Si necesitas cambiar el color de todos los títulos, no lo hagas uno por uno:\n\n1. Haz clic derecho sobre el estilo (p. ej. **Título 1**).\n2. Elige **Modificar**.\n3. Cambia lo que necesites (fuente, tamaño, color, espaciado).\n4. Confirma.\n\nTodos los párrafos que usen ese estilo cambiarán automáticamente. Esto ahorra horas en documentos largos." }
+    ],
+    "ejemplo": "Imagina un manual de 30 páginas con 4 capítulos y 15 secciones. Si usas formato manual:\n\n```\nCambiar el color de los títulos = 19 cambios manuales\nAgregar un capítulo = renumerar 15 páginas\n```\n\nCon estilos:\n\n```\nCambiar el color = 1 clic en Modificar estilo\nAgregar un capítulo = insertar y actualizar la tabla\n```\n\nEl contenido se adapta, tú no.",
+    "actividad": "1. Abre un documento nuevo y escribe un informe de 3 páginas con esta estructura:\n   - Título 1: «Informe trimestral»\n   - Título 2: «Ventas» y dentro un Título 3: «Región norte».\n   - Título 2: «Gastos» y dentro un Título 3: «Fijos» y otro «Variables».\n   - Título 1: «Conclusiones».\n2. Aplica los estilos correspondientes a cada título.\n3. Inserta una tabla de contenido al inicio con **Referencias → Tabla de contenido**.\n4. Agrega una página de texto al final y actualiza la tabla con clic derecho.",
+    "conceptoClave": "Los estilos separan el contenido del formato: cambias una regla, no veinte párrafos.",
+    "recomendacion": "Antes de aplicar formato manual a un título, pregúntate: ¿qué estilo representa mejor esto? Si no existe, créalo. Nunca uses formato directo sobre títulos.",
+    "referencias": [
+      { "texto": "Microsoft Support: aplicar estilos en Word", "url": "https://support.microsoft.com/es-es/word" }
+    ]
+  },
+  {
+    "id": "word-combinar-correspondencia",
+    "programa": "Word",
+    "nivel": "Avanzado",
+    "titulo": "Combinar correspondencia: un documento, muchos destinatarios",
+    "descripcion": "Genera cartas, etiquetas o correos personalizados a partir de una lista en Excel y una plantilla en Word.",
+    "duracion": "14 minutos",
+    "objetivo": "Configurar una combinación de correspondencia para producir documentos personalizados en masa sin copiar y pegar.",
+    "introduccion": "Enviar 50 cartas iguales cambiando solo el nombre del destinatario es un trabajo que no deberías hacer a mano. La **combinación de correspondencia** lo resuelve en minutos conectando una plantilla Word con una lista de datos (Excel o tabla).\n\nEs una de las herramientas más subutilizadas de Word y de las que más tiempo ahorra en oficinas.",
+    "secciones": [
+      { "titulo": "Preparar la fuente de datos", "contenido": "La lista de destinatarios debe vivir en una tabla. Excel es la opción más cómoda:\n\n1. Abre un libro nuevo.\n2. En la fila 1 pon los encabezados: **Nombre**, **Empresa**, **Direccion**, **Ciudad**.\n3. Debajo, un registro por fila.\n4. Guarda y **cierra el archivo** (Word no puede leerlo si Excel lo tiene abierto).\n\nEvita espacios extra en los encabezados y celdas combinadas: rompen la importación." },
+      { "titulo": "Vincular la lista al documento", "contenido": "En Word:\n\n1. Abre o crea la plantilla (por ejemplo, una carta con fecha, saludo y firma ya escritos).\n2. Ve a **Correspondencia → Iniciar combinación de correspondencia → Cartas**.\n3. **Seleccionar destinatarios → Usar una lista existente** y elige tu Excel.\n4. Si aparece un cuadro de diálogo de tablas, selecciona la hoja correcta y marca **La primera fila contiene encabezados**." },
+      { "titulo": "Insertar campos combinados", "contenido": "Ahora insertas los datos variables dentro del texto:\n\n1. Coloca el cursor donde quieres que aparezca el dato (por ejemplo, después de «Estimado/a»).\n2. **Insertar campo combinado → Nombre**.\n3. Repite para empresa, dirección, etc.\n\nWord insertará marcas tipo `«Nombre»`. Al previsualizar (**Ver resultados combinados**), cada marca se reemplazará por el dato real de cada destinatario." },
+      { "titulo": "Previsualizar y finalizar", "contenido": "Usa las flechas de **Ver resultados combinados** para navegar entre destinatarios y verificar que todo se ve bien.\n\nCuando estés satisfecho:\n\n• **Finalizar y combinar → Editar documentos individuales**: genera un nuevo Word con todas las cartas. Puedes revisarlas antes de imprimir.\n• **Finalizar y combinar → Imprimir**: imprime directamente.\n• **Finalizar y combinar → Enviar mensajes de correo electrónico**: si tienes Outlook configurado, envía la plantilla personalizada a cada correo." }
+    ],
+    "ejemplo": "Plantilla Word:\n\n```\nMadrid, 5 de noviembre de 2026\n\nEstimado/a «Nombre»:\n\nLe informamos que su cuota del mes vence el próximo viernes.\n\nAtentamente,\nEquipo de cobros\n```\n\nLista Excel:\n\n```\nNombre     | Direccion\nAna Ruiz   | Calle Mayor 12\nLuis Pardo | Av. Sol 45\n```\n\nResultado: dos cartas generadas automáticamente, cada una con el nombre correcto. Escalar a 500 destinatarios cuesta los mismos dos clics.",
+    "actividad": "1. Crea un Excel con 5 contactos: Nombre, Empresa y Ciudad.\n2. Escribe en Word una carta breve de felicitación corporativa.\n3. Vincula la lista e inserta los tres campos combinados en el cuerpo de la carta.\n4. Previsualiza las 5 cartas navegando con las flechas.\n5. Finaliza y genera un documento individual para revisarlo antes de «enviarlo».",
+    "conceptoClave": "Combinar correspondencia separa el mensaje del destinatario: una plantilla se multiplica por una lista y produce resultados únicos.",
+    "recomendacion": "Siempre previsualiza al menos 3 destinatarios (el primero, uno del medio y el último) antes de finalizar. Los errores de datos suelen aparecer en los bordes de la lista.",
+    "referencias": [
+      { "texto": "Microsoft Support: combinación de correspondencia en Word", "url": "https://support.microsoft.com/es-es/word" }
     ]
   },
   {
@@ -44,22 +78,10 @@
     "objetivo": "Utilizar fórmulas y referencias de celda para automatizar cálculos simples.",
     "introduccion": "Excel permite organizar información y realizar cálculos automáticamente. La clave está en las **fórmulas**: instrucciones que le dicen a la hoja qué calcular y con qué datos.\n\nAl terminar, podrás dejar de sumar con calculadora: Excel lo hará por ti y actualizará el resultado si cambian los datos.",
     "secciones": [
-      {
-        "titulo": "Conociendo las celdas",
-        "contenido": "Las celdas son las unidades donde se almacena información. Cada celda tiene una **referencia** formada por su columna (letra) y su fila (número): `A1`, `B3`, `C10`.\n\nCuando usas una referencia en una fórmula, Excel busca el valor de esa celda automáticamente."
-      },
-      {
-        "titulo": "Tu primera fórmula",
-        "contenido": "Toda fórmula comienza con el signo igual (`=`). Sin el `=`, Excel trata lo que escribes como texto.\n\nEscribe en una celda `=5+3` y presiona **Enter**: verás **8**.\n\nLos operadores básicos son:\n\n• Suma: `+`\n• Resta: `-`\n• Multiplicación: `*`\n• División: `/`"
-      },
-      {
-        "titulo": "Fórmulas con referencias",
-        "contenido": "El verdadero poder aparece al usar referencias en lugar de números fijos. Si `A1` contiene 10 y `A2` contiene 20:\n\n• `=A1+A2` devuelve 30.\n• `=A1*A2` devuelve 200.\n\nSi luego cambias `A1` por 15, el resultado se **recalcula solo**. Eso es automatizar."
-      },
-      {
-        "titulo": "Funciones listas para usar",
-        "contenido": "Las funciones son fórmulas predefinidas. Las dos más usadas:\n\n• `=SUMA(A1:A5)` → suma todo el rango de A1 a A5.\n• `=PROMEDIO(B1:B10)` → calcula la media de esos valores.\n\nLos dos puntos (`:`) indican un rango continuo: desde la primera celda hasta la última."
-      }
+      { "titulo": "Conociendo las celdas", "contenido": "Las celdas son las unidades donde se almacena información. Cada celda tiene una **referencia** formada por su columna (letra) y su fila (número): `A1`, `B3`, `C10`.\n\nCuando usas una referencia en una fórmula, Excel busca el valor de esa celda automáticamente." },
+      { "titulo": "Tu primera fórmula", "contenido": "Toda fórmula comienza con el signo igual (`=`). Sin el `=`, Excel trata lo que escribes como texto.\n\nEscribe en una celda `=5+3` y presiona **Enter**: verás **8**.\n\nLos operadores básicos son:\n\n• Suma: `+`\n• Resta: `-`\n• Multiplicación: `*`\n• División: `/`" },
+      { "titulo": "Fórmulas con referencias", "contenido": "El verdadero poder aparece al usar referencias en lugar de números fijos. Si `A1` contiene 10 y `A2` contiene 20:\n\n• `=A1+A2` devuelve 30.\n• `=A1*A2` devuelve 200.\n\nSi luego cambias `A1` por 15, el resultado se **recalcula solo**. Eso es automatizar." },
+      { "titulo": "Funciones listas para usar", "contenido": "Las funciones son fórmulas predefinidas. Las dos más usadas:\n\n• `=SUMA(A1:A5)` → suma todo el rango de A1 a A5.\n• `=PROMEDIO(B1:B10)` → calcula la media de esos valores.\n\nLos dos puntos (`:`) indican un rango continuo: desde la primera celda hasta la última." }
     ],
     "ejemplo": "Si `A1` contiene 10 y `A2` contiene 20, `=SUMA(A1:A2)` devuelve **30**.\n\nEn una lista de gastos:\n\n```\nB2  Alquiler        350\nB3  Servicios        80\nB4  Internet         45\nB5  Total     =SUMA(B2:B4)        → 475\nB6  Promedio  =PROMEDIO(B2:B4)    → 158,33\n```",
     "actividad": "1. En una hoja nueva, escribe `Producto` en `A1` y `Precio` en `B1`.\n2. Registra cinco productos con su precio (filas 2 a 6).\n3. En `B7` calcula el total con `=SUMA(B2:B6)`.\n4. En `B8` calcula el promedio con `=PROMEDIO(B2:B6)`.\n5. Cambia cualquier precio y comprueba cómo se actualizan el total y el promedio sin tocar las fórmulas.",
@@ -67,6 +89,52 @@
     "recomendacion": "Escribe las fórmulas una sola vez y reutilízalas. Si una fórmula funciona, no la repitas: cópiala o arrástrala con el controlador de relleno.",
     "referencias": [
       { "texto": "Microsoft Support: crear fórmulas en Excel", "url": "https://support.microsoft.com/es-es/excel" }
+    ]
+  },
+  {
+    "id": "excel-funciones-logicas",
+    "programa": "Excel",
+    "nivel": "Intermedio",
+    "titulo": "Funciones SI, CONTAR.SI y SUMAR.SI",
+    "descripcion": "Automatiza decisiones en tus hojas: cuentas, sumas y clasificaciones condicionales sin macros.",
+    "duracion": "13 minutos",
+    "objetivo": "Aplicar funciones condicionales para tomar decisiones automáticas a partir de los datos.",
+    "introduccion": "Las funciones básicas (`SUMA`, `PROMEDIO`) operan sobre todos los datos. Las funciones **condicionales** operan solo sobre los que cumplen una regla: si el valor es mayor que X, si el texto es «Ventas», si la fecha es de noviembre…\n\nEstas tres son las más usadas en entornos profesionales: `SI`, `CONTAR.SI` y `SUMAR.SI`.",
+    "secciones": [
+      { "titulo": "La función SI: decisiones simples", "contenido": "Sintaxis: `=SI(condición; valor_si_verdadero; valor_si_falso)`.\n\nEjemplo en una tabla de ventas:\n\n```\n=SI(B2>=1000; \"Cumple meta\"; \"Revisar\")\n```\n\nSi `B2` es 1200, la celda muestra **Cumple meta**; si es 800, **Revisar**. Puedes usar valores numéricos, texto entre comillas o incluso otra fórmula como resultado." },
+      { "titulo": "CONTAR.SI: contar con condiciones", "contenido": "Sintaxis: `=CONTAR.SI(rango; criterio)`.\n\nÚtil para respuestas rápidas del tipo «¿cuántos clientes hay en Madrid?»:\n\n```\n=CONTAR.SI(C2:C100; \"Madrid\")\n```\n\nLos criterios también admiten operadores:\n\n• `\">1000\"` → mayores que mil.\n• `\"<>0\"` → distintos de cero.\n• `\"<=50\"` → menores o iguales que 50." },
+      { "titulo": "SUMAR.SI: sumar solo lo que cumple", "contenido": "Sintaxis: `=SUMAR.SI(rango_criterio; criterio; rango_suma)`.\n\nSi tienes columnas de **Ciudad** (A) y **Ventas** (B), y quieres sumar solo lo vendido en Bogotá:\n\n```\n=SUMAR.SI(A2:A100; \"Bogotá\"; B2:B100)\n```\n\nExcel revisa cada ciudad y, solo cuando coincide, suma la venta correspondiente. Muy útil para reportes por categoría o región." },
+      { "titulo": "Combinar funciones para más potencia", "contenido": "Las funciones se anidan. Por ejemplo, para clasificar ventas en tres niveles:\n\n```\n=SI(B2>=2000; \"Alta\"; SI(B2>=1000; \"Media\"; \"Baja\"))\n```\n\nO para contar cuántos vendedores cumplieron meta:\n\n```\n=CONTAR.SI(C2:C100; \"Cumple meta\")\n```\n\nDonde `C` es la columna que ya calculó el `SI`." }
+    ],
+    "ejemplo": "Tabla de ventas mensuales:\n\n```\nA         B       C (fórmula)\nVendedor  Ventas  Clasificación\nAna       2500    =SI(B2>=2000;\"Alta\";SI(B2>=1000;\"Media\";\"Baja\"))\nLuis      1200    → Media\nCarla     800     → Baja\nDiego     3100    → Alta\n```\n\nResumen abajo:\n\n```\nTotal ventas Bogotá:  =SUMAR.SI(D2:D100;\"Bogotá\";B2:B100)\nVendedores alta:      =CONTAR.SI(C2:C100;\"Alta\")\n```\n\nUna sola tabla alimenta todos los indicadores.",
+    "actividad": "1. Crea una hoja con 8 filas: **Producto**, **Precio**, **Unidades vendidas**.\n2. En la columna D calcula el total (`Precio * Unidades`).\n3. En la columna E usa `SI` para marcar **Éxito** si el total supera $500.000 y **Normal** si no.\n4. Al final, con `CONTAR.SI` cuenta cuántos productos fueron «Éxito».\n5. Con `SUMAR.SI` suma solo las ventas de los productos marcados como «Éxito» (usa una columna auxiliar o `SUMAR.SI.CONJUNTO` si lo conoces).",
+    "conceptoClave": "Las funciones condicionales convierten datos en decisiones: dejan de ser números sueltos y pasan a ser información accionable.",
+    "recomendacion": "Siempre que escribas un criterio con texto o operador, envuélvelo entre comillas (`\"Bogotá\"`, `\">1000\"`). Sin comillas, Excel lo interpreta como una referencia o nombre y la fórmula falla.",
+    "referencias": [
+      { "texto": "Microsoft Support: función SI en Excel", "url": "https://support.microsoft.com/es-es/excel" }
+    ]
+  },
+  {
+    "id": "excel-tablas-dinamicas",
+    "programa": "Excel",
+    "nivel": "Avanzado",
+    "titulo": "Tablas dinámicas: análisis rápido de grandes volúmenes",
+    "descripcion": "Convierte miles de filas de datos en un resumen interactivo en segundos, sin escribir una sola fórmula.",
+    "duracion": "15 minutos",
+    "objetivo": "Crear y modificar tablas dinámicas para agrupar, resumir y comparar datos de forma interactiva.",
+    "introduccion": "Cuando una tabla pasa de 100 filas, hacer resúmenes con fórmulas se vuelve engorroso y frágil. Las **tablas dinámicas** resuelven eso: arrastras campos a una cuadrícula y Excel genera cruces, totales y promedios al instante.\n\nEs, probablemente, la herramienta de análisis más rentable en términos de tiempo de aprendizaje.",
+    "secciones": [
+      { "titulo": "Preparar los datos correctamente", "contenido": "Una tabla dinámica depende de una base bien estructurada:\n\n• **Una fila de encabezados** en la fila 1, sin celdas vacías.\n• **Sin filas ni columnas en blanco** dentro del rango.\n• **Una fila por registro** (no subtotales ya hechos).\n• **Formato de tabla** (`Ctrl + T`) para que la dinámica se actualice si agregas filas después.\n\nSi tu base no cumple esto, arréglala antes de crear la dinámica." },
+      { "titulo": "Crear la primera tabla dinámica", "contenido": "Pasos:\n\n1. Selecciona cualquier celda de la base de datos.\n2. **Insertar → Tabla dinámica**.\n3. Confirma el rango y elige dónde colocarla (nueva hoja es lo recomendado).\n\nAparece un panel lateral con los campos de tu base: cada encabezado se convierte en un campo arrastrable. A la derecha verás cuatro zonas: **Filtros**, **Columnas**, **Filas** y **Valores**." },
+      { "titulo": "Arrastrar campos para construir el resumen", "contenido": "La lógica es simple:\n\n• **Filas**: lo que quieres ver listado verticalmente (por ejemplo, **Vendedor**).\n• **Columnas**: lo que quieres ver horizontalmente (por ejemplo, **Mes**).\n• **Valores**: lo que se calcula (por ejemplo, **Ventas**, sumado automáticamente).\n• **Filtros**: para restringir todo el informe (por ejemplo, **Región**).\n\nArrastra **Vendedor** a Filas, **Mes** a Columnas y **Ventas** a Valores: obtienes una matriz con el total vendido por vendedor y por mes." },
+      { "titulo": "Cambiar el cálculo y actualizar", "contenido": "Por defecto, los valores se **suman**. Para cambiar:\n\n1. Clic derecho sobre cualquier número de la columna Valores.\n2. **Resumir valores por →** eliges **Promedio**, **Cuenta**, **Máx**, **Mín**, etc.\n\nSi agregas datos a la base original, la tabla dinámica no se actualiza sola: haz clic derecho sobre ella y elige **Actualizar** (o usa **Datos → Actualizar todo**)." }
+    ],
+    "ejemplo": "Base de 10.000 ventas con campos: **Fecha**, **Vendedor**, **Producto**, **Región**, **Importe**.\n\nTabla dinámica configurada así:\n\n```\nFilas:    Vendedor\nColumnas: Región\nValores:  Importe (suma)\n```\n\nResultado: una matriz que muestra, en segundos, cuánto vendió cada vendedor en cada región. Arrastrar **Producto** a Filtros permite enfocar el análisis en una sola línea de productos sin rehacer nada.",
+    "actividad": "1. Prepara una tabla con 20 filas: **Fecha**, **Cliente**, **Producto**, **Cantidad**, **Precio** y una columna **Total** (`Cantidad * Precio`).\n2. Convierte el rango en tabla oficial con `Ctrl + T`.\n3. Inserta una tabla dinámica en una hoja nueva.\n4. Pon **Cliente** en Filas, **Producto** en Columnas y **Total** en Valores.\n5. Agrega 5 filas nuevas a la base y actualiza la dinámica. Verifica que los totales cambien.",
+    "conceptoClave": "Una tabla dinámica es una pregunta que le haces a tus datos; no una fórmula que escribes. Cambiar la pregunta es arrastrar un campo.",
+    "recomendacion": "Antes de crear una dinámica, dedica 2 minutos a limpiar la base: encabezados claros, sin celdas combinadas y, si puedes, en formato de tabla oficial (`Ctrl + T`). Ahorrarás horas de re-trabajo.",
+    "referencias": [
+      { "texto": "Microsoft Support: crear tablas dinámicas", "url": "https://support.microsoft.com/es-es/excel" }
     ]
   },
   {
@@ -79,22 +147,10 @@
     "objetivo": "Diseñar una presentación breve de tres diapositivas aplicando criterios de claridad visual.",
     "introduccion": "Una buena presentación no se mide por la cantidad de diapositivas ni de efectos, sino por lo bien que el público entiende el mensaje.\n\nEn esta capacitación verás cuatro decisiones de diseño que separan una presentación clara de una saturada.",
     "secciones": [
-      {
-        "titulo": "Una idea por diapositiva",
-        "contenido": "Antes de abrir PowerPoint, escribe en papel las ideas de tu presentación: una por línea. Cada línea se convertirá en una diapositiva.\n\nSi una diapositiva tiene dos ideas fuertes, divídela en dos. El público procesa mejor mensajes pequeños y secuenciales."
-      },
-      {
-        "titulo": "Texto breve y legible",
-        "contenido": "Aplica la guía **6 × 6**: no más de 6 líneas por diapositiva, no más de 6 palabras por línea. Las diapositivas son un apoyo, no un documento para leer.\n\nTamaños mínimos recomendados: **36 pt** para títulos y **24 pt** para el texto general. Si el texto no cabe, probablemente sobra."
-      },
-      {
-        "titulo": "Imágenes que apoyan",
-        "contenido": "Usa **Insertar → Imágenes** para sumar fotos o gráficos que refuercen la idea. Una buena imagen reemplaza párrafos enteros.\n\nEvita imágenes pixeladas, con marcas de agua o puramente decorativas en cada diapositiva: si no aporta, distrae."
-      },
-      {
-        "titulo": "Transiciones y animaciones con medida",
-        "contenido": "La **transición** es el efecto entre diapositivas; la **animación** mueve los objetos dentro de una diapositiva.\n\nRegla práctica: una transición suave (por ejemplo, **Desvanecer**) y animaciones solo para revelar puntos por turnos. Si el efecto llama más la atención que el mensaje, sobra."
-      }
+      { "titulo": "Una idea por diapositiva", "contenido": "Antes de abrir PowerPoint, escribe en papel las ideas de tu presentación: una por línea. Cada línea se convertirá en una diapositiva.\n\nSi una diapositiva tiene dos ideas fuertes, divídela en dos. El público procesa mejor mensajes pequeños y secuenciales." },
+      { "titulo": "Texto breve y legible", "contenido": "Aplica la guía **6 × 6**: no más de 6 líneas por diapositiva, no más de 6 palabras por línea. Las diapositivas son un apoyo, no un documento para leer.\n\nTamaños mínimos recomendados: **36 pt** para títulos y **24 pt** para el texto general. Si el texto no cabe, probablemente sobra." },
+      { "titulo": "Imágenes que apoyan", "contenido": "Usa **Insertar → Imágenes** para sumar fotos o gráficos que refuercen la idea. Una buena imagen reemplaza párrafos enteros.\n\nEvita imágenes pixeladas, con marcas de agua o puramente decorativas en cada diapositiva: si no aporta, distrae." },
+      { "titulo": "Transiciones y animaciones con medida", "contenido": "La **transición** es el efecto entre diapositivas; la **animación** mueve los objetos dentro de una diapositiva.\n\nRegla práctica: una transición suave (por ejemplo, **Desvanecer**) y animaciones solo para revelar puntos por turnos. Si el efecto llama más la atención que el mensaje, sobra." }
     ],
     "ejemplo": "La misma información, presentada de dos maneras:\n\n```\nDiapositiva saturada:\n40 palabras en 9 líneas, fuente de 14 pt,\ndos imágenes decorativas y transición de giro.\n\nDiapositiva clara:\nTítulo: \"Tres avances del trimestre\"\n3 líneas de 5 palabras (fuente 28 pt)\nUna gráfica simple a la derecha\nTransición: Desvanecer\n```\n\nEl público recordará la segunda; la primera solo alcanzó a leerla.",
     "actividad": "Crea una presentación de **tres diapositivas** sobre tu trabajo o un tema que domines:\n\n1. **Portada:** título de 36 pt o más y tu nombre.\n2. **Desarrollo:** tres ideas clave, una por línea, con una imagen o gráfico que las apoye.\n3. **Cierre:** una frase de conclusión y un dato de contacto.\n\nAntes de terminar, revisa: ¿alguna diapositiva tiene más de 6 líneas? ¿Algún efecto compite con el mensaje?",
@@ -102,6 +158,52 @@
     "recomendacion": "Ensaya tu presentación de pie y sin mirar la pantalla: si las diapositivas te hacen falta para recordar qué sigue, es señal de que cargaste demasiado texto.",
     "referencias": [
       { "texto": "Microsoft Support: diseño de presentaciones en PowerPoint", "url": "https://support.microsoft.com/es-es/powerpoint" }
+    ]
+  },
+  {
+    "id": "powerpoint-diseno-visual",
+    "programa": "PowerPoint",
+    "nivel": "Intermedio",
+    "titulo": "Diseño visual: jerarquía, color y SmartArt",
+    "descripcion": "Construye diapositivas con jerarquía clara, paleta coherente y gráficos informativos en lugar de listas de viñetas.",
+    "duracion": "12 minutos",
+    "objetivo": "Aplicar principios de jerarquía visual, paletas de color y gráficos SmartArt para comunicar ideas complejas sin saturar.",
+    "introduccion": "En el nivel básico aprendiste a no saturar. En este aprenderás a **decidir qué mostrar y cómo ordenarlo** para que el ojo del público encuentre primero lo importante.\n\nTres herramientas hacen casi todo el trabajo: jerarquía tipográfica, paleta de tres colores y SmartArt.",
+    "secciones": [
+      { "titulo": "Jerarquía tipográfica: qué lee primero el ojo", "contenido": "Cada diapositiva necesita **tres niveles** claros:\n\n1. **Título** (36–44 pt, negrita o seminegrita): la idea central.\n2. **Subtítulo o dato clave** (24–28 pt): el apoyo o cifra principal.\n3. **Texto de detalle** (18–22 pt): contexto mínimo.\n\nEl ojo salta del más grande al más pequeño. Si dos elementos tienen el mismo tamaño, compiten y el espectador se confunde. Nunca pongas dos titulares del mismo tamaño en una diapositiva." },
+      { "titulo": "Paleta de tres colores", "contenido": "Una paleta profesional casi siempre se limita a **tres colores**:\n\n• **Principal**: el color de la marca o el más llamativo (para títulos y énfasis).\n• **Secundario**: un tono más neutro (para textos).\n• **De acento**: uno vibrante, usado muy poco (para resaltar un dato o un ícono).\n\nEn **Diseño → Variantes → Colores** puedes personalizar la paleta de toda la presentación de un solo golpe. Evita usar colores primarios saturados (rojo puro, verde puro): cansan la vista en proyecciones." },
+      { "titulo": "SmartArt: de lista a diagrama", "contenido": "Si tu diapositiva es una lista de 4–6 puntos, probablemente se ve mejor como diagrama:\n\n1. Selecciona el texto de la lista.\n2. **Inicio → Convertir a SmartArt**.\n3. Elige una categoría: **Proceso**, **Ciclo**, **Jerarquía**, **Relación**.\n\nSmartArt distribuye los elementos con equilibrio, aplica la paleta y agrega íconos. Para editar, haz clic en el diagrama y aparece la pestaña **Diseño de SmartArt**." },
+      { "titulo": "Espacio en blanco como aliado", "contenido": "El espacio vacío no es desperdicio: es dirección. Sirve para:\n\n• Separar bloques de información.\n• Dar descanso visual entre ideas.\n• Hacer que lo importante resalte por contraste.\n\nRegla práctica: si una diapositiva se siente «apretada», quita texto en lugar de reducir la fuente. Una diapositiva con espacio se percibe como profesional; una sin espacio, como improvisada." }
+    ],
+    "ejemplo": "Misma información, dos enfoques:\n\n```\nLista de viñetas (débil):\n• Ventas Q1: $120k\n• Ventas Q2: $180k\n• Ventas Q3: $210k\n• Ventas Q4: $260k\n\nDiagrama SmartArt (fuerte):\nTítulo: \"Crecimiento sostenido 2026\"\nGráfico de proceso con 4 bloques, cada uno con su\ntrimestre y su monto, color de acento en Q4.\n```\n\nEl diagrama comunica «crecimiento» visualmente; la lista obliga a leer cada punto para concluirlo.",
+    "actividad": "1. Elige un tema que conozcas (puede ser tu área de trabajo).\n2. Crea 4 diapositivas:\n   - Portada con título (44 pt) y subtítulo (24 pt).\n   - Una con lista de 5 puntos convertida a SmartArt de proceso.\n   - Una con jerarquía clara: título, cifra destacada en color principal, y una línea de contexto.\n   - Cierre con una frase y mucho espacio en blanco.\n3. Aplica una paleta de tres colores desde **Diseño → Variantes**.",
+    "conceptoClave": "El diseño no es decoración: es decisión sobre qué mostrar primero. Si todo pesa lo mismo, nada pesa.",
+    "recomendacion": "Antes de cerrar la presentación, revisa cada diapositiva en vista miniatura (Ver → Clasificador de diapositivas). Si dos se ven demasiado parecidas, probablemente les falta diferenciación visual.",
+    "referencias": [
+      { "texto": "Microsoft Support: usar SmartArt en PowerPoint", "url": "https://support.microsoft.com/es-es/powerpoint" }
+    ]
+  },
+  {
+    "id": "powerpoint-presentaciones-interactivas",
+    "programa": "PowerPoint",
+    "nivel": "Avanzado",
+    "titulo": "Presentaciones interactivas y grabación con narración",
+    "descripcion": "Convierte tus presentaciones en experiencias navegables y graba versiones con voz para compartir en línea.",
+    "duracion": "15 minutos",
+    "objetivo": "Implementar hipervínculos internos, secciones y grabación con narración para producir presentaciones autoexplicativas.",
+    "introduccion": "Hasta ahora tus presentaciones han sido lineales: una diapositiva después de otra. Pero en muchos contextos —reuniones con clientes, cursos en línea, ventas— necesitas **navegar** entre secciones según la conversación, o entregar una versión que se pueda ver sin ti.\n\nEste nivel te da dos habilidades: navegación interactiva y grabación con narración.",
+    "secciones": [
+      { "titulo": "Secciones para organizar el archivo", "contenido": "En presentaciones largas, la vista normal se vuelve caótica. Las **secciones** agrupan diapositivas:\n\n1. Clic derecho en el panel izquierdo entre dos diapositivas.\n2. **Agregar sección**.\n3. Ponle nombre: «Contexto», «Propuesta», «Casos», «Cierre».\n\nPuedes contraer secciones, imprimirlas por separado o reordenarlas completas. Es especialmente útil cuando varias personas trabajan en el mismo archivo." },
+      { "titulo": "Hipervínculos internos: navegación libre", "contenido": "Crea una diapositiva inicial con un **menú**: una lista de los temas (Contexto, Propuesta, Casos, Cierre). Luego:\n\n1. Selecciona el texto o forma que servirá de botón.\n2. **Insertar → Vínculo → Lugar de este documento**.\n3. Elige la diapositiva destino.\n\nDurante la presentación, al hacer clic saltas al tema elegido sin pasar por todas las diapositivas intermedias. Añade un botón «Volver al menú» en cada sección para cerrar el circuito." },
+      { "titulo": "Grabar narración y tiempos", "contenido": "PowerPoint puede grabar tu voz, tu cámara (si la activas) y los tiempos de cada diapositiva:\n\n1. **Presentación con diapositivas → Grabar presentación con diapositivas**.\n2. Elige empezar desde el principio o desde la diapositiva actual.\n3. Habla con naturalidad, avanza con el teclado o el clic.\n4. Al terminar, cada diapositiva conserva su narración y su duración.\n\nPara compartir, exporta como video: **Archivo → Exportar → Crear un vídeo**. Eliges calidad (Full HD es suficiente) y el archivo se genera solo." },
+      { "titulo": "Entregar sin conexión: empaquetar el archivo", "contenido": "Si la presentación contiene vídeos, audios o fuentes especiales:\n\n**Archivo → Exportar → Empaquetar para CD → Crear paquete**.\n\nPowerPoint genera una carpeta con todo lo necesario. Así evitas el clásico problema de que «el vídeo no se reproduce en la otra computadora». También sirve para enviar el archivo por correo sin perder elementos embebidos." }
+    ],
+    "ejemplo": "Una presentación de ventas de 25 diapositivas organizada así:\n\n```\nMenú inicial: 4 botones (Contexto, Propuesta, Casos, Cierre)\nSección Contexto:  5 diapositivas + botón volver al menú\nSección Propuesta: 8 diapositivas + botón volver al menú\nSección Casos:     7 diapositivas + botón volver al menú\nSección Cierre:    3 diapositivas\n```\n\nDurante la reunión, si el cliente pregunta primero por los casos, haces clic en el botón correspondiente y llegas directo. No pasas 15 diapositivas irrelevantes.",
+    "actividad": "1. Toma una presentación existente (o crea una de 10 diapositivas).\n2. Organízala en 3 secciones con nombres claros.\n3. Crea una diapositiva de menú con 3 formas, cada una vinculada al inicio de una sección.\n4. Añade un botón «Menú» en una diapositiva de cada sección, vinculado a la diapositiva inicial.\n5. Graba una narración de 30 segundos en las dos primeras diapositivas. Exporta la presentación como vídeo MP4.",
+    "conceptoClave": "Una presentación avanzada no es más larga ni más cargada: es más navegable y reutilizable en distintos contextos.",
+    "recomendacion": "Prueba la navegación en modo presentación antes de usarla en público. Los hipervínculos mal configurados son la causa más común de tropiezos durante una exposición interactiva.",
+    "referencias": [
+      { "texto": "Microsoft Support: grabar una presentación con diapositivas", "url": "https://support.microsoft.com/es-es/powerpoint" }
     ]
   }
 ]
