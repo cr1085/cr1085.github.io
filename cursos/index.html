@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cursos y Capacitaciones — 3CB Soluciones Tecnológicas</title>
+<meta name="description" content="Biblioteca digital de microcapacitaciones de 3CB Soluciones Tecnológicas: Word, Excel y PowerPoint.">
+
+<!-- Tipografías (opcionales): si el sitio oficial ya tiene tipografía propia,
+     elimina estos <link>; el módulo degrada a fuentes del sistema. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+<!-- Hoja de estilos del módulo -->
+<link rel="stylesheet" href="css/cursos.css">
+
+<!-- ══════════════ SOLO DEMO: estilos de la página de ejemplo ══════════════ -->
+<style>
+  body{ margin:0; font-family:'IBM Plex Sans','Segoe UI',system-ui,sans-serif; color:#0F1B2D; background:#F4F6FB; }
+  .demo-topbar{ position:sticky; top:0; z-index:50; display:flex; flex-wrap:wrap; gap:.75rem 1.5rem; align-items:center; justify-content:space-between; padding:.8rem clamp(1rem,4vw,2rem); background:rgba(255,255,255,.94); backdrop-filter:blur(8px); border-bottom:1px solid #E3E8F0; }
+  .demo-brand{ display:inline-flex; align-items:center; gap:.6rem; font-weight:600; text-decoration:none; color:#0F1B2D; font-family:'Space Grotesk',sans-serif; }
+  .demo-brand-mark{ display:grid; place-items:center; width:38px; height:38px; border-radius:10px; background:linear-gradient(135deg,#0B1B36,#173569); color:#fff; font-weight:700; font-size:.85rem; }
+  .demo-nav{ display:flex; flex-wrap:wrap; gap:.25rem; }
+  .demo-nav a{ padding:.5rem .85rem; border-radius:9px; text-decoration:none; color:#4A5872; font-weight:500; font-size:.95rem; transition:background .2s,color .2s; }
+  .demo-nav a:hover{ background:#EEF2F9; color:#0F1B2D; }
+  .demo-nav a.demo-nav-active{ background:#0B1B36; color:#fff; }
+  .demo-home{ max-width:1120px; margin-inline:auto; padding:clamp(2rem,5vw,3.2rem) clamp(1rem,4vw,2rem) clamp(2.6rem,6vw,4rem); }
+  .demo-home-eyebrow{ font-size:.75rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:#6B7A99; margin:0 0 .7rem; }
+  .demo-home-titulo{ font-family:'Space Grotesk',sans-serif; font-size:clamp(1.7rem,3.6vw,2.6rem); line-height:1.12; margin:0 0 .8rem; }
+  .demo-home p{ color:#4A5872; max-width:60ch; margin:0 0 1.2rem; }
+  .demo-home a{ display:inline-flex; align-items:center; gap:.5rem; font-weight:600; color:#175OC2; text-decoration:none; border-bottom:2px solid #BBD3FA; padding-bottom:2px; }
+  .demo-home a:hover{ color:#0B1B36; border-color:#0B1B36; }
+  .demo-footer{ background:#0B1B36; color:#9FB2D4; text-align:center; padding:1.5rem 1rem; font-size:.85rem; }
+  @media (prefers-reduced-motion: no-preference){ html{ scroll-behavior:smooth; } }
+</style>
+</head>
+<body>
+
+<!-- ═══════════ BARRA DEL SITIO (demo — en producción es la del sitio oficial;
+     solo se agrega el enlace "Cursos y Capacitaciones") ═══════════ -->
+<header class="demo-topbar">
+  <a class="demo-brand" href="#"><span class="demo-brand-mark">3CB</span> Soluciones Tecnológicas</a>
+  <nav class="demo-nav" aria-label="Principal">
+    <a href="#">Inicio</a>
+    <a href="#">Servicios</a>
+    <a href="#">Soporte</a>
+    <a href="#cursos-3cb" class="demo-nav-active">Cursos y Capacitaciones</a>
+  </nav>
+</header>
+
+<!-- Contenido de ejemplo del sitio (no forma parte del módulo) -->
+<div class="demo-home">
+  <p class="demo-home-eyebrow">3CB Soluciones Tecnológicas · Sitio oficial</p>
+  <p class="demo-home-titulo">Tecnología clara para tu equipo.</p>
+  <p>Soluciones, soporte y formación práctica. Explora nuestra biblioteca digital de microcapacitaciones: lecturas breves, ejemplos reales y actividades para aplicar lo aprendido el mismo día.</p>
+  <a href="#cursos-3cb">Ir a Cursos y Capacitaciones ↓</a>
+</div>
+
+<!-- ▼▼▼ MÓDULO “CURSOS Y CAPACITACIONES” — copiar desde aquí para integrar ▼▼▼ -->
+<section id="cursos-3cb" class="cb-courses-module" aria-labelledby="cb-courses-title">
+
+  <!-- ── Encabezado del módulo ── -->
+  <div class="cb-courses-hero">
+    <div class="cb-courses-wrap cb-courses-hero-grid">
+      <div class="cb-courses-hero-copy">
+        <p class="cb-courses-eyebrow"><span class="cb-courses-eyebrow-dot" aria-hidden="true"></span>Biblioteca digital de microaprendizaje</p>
+        <h1 class="cb-courses-title" id="cb-courses-title">CURSOS Y <span class="cb-courses-title-alt">CAPACITACIONES</span></h1>
+        <p class="cb-courses-subtitle">Aprende algo nuevo. Refuerza tus conocimientos. Pon en práctica lo aprendido.</p>
+        <p class="cb-courses-desc">Microcapacitaciones digitales con lecturas dirigidas, ejemplos y actividades prácticas para desarrollar habilidades tecnológicas desde cualquier lugar.</p>
+        <ul class="cb-courses-meta">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="M12 7.6V12l3 2"/></svg>5–15 minutos por lectura</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.6"/><path d="M8.4 12.2l2.4 2.4 4.8-4.9"/></svg>Sin registro ni contraseñas</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15.5H6.5A2.5 2.5 0 0 0 4 21z"/><path d="M4 18.5A2.5 2.5 0 0 1 6.5 16H20"/></svg><span id="cb-courses-total">—</span> capacitaciones disponibles</li>
+        </ul>
+      </div>
+
+      <!-- Mascotas digitales (las rutas de imagen se inyectan desde js/cursos.js) -->
+      <aside class="cb-courses-hero-mascots" aria-label="Equipo de acompañamiento del módulo">
+        <p class="cb-courses-hero-mascots-title">Te acompañan en cada lectura</p>
+        <div class="cb-courses-hero-mascots-row">
+          <figure class="cb-courses-mascot cb-courses-mascot--guia" style="--cb-d:0s">
+            <span class="cb-courses-mascot-frame" data-cb-mascot-wrap>
+              <img data-cb-mascot="guia" alt="" width="92" height="92">
+              <span class="cb-courses-mascot-fallback" aria-hidden="true">G</span>
+            </span>
+            <figcaption><strong>Guía</strong><span>de aprendizaje</span></figcaption>
+          </figure>
+          <figure class="cb-courses-mascot cb-courses-mascot--tecnico" style="--cb-d:.9s">
+            <span class="cb-courses-mascot-frame" data-cb-mascot-wrap>
+              <img data-cb-mascot="tecnico" alt="" width="92" height="92">
+              <span class="cb-courses-mascot-fallback" aria-hidden="true">E</span>
+            </span>
+            <figcaption><strong>Especialista</strong><span>técnico</span></figcaption>
+          </figure>
+          <figure class="cb-courses-mascot cb-courses-mascot--retos" style="--cb-d:1.8s">
+            <span class="cb-courses-mascot-frame" data-cb-mascot-wrap>
+              <img data-cb-mascot="retos" alt="" width="92" height="92">
+              <span class="cb-courses-mascot-fallback" aria-hidden="true">R</span>
+            </span>
+            <figcaption><strong>Retos</strong><span>y recomendaciones</span></figcaption>
+          </figure>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <div class="cb-courses-wrap">
+    <noscript><p class="cb-courses-noscript">Activa JavaScript en tu navegador para explorar la biblioteca de capacitaciones.</p></noscript>
+
+    <!-- ── Vista: catálogo ── -->
+    <div id="cb-courses-catalog" class="cb-courses-view">
+
+      <div class="cb-courses-toolbar">
+        <div class="cb-courses-filtergroup">
+          <span class="cb-courses-filterlabel" id="cb-lbl-prog">Programa</span>
+          <div id="cb-courses-f-programa" class="cb-courses-chips" role="group" aria-labelledby="cb-lbl-prog"></div>
+        </div>
+        <div class="cb-courses-filtergroup">
+          <span class="cb-courses-filterlabel" id="cb-lbl-nivel">Nivel</span>
+          <div id="cb-courses-f-nivel" class="cb-courses-chips" role="group" aria-labelledby="cb-lbl-nivel"></div>
+        </div>
+        <div class="cb-courses-status">
+          <p id="cb-courses-count" class="cb-courses-count" role="status" aria-live="polite"></p>
+          <div class="cb-courses-progress" role="img" aria-label="Progreso de capacitaciones revisadas">
+            <div class="cb-courses-progress-bar" id="cb-courses-progressbar"></div>
+          </div>
+          <p class="cb-courses-progress-text"><span id="cb-courses-progressnum">0 de 0</span> revisadas</p>
+        </div>
+      </div>
+
+      <div id="cb-courses-grid" class="cb-courses-grid"></div>
+
+      <!-- Mensaje para categorías sin cursos -->
+      <div id="cb-courses-empty" class="cb-courses-empty" hidden>
+        <span class="cb-courses-empty-mascot" data-cb-mascot-wrap>
+          <img data-cb-mascot="retos" alt="" loading="lazy" width="84" height="84">
+        </span>
+        <h3 class="cb-courses-empty-title">Sin capacitaciones por aquí (todavía)</h3>
+        <p id="cb-courses-empty-text" class="cb-courses-empty-text"></p>
+        <p class="cb-courses-empty-sub">Nuestro equipo publica nuevas microcapacitaciones constantemente. Prueba otra combinación de filtros.</p>
+        <button type="button" class="cb-courses-btn-ghost" data-cb-limpiar>Ver todas las capacitaciones</button>
+      </div>
+
+      <!-- Error de carga del catálogo -->
+      <div id="cb-courses-load-error" class="cb-courses-empty cb-courses-empty--error" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4.2L2.9 19.8h18.2z"/><path d="M12 10v4.2M12 17.1v.2"/></svg>
+        <h3 class="cb-courses-empty-title">No pudimos cargar el catálogo</h3>
+        <p class="cb-courses-empty-sub">Verifica tu conexión o inténtalo de nuevo en unos segundos.</p>
+        <button type="button" class="cb-courses-btn-ghost" data-cb-reintentar>Reintentar</button>
+      </div>
+    </div>
+
+    <!-- ── Vista: lector individual (la llena js/lector.js) ── -->
+    <div id="cb-courses-reader" class="cb-courses-view" hidden></div>
+  </div>
+</section>
+<!-- ▲▲▲ FIN DEL MÓDULO ▲▲▲ -->
+
+<footer class="demo-footer">© 2026 3CB Soluciones Tecnológicas · Módulo de Cursos y Capacitaciones — biblioteca digital de microaprendizaje.</footer>
+
+<!-- Scripts del módulo (siempre en este orden) -->
+<script src="js/cursos.js"></script>
+<script src="js/lector.js"></script>
+</body>
+</html>
