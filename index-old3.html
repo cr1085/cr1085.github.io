@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="3CB Soluciones Tecnológicas: aplicaciones, inteligencia artificial, desarrollo de software y herramientas digitales en un solo ecosistema.">
+  <meta name="theme-color" content="#08111f">
+  <title>3CB Soluciones | Ecosistema tecnológico</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/styles.css">
+  <script defer src="js/app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#contenido">Saltar al contenido</a>
+  <aside class="announcement">
+    <span class="pulse-dot"></span>
+    <span>Un ecosistema. Múltiples soluciones.</span>
+    <a href="#catalogo">Explorar herramientas <span aria-hidden="true">↗</span></a>
+  </aside>
+
+  <header class="topbar">
+    <a class="brand" href="#inicio" aria-label="3CB Soluciones, inicio">
+      <span class="brand-mark">3<span>CB</span></span>
+      <span class="brand-copy"><strong>3CB SOLUCIONES</strong><small>TECNOLOGÍA · IA · SOFTWARE</small></span>
+    </a>
+    <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="mainNav" aria-label="Abrir menú">☰</button>
+    <nav id="mainNav" class="main-nav" aria-label="Navegación principal">
+      <a href="#catalogo">Ecosistema</a>
+      <a href="#servicios">Servicios</a>
+      <a href="#proyectos">Proyectos</a>
+      <a href="#nosotros">Nosotros</a>
+      <a href="3CB_CODE_RANK_ARENA/V2/index.html">3CB CODE ARENA</a>
+      <a href="cursos/index.html">Ir a Cursos y Capacitaciones </a>
+      <a class="nav-cta" href="https://wa.me/message/JYMY3PGUEBWEF1" target="_blank" rel="noopener noreferrer">Hablemos <span>↗</span></a>
+     </nav>
+  </header>
+
+  <main id="contenido">
+    <section class="hero section-wrap" id="inicio">
+      <div class="hero-grid" aria-hidden="true"></div>
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="pulse-dot"></span> TU CENTRO DE INNOVACIÓN DIGITAL</div>
+        <h1>Todo tu mundo digital.<br><span class="gradient-text">Conectado en un solo lugar.</span></h1>
+        <p class="hero-lead">Aplicaciones, inteligencia artificial, automatización y desarrollo de software para transformar ideas en soluciones que funcionan.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#catalogo">Explorar el ecosistema <span>→</span></a>
+          <a class="button button-secondary" href="https://wa.me/message/JYMY3PGUEBWEF1" target="_blank" rel="noopener noreferrer">Hablar con 3CB</a>
+        </div>
+        <div class="hero-proof">
+          <div><strong>01</strong><span>Un punto de entrada</span></div>
+          <div><strong>∞</strong><span>Ideas por construir</span></div>
+          <div><strong>Open</strong><span>Visión de comunidad</span></div>
+        </div>
+      </div>
+      <div class="console-card" aria-label="Vista conceptual del centro de aplicaciones 3CB">
+        <div class="console-top"><div class="window-dots"><i></i><i></i><i></i></div><span>3cb://ecosistema</span><span class="console-live"><b></b> HUB</span></div>
+        <div class="console-body">
+          <div class="console-label">CENTRO DE CONTROL</div>
+          <h2>Tu espacio de trabajo</h2>
+          <p>Accede a tus herramientas y proyectos desde una experiencia unificada.</p>
+          <div class="mini-apps">
+            <div class="mini-app"><span class="app-symbol symbol-blue">✳</span><span><b>IA & prompts</b><small>Herramientas inteligentes</small></span><span class="mini-arrow">↗</span></div>
+            <div class="mini-app"><span class="app-symbol symbol-purple">⌘</span><span><b>Laboratorio</b><small>Datos, código y prototipos</small></span><span class="mini-arrow">↗</span></div>
+            <div class="mini-app"><span class="app-symbol symbol-green">◈</span><span><b>Aplicaciones</b><small>Productos del ecosistema</small></span><span class="mini-arrow">↗</span></div>
+          </div>
+          <div class="console-foot"><span><i class="status-dot"></i> Catálogo navegable</span><span>VISTA PREVIA · 3CB</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="trust-strip">
+      <div class="section-wrap trust-inner"><span>UN ECOSISTEMA PARA</span><b>CREAR</b><i></i><b>AUTOMATIZAR</b><i></i><b>APRENDER</b><i></i><b>ESCALAR</b></div>
+    </section>
+
+    <section class="section-wrap section-block" id="catalogo">
+      <div class="section-heading">
+        <div><div class="eyebrow">CENTRO DE APLICACIONES</div><h2>Explora el <span class="gradient-text">ecosistema 3CB</span></h2><p>Un catálogo organizado para encontrar herramientas, productos y proyectos sin perderte entre enlaces.</p></div>
+        <span class="catalog-count"><strong id="visibleCount">8</strong> soluciones</span>
+      </div>
+      <div class="catalog-toolbar">
+        <label class="search-box"><span aria-hidden="true">⌕</span><input id="appSearch" type="search" placeholder="Buscar una aplicación o solución..." aria-label="Buscar aplicaciones"></label>
+        <div class="filters" role="group" aria-label="Filtrar aplicaciones">
+          <button class="filter-chip active" data-filter="todos" aria-pressed="true">Todo</button>
+          <button class="filter-chip" data-filter="ia" aria-pressed="false">IA</button>
+          <button class="filter-chip" data-filter="desarrollo" aria-pressed="false">Desarrollo</button>
+          <button class="filter-chip" data-filter="educacion" aria-pressed="false">Educación</button>
+          <button class="filter-chip" data-filter="juegos" aria-pressed="false">Juegos</button>
+        </div>
+      </div>
+      <div class="app-grid" id="appGrid">
+        <article class="app-card" data-category="ia" data-search="promptlab prompts ingeniería de prompts inteligencia artificial">
+          <div class="app-card-top"><span class="app-icon app-logo"><img src="assets/icons/promptlab.svg" alt="Icono de PromptLab / LoveIA" loading="lazy"></span><span class="status status-live">Acceso web</span></div>
+          <div class="app-meta">IA & PRODUCTIVIDAD</div><h3>PromptLab / LoveIA</h3>
+          <p>Herramientas y recursos para crear, refinar y reutilizar prompts de forma más organizada.</p>
+          <div class="tag-row"><span>Prompts</span><span>Productividad</span></div>
+          <a class="app-link" href="https://cr1085.github.io/prompt-generate/" target="_blank" rel="noopener noreferrer">Abrir herramienta <span>↗</span></a>
+        </article>
+        
+<!-- TOPI TOWN -->
+<article class="app-card"
+  data-category="juegos"
+  data-search="topi town aventura monedas bombas enemigos arcade">
+  <div class="app-card-top">
+    <!-- <span class="app-icon icon-orange">🎮</span> -->
+     <div class="app-card-top"><span class="app-icon app-logo"><img src="assets/icons/topitwon.png" alt="Icono de PromptLab / LoveIA" loading="lazy"></span><span class="status status-live">Google Play</span></div>
+    <!-- <span class="status status-live">Google Play</span> -->
+  </div>
+  <div class="app-meta">JUEGOS & AVENTURA</div>
+  <h3>Topi Town</h3>
+  <p>Una aventura arcade en la que debes reunir monedas, esquivar bombas y evitar enemigos mientras buscas superar tu puntuación.</p>
+  <div class="tag-row">
+    <span>Arcade</span><span>Aventura</span><span>Android</span>
+  </div>
+  <a class="app-link"
+    href="https://play.google.com/store/apps/details?id=com.cbsoluciones.topitown"
+    target="_blank" rel="noopener noreferrer">
+    Descargar en Google Play <span>↗</span>
+  </a>
+</article>
+
+<!-- TRAZAKIDS -->
+<article class="app-card"
+  data-category="educacion"
+  data-search="trazakids dibujo infantil trazos aprender dibujar cámara">
+  <div class="app-card-top">
+    <span class="app-icon icon-green">✏️</span>
+    <span class="status status-live">Google Play</span>
+  </div>
+  <div class="app-meta">CREATIVIDAD & APRENDIZAJE</div>
+  <h3>TrazaKids</h3>
+  <p>Una aplicación para que los niños practiquen trazos, aprendan a dibujar paso a paso y exploren el modo de trazado mágico.</p>
+  <div class="tag-row">
+    <span>Infantil</span><span>Dibujo</span><span>Aprendizaje</span>
+  </div>
+  <a class="app-link"
+    href="https://play.google.com/store/apps/details?id=com.trescb.trazakids"
+    target="_blank" rel="noopener noreferrer">
+    Descargar en Google Play <span>↗</span>
+  </a>
+</article>
+
+<!-- ARTIFY -->
+<article class="app-card"
+  data-category="educacion"
+  data-search="artify dibujar pintar colorear animación anime arte inteligencia artificial">
+  <div class="app-card-top">
+    <span class="app-icon icon-purple">🎨</span>
+    <span class="status status-live">Google Play</span>
+  </div>
+  <div class="app-meta">ARTE DIGITAL & CREATIVIDAD</div>
+  <h3>Artify</h3>
+  <p>Dibuja, pinta, colorea y crea animaciones 2D. Aprende técnicas de dibujo con guías paso a paso y recibe orientación de su asistente de IA.</p>
+  <div class="tag-row">
+    <span>Dibujo</span><span>Animación 2D</span><span>IA</span>
+  </div>
+  <a class="app-link"
+    href="https://play.google.com/store/apps/details?id=com.trescb.artify"
+    target="_blank" rel="noopener noreferrer">
+    Descargar en Google Play <span>↗</span>
+  </a>
+</article>
+
+<!-- PUZZLE MASTER NATURE -->
+<article class="app-card"
+  data-category="juegos"
+  data-search="puzzle master nature rompecabezas naturaleza paisajes montañas playas bosques">
+  <div class="app-card-top">
+    <span class="app-icon icon-green">🌿</span>
+    <span class="status status-live">Google Play</span>
+  </div>
+  <div class="app-meta">PUZZLES & RELAJACIÓN</div>
+  <h3>Puzzle Master Nature</h3>
+  <p>Arma rompecabezas de paisajes naturales en alta definición, elige entre distintos niveles de dificultad y disfruta partidas sin conexión.</p>
+  <div class="tag-row">
+    <span>Puzzle</span><span>Naturaleza</span><span>Offline</span>
+  </div>
+  <a class="app-link"
+    href="https://play.google.com/store/apps/details?id=com.cristian.puzzlemasternature"
+    target="_blank" rel="noopener noreferrer">
+    Descargar en Google Play <span>↗</span>
+  </a>
+</article>
+
+<!-- OUROBOROS -->
+<article class="app-card"
+  data-category="juegos"
+  data-search="ouroboros juego android entretenimiento">
+  <div class="app-card-top">
+    <span class="app-icon icon-purple">♾️</span>
+    <span class="status status-live">Google Play</span>
+  </div>
+  <div class="app-meta">JUEGOS & ENTRETENIMIENTO</div>
+  <h3>Ouroboros</h3>
+  <p>Descubre Ouroboros, otra propuesta de juego del ecosistema 3CB. Entra a Google Play para conocer sus características y comenzar a jugar.</p>
+  <div class="tag-row">
+    <span>Android</span><span>Juego</span><span>3CB</span>
+  </div>
+  <a class="app-link"
+    href="https://play.google.com/store/apps/details?id=com.trescb.ouroboros"
+    target="_blank" rel="noopener noreferrer">
+    Ver aplicación <span>↗</span>
+  </a>
+</article>
+
+<!-- CLICKER -->
+<article class="app-card"
+  data-category="juegos"
+  data-search="clicker juego clics puntuación entretenimiento android">
+  <div class="app-card-top">
+    <span class="app-icon icon-blue">👆</span>
+    <span class="status status-live">Google Play</span>
+  </div>
+  <div class="app-meta">JUEGOS & ENTRETENIMIENTO</div>
+  <h3>Clicker</h3>
+  <p>Explora Clicker, una propuesta del catálogo móvil de 3CB. Consulta su ficha oficial para descubrir la experiencia de juego.</p>
+  <div class="tag-row">
+    <span>Android</span><span>Casual</span><span>3CB</span>
+  </div>
+  <a class="app-link"
+    href="https://play.google.com/store/apps/details?id=com.cbsoluciones.clicker"
+    target="_blank" rel="noopener noreferrer">
+    Ver aplicación <span>↗</span>
+  </a>
+</article>
+
+<!-- FLECHAS AL PUNTO -->
+<article class="app-card"
+  data-category="juegos"
+  data-search="flechas al punto puzzle lógico flechas estrategia concentración">
+  <div class="app-card-top">
+    <span class="app-icon icon-cyan">➶</span>
+    <span class="status status-live">Google Play</span>
+  </div>
+  <div class="app-meta">PUZZLES & LÓGICA</div>
+  <h3>Flechas al Punto</h3>
+  <p>Resuelve tableros de flechas, analiza las trayectorias y decide el orden correcto de los movimientos para despejar cada nivel.</p>
+  <div class="tag-row">
+    <span>Lógica</span><span>Estrategia</span><span>Puzzle</span>
+  </div>
+  <a class="app-link"
+    href="https://play.google.com/store/apps/details?id=com.trescb.flechasalpunto"
+    target="_blank" rel="noopener noreferrer">
+    Descargar en Google Play <span>↗</span>
+  </a>
+</article>
+
+        <article class="app-card" data-category="educacion" data-search="minedapp minería de datos analítica csv aprendizaje">
+          <div class="app-card-top"><span class="app-icon app-logo"><img src="assets/icons/minedapp.png" alt="Icono de MinedApp" loading="lazy"></span><span class="status status-plan">Proyecto propio</span></div>
+          <div class="app-meta">DATOS & APRENDIZAJE</div><h3>MinedApp</h3>
+          <p>Entorno de apoyo para explorar datos, revisar archivos CSV y recorrer un flujo de minería de datos.</p>
+          <div class="tag-row"><span>CSV</span><span>Analítica</span></div>
+          <a class="app-link" href="https://play.google.com/store/apps/details?id=com.trescb.minedapp" target="_blank" rel="noopener noreferrer">Buscar en Google Play <span>↗</span></a>
+        </article>
+        <article class="app-card" data-category="juegos" data-search="gravitta juego puzzle gravedad android">
+          <div class="app-card-top"><span class="app-icon app-logo"><img src="assets/icons/gravitta.jpeg" alt="Icono de GRAVITTA" loading="lazy"></span><span class="status status-live">Publicado</span></div>
+          <div class="app-meta">JUEGOS</div><h3>GRAVITTA</h3>
+          <p>Juego de rompecabezas basado en colocar piezas, aprovechar la gravedad y sumar puntos.</p>
+          <div class="tag-row"><span>Puzzle</span><span>Android</span></div>
+          <a class="app-link" href="https://play.google.com/store/apps/details?id=com.trescb.gravitta" target="_blank" rel="noopener noreferrer">Explorar Google Play <span>↗</span></a>
+        </article>
+        <article class="app-card" data-category="desarrollo" data-search="3cb code arena retos programación comunidad competencias">
+          <div class="app-card-top"><span class="app-icon app-logo"><img src="assets/icons/code-arena.svg" alt="Icono de 3CB Code Arena" loading="lazy"></span><span class="status status-plan">En evolución</span></div>
+          <div class="app-meta">DESARROLLO & COMUNIDAD</div><h3>3CB Code Arena</h3>
+          <p>Visión de una comunidad de retos de programación, competencias, aprendizaje y evaluación.</p>
+          <div class="tag-row"><span>Retos</span><span>Comunidad</span></div>
+          <a class="app-link" href="https://github.com/cr1085" target="_blank" rel="noopener noreferrer">Ver repositorios <span>↗</span></a>
+        </article>
+        <article class="app-card" data-category="ia" data-search="freelance ai assistant asistente clientes proyectos tareas">
+          <div class="app-card-top"><span class="app-icon app-logo"><img src="assets/icons/freelance-ai.svg" alt="Icono de Freelance AI Assistant" loading="lazy"></span><span class="status status-plan">En desarrollo</span></div>
+          <div class="app-meta">ASISTENTES INTELIGENTES</div><h3>Freelance AI Assistant</h3>
+          <p>Concepto de asistente para organizar clientes, proyectos, tareas e historial de conversaciones.</p>
+          <div class="tag-row"><span>Asistente IA</span><span>Gestión</span></div>
+          <a class="app-link" href="https://github.com/cr1085" target="_blank" rel="noopener noreferrer">Explorar código <span>↗</span></a>
+        </article>
+        <article class="app-card" data-category="desarrollo" data-search="linguamundos idiomas aprendizaje web html javascript">
+          <div class="app-card-top"><span class="app-icon app-logo"><img src="assets/icons/linguamundos.svg" alt="Icono de LinguaMundos" loading="lazy"></span><span class="status status-plan">En construcción</span></div>
+          <div class="app-meta">EDUCACIÓN</div><h3>LinguaMundos</h3>
+          <p>Proyecto web de aprendizaje de idiomas con una experiencia visual, adaptable y modular.</p>
+          <div class="tag-row"><span>Web nativa</span><span>Idiomas</span></div>
+          <a class="app-link" href="https://github.com/cr1085" target="_blank" rel="noopener noreferrer">Ver proyectos <span>↗</span></a>
+        </article>
+        <article class="app-card" data-category="desarrollo" data-search="rescate web 24h soporte mantenimiento sitios web">
+          <div class="app-card-top"><span class="app-icon app-logo"><img src="assets/icons/rescate-web.svg" alt="Icono de Rescate Web 24H" loading="lazy"></span><span class="status status-service">Servicio</span></div>
+          <div class="app-meta">SERVICIOS WEB</div><h3>Rescate Web 24H</h3>
+          <p>Diagnóstico y recuperación de sitios con errores, problemas de SSL, lentitud o caídas.</p>
+          <div class="tag-row"><span>Web</span><span>Soporte</span></div>
+          <a class="app-link" href="https://wa.me/message/JYMY3PGUEBWEF1" target="_blank" rel="noopener noreferrer">Solicitar diagnóstico <span>↗</span></a>
+        </article>
+        <article class="app-card" data-category="educacion" data-search="laboratorio inteligencia artificial minería datos herramientas docentes">
+          <div class="app-card-top"><span class="app-icon app-logo"><img src="assets/icons/laboratorios.svg" alt="Icono de Laboratorios 3CB" loading="lazy"></span><span class="status status-plan">Recursos</span></div>
+          <div class="app-meta">LABORATORIO DIGITAL</div><h3>Laboratorios 3CB</h3>
+          <p>Recursos de programación, inteligencia artificial y análisis de datos para aprender haciendo.</p>
+          <div class="tag-row"><span>Prácticas</span><span>Open source</span></div>
+          <a class="app-link" href="https://github.com/cr1085" target="_blank" rel="noopener noreferrer">Explorar recursos <span>↗</span></a>
+        </article>
+      </div>
+      <div class="empty-state" id="emptyState" hidden><strong>No encontramos resultados.</strong><span>Prueba otra palabra o cambia el filtro.</span></div>
+      <p class="small-note">Los estados describen la información disponible para esta reconstrucción. Verifica cada destino y reemplaza los enlaces genéricos por las URL oficiales de cada producto antes de publicar.</p>
+    </section>
+
+    <section class="services-band" id="servicios">
+      <div class="section-wrap section-block">
+        <div class="section-heading"><div><div class="eyebrow">SOLUCIONES PARA NEGOCIOS</div><h2>Tecnología que resuelve <span class="gradient-text">problemas reales.</span></h2><p>Servicios concretos para emprendedores, equipos y organizaciones que necesitan avanzar.</p></div></div>
+        <div class="service-grid">
+          <article class="service-card"><span class="service-number">01</span><span class="service-icon">⌘</span><h3>Desarrollo de software</h3><p>Aplicaciones web, APIs, backends, paneles internos e integraciones.</p><a href="https://wa.me/message/JYMY3PGUEBWEF1" target="_blank" rel="noopener noreferrer">Consultar proyecto ↗</a></article>
+          <article class="service-card"><span class="service-number">02</span><span class="service-icon">✳</span><h3>IA y automatización</h3><p>Flujos de trabajo, asistentes y conexión de herramientas para reducir tareas repetitivas.</p><a href="https://wa.me/message/JYMY3PGUEBWEF1" target="_blank" rel="noopener noreferrer">Diseñar una solución ↗</a></article>
+          <article class="service-card"><span class="service-number">03</span><span class="service-icon">◉</span><h3>Rescate y soporte web</h3><p>Revisión de errores, optimización y recuperación de sitios web.</p><a href="https://wa.me/message/JYMY3PGUEBWEF1" target="_blank" rel="noopener noreferrer">Solicitar ayuda ↗</a></article>
+          <article class="service-card"><span class="service-number">04</span><span class="service-icon">▤</span><h3>Formación tecnológica</h3><p>Acompañamiento en programación, IA, ingeniería de software y análisis de datos.</p><a href="https://wa.me/message/JYMY3PGUEBWEF1" target="_blank" rel="noopener noreferrer">Consultar formación ↗</a></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-wrap section-block" id="proyectos">
+      <div class="project-panel">
+        <div class="project-copy"><div class="eyebrow">CONSTRUIMOS EN PÚBLICO</div><h2>Ideas que evolucionan.<br><span class="gradient-text">Productos que crecen.</span></h2><p>El ecosistema se amplía por etapas: primero una entrada clara y útil; después, más productos conectados, cuentas, persistencia y servicios compartidos cuando el proyecto lo necesite.</p><a class="button button-primary" href="https://github.com/cr1085" target="_blank" rel="noopener noreferrer">Conocer los repositorios ↗</a></div>
+        <div class="roadmap">
+          <div class="roadmap-item done"><span>01</span><div><b>Portal central</b><small>Catálogo, navegación y accesos</small></div><em>Base</em></div>
+          <div class="roadmap-item"><span>02</span><div><b>Ficha por producto</b><small>Descripción, documentación y soporte</small></div><em>Siguiente</em></div>
+          <div class="roadmap-item"><span>03</span><div><b>Servicios compartidos</b><small>Identidad, datos y preferencias</small></div><em>Futuro</em></div>
+          <div class="roadmap-item"><span>04</span><div><b>Consola de administración</b><small>Gestión central de catálogo y estados</small></div><em>Futuro</em></div>
+        </div>
+      </div>
+    </section>
+
+  
+<section class="about-section" id="nosotros">
+  <div class="section-wrap about-inner">
+
+    <div class="about-emblem about-logo">
+      <div class="logo-pixel-frame">
+        <img
+          src="assets/3cb-mascota.png"
+          alt="Mascota de 3CB Soluciones Tecnológicas"
+          class="logo-mascot"
+          loading="lazy"
+          onerror="this.style.display='none'; this.nextElementSibling.style.display='grid';"
+        />
+        <div class="logo-fallback" style="display:none">
+          <span>3CB</span>
+          <small>TECH</small>
+        </div>
+        <span class="pixel-corner pixel-top-left"></span>
+        <span class="pixel-corner pixel-bottom-right"></span>
+      </div>
+      <span class="logo-caption">3CB<span>_SYSTEMS</span></span>
+    </div>
+
+    <div class="about-copy">
+      <div class="eyebrow">3CB SOLUCIONES TECNOLÓGICAS</div>
+
+      <h2>
+        Ingeniería práctica.<br>
+        <span class="gradient-text">Innovación con propósito.</span>
+      </h2>
+
+      <p>
+        Un proyecto liderado por Cristian Cuadrado desde Cartagena,
+        Colombia, que integra desarrollo de software, inteligencia
+        artificial, formación y productos digitales con una visión
+        modular y accesible.
+      </p>
+
+      <div class="about-tags">
+        <span>Software</span>
+        <span>Inteligencia artificial</span>
+        <span>Open source</span>
+        <span>Aprendizaje</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+    <section class="final-cta section-wrap"><div class="eyebrow">¿TIENES UNA IDEA?</div><h2>Hagamos que <span class="gradient-text">funcione.</span></h2><p>Cuéntanos qué necesitas y encontremos el siguiente paso.</p><a class="button button-primary" href="https://wa.me/message/JYMY3PGUEBWEF1" target="_blank" rel="noopener noreferrer">Contactar a 3CB <span>↗</span></a></section>
+  </main>
+
+  <footer class="footer">
+    <div class="section-wrap footer-main"><a class="brand" href="#inicio"><span class="brand-mark">3<span>CB</span></span><span class="brand-copy"><strong>3CB SOLUCIONES</strong><small>TECNOLOGÍA · IA · SOFTWARE</small></span></a><p>Un punto de entrada para un ecosistema en evolución.</p><div class="footer-links"><a href="https://github.com/cr1085" target="_blank" rel="noopener noreferrer">GitHub</a><a href="https://www.instagram.com/3cbsoluciones/" target="_blank" rel="noopener noreferrer">Instagram</a><a href="https://www.youtube.com/@3cb587" target="_blank" rel="noopener noreferrer">YouTube</a></div></div>
+    <div class="section-wrap footer-bottom"><span>© <span id="year">2026</span> 3CB Soluciones Tecnológicas</span><a href="#inicio">Volver arriba ↑</a></div>
+  </footer>
+</body>
+</html>

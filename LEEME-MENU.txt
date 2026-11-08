@@ -1,0 +1,8 @@
+ACTUALIZACIÓN DEL MENÚ 3CB
+1. Reemplaza el index.html de tu sitio por este archivo.
+2. Reemplaza css/styles.css por el incluido en esta carpeta.
+3. Conserva tus carpetas assets/ y js/ actuales.
+4. Los destinos de CODE ARENA y ACADEMIA 3CB se conservaron:
+   - 3CB_CODE_RANK_ARENA/V2/index.html
+   - cursos/index.html
+5. El menú móvil incluye apertura/cierre, cierre al seleccionar un enlace y tecla Escape.

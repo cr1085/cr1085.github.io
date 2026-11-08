@@ -1,0 +1,10 @@
+AJUSTE RESPONSIVE 3CB
+Incluye mejoras para escritorio, laptop, tablet y móviles.
+- En laptops de 1051 a 1450 px el encabezado pasa a dos niveles para evitar que se corten los accesos.
+- En tablet y móvil la navegación pasa a un panel desplegable.
+- En móvil las tarjetas y secciones se reorganizan para facilitar lectura y uso táctil.
+- Se conservan los destinos, los controles de tema y los recursos existentes.
+Instalación:
+1. Haz copia de seguridad.
+2. Sustituye index.html y css/styles.css por los incluidos.
+3. Conserva assets/ y js/ del sitio.

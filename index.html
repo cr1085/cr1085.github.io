@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="3CB Soluciones Tecnológicas: aplicaciones, inteligencia artificial, desarrollo de software y herramientas digitales en un solo ecosistema.">
-  <meta name="theme-color" content="#08111f">
+  <meta name="theme-color" content="#050505">
   <title>3CB Soluciones | Ecosistema tecnológico</title>
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="css/styles.css">
@@ -24,14 +24,36 @@
       <span class="brand-copy"><strong>3CB SOLUCIONES</strong><small>TECNOLOGÍA · IA · SOFTWARE</small></span>
     </a>
     <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="mainNav" aria-label="Abrir menú">☰</button>
+    <div class="theme-controls" role="group" aria-label="Preferencias de apariencia">
+      <button class="theme-button" type="button" data-theme-choice="dark" aria-pressed="true" title="Activar modo oscuro">◐ <span>Oscuro</span></button>
+      <button class="theme-button" type="button" data-theme-choice="light" aria-pressed="false" title="Activar modo claro">☀ <span>Claro</span></button>
+      <button class="theme-button" type="button" data-theme-choice="eye" aria-pressed="false" title="Activar cuidado visual">◉ <span>Cuidado visual</span></button>
+    </div>
     <nav id="mainNav" class="main-nav" aria-label="Navegación principal">
-      <a href="#catalogo">Ecosistema</a>
-      <a href="#servicios">Servicios</a>
-      <a href="#proyectos">Proyectos</a>
-      <a href="#nosotros">Nosotros</a>
-      <a href="cursos/index.html">Ir a Cursos y Capacitaciones </a>
-      <a class="nav-cta" href="https://wa.me/message/JYMY3PGUEBWEF1" target="_blank" rel="noopener noreferrer">Hablemos <span>↗</span></a>
-     </nav>
+      <div class="nav-main-links">
+        <a href="#catalogo">Ecosistema</a>
+        <a href="#servicios">Servicios</a>
+        <a href="#proyectos">Proyectos</a>
+        <a href="#nosotros">Nosotros</a>
+      </div>
+
+      <div class="nav-featured" aria-label="Plataformas 3CB">
+        <a class="nav-feature nav-arena" href="3CB_CODE_RANK_ARENA/V2/index.html">
+          <span class="nav-feature-icon" aria-hidden="true">⌘</span>
+          <span class="nav-feature-copy"><strong>CODE ARENA</strong><small>Retos · Código · Comunidad</small></span>
+          <span class="nav-feature-arrow" aria-hidden="true">↗</span>
+        </a>
+        <a class="nav-feature nav-courses" href="cursos/index.html">
+          <span class="nav-feature-icon" aria-hidden="true">✳</span>
+          <span class="nav-feature-copy"><strong>ACADEMIA 3CB</strong><small>Cursos y capacitaciones</small></span>
+          <span class="nav-feature-arrow" aria-hidden="true">↗</span>
+        </a>
+      </div>
+
+      <a class="nav-cta" href="https://wa.me/message/JYMY3PGUEBWEF1" target="_blank" rel="noopener noreferrer">
+        <span class="nav-cta-icon" aria-hidden="true">✦</span> Hablemos <span>↗</span>
+      </a>
+    </nav>
   </header>
 
   <main id="contenido">
@@ -378,5 +400,67 @@
     <div class="section-wrap footer-main"><a class="brand" href="#inicio"><span class="brand-mark">3<span>CB</span></span><span class="brand-copy"><strong>3CB SOLUCIONES</strong><small>TECNOLOGÍA · IA · SOFTWARE</small></span></a><p>Un punto de entrada para un ecosistema en evolución.</p><div class="footer-links"><a href="https://github.com/cr1085" target="_blank" rel="noopener noreferrer">GitHub</a><a href="https://www.instagram.com/3cbsoluciones/" target="_blank" rel="noopener noreferrer">Instagram</a><a href="https://www.youtube.com/@3cb587" target="_blank" rel="noopener noreferrer">YouTube</a></div></div>
     <div class="section-wrap footer-bottom"><span>© <span id="year">2026</span> 3CB Soluciones Tecnológicas</span><a href="#inicio">Volver arriba ↑</a></div>
   </footer>
+
+  <script>
+    (() => {
+      const root = document.documentElement;
+      const menuToggle = document.getElementById('menuToggle');
+      const mainNav = document.getElementById('mainNav');
+
+      if (menuToggle && mainNav) {
+        const closeMenu = () => {
+          mainNav.classList.remove('open');
+          menuToggle.setAttribute('aria-expanded', 'false');
+          menuToggle.setAttribute('aria-label', 'Abrir menú');
+          menuToggle.textContent = '☰';
+        };
+
+        menuToggle.addEventListener('click', () => {
+          const isOpen = mainNav.classList.toggle('open');
+          menuToggle.setAttribute('aria-expanded', String(isOpen));
+          menuToggle.setAttribute('aria-label', isOpen ? 'Cerrar menú' : 'Abrir menú');
+          menuToggle.textContent = isOpen ? '×' : '☰';
+        });
+
+        mainNav.querySelectorAll('a').forEach(link => {
+          link.addEventListener('click', () => {
+            if (window.matchMedia('(max-width: 760px)').matches) closeMenu();
+          });
+        });
+
+        document.addEventListener('keydown', event => {
+          if (event.key === 'Escape') closeMenu();
+        });
+
+        window.addEventListener('resize', () => {
+          if (window.innerWidth > 760) closeMenu();
+        });
+      }
+
+      const buttons = document.querySelectorAll('[data-theme-choice]');
+      const validThemes = ['dark', 'light', 'eye'];
+
+      function applyTheme(theme) {
+        const selected = validThemes.includes(theme) ? theme : 'dark';
+        root.dataset.theme = selected;
+        root.style.colorScheme = selected === 'light' ? 'light' : 'dark';
+
+        buttons.forEach((button) => {
+          const active = button.dataset.themeChoice === selected;
+          button.setAttribute('aria-pressed', String(active));
+        });
+
+        try { localStorage.setItem('3cb-theme', selected); } catch (_) {}
+      }
+
+      let savedTheme = 'dark';
+      try { savedTheme = localStorage.getItem('3cb-theme') || 'dark'; } catch (_) {}
+      applyTheme(savedTheme);
+
+      buttons.forEach((button) => {
+        button.addEventListener('click', () => applyTheme(button.dataset.themeChoice));
+      });
+    })();
+  </script>
 </body>
 </html>

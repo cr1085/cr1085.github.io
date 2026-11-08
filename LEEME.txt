@@ -1,0 +1,23 @@
+ACTUALIZACIÓN VISUAL 3CB SOLUCIONES
+
+Archivos incluidos:
+- index.html
+- css/styles.css
+
+Instalación:
+1. Haz una copia de seguridad de tu página actual.
+2. Reemplaza el index.html de la raíz por el incluido aquí.
+3. Reemplaza css/styles.css por el incluido aquí.
+4. Conserva tus carpetas assets/ y js/ actuales: no se modifican.
+5. Publica y prueba en escritorio y móvil.
+
+Cambios:
+- Paleta corporativa negro, cian/turquesa, azul eléctrico y magenta/morado.
+- Selector de apariencia: Oscuro, Claro y Cuidado visual.
+- Preferencia guardada en el navegador mediante localStorage.
+- Estados accesibles aria-pressed y navegación por teclado.
+
+Nota:
+El modo Cuidado visual usa tonos cálidos y reduce el protagonismo de los azules.
+No es un tratamiento médico ni reemplaza pausas, iluminación adecuada o ajustes
+de brillo del dispositivo.
