@@ -1,0 +1,22 @@
+3CB CODE ARENA 2.0 — paquete de evolución visual y funcional
+
+CONTENIDO
+- index.html: página de entrada con metadatos actualizados.
+- css/main.css: conserva los estilos anteriores y agrega responsive, tres temas,
+  navegación adaptable, Dev Social, Pixel World y Arena Business.
+- js/app.js: conserva la versión previa y agrega una capa de mejora compatible.
+- js/api-adapter.js: contrato inicial de integración con una futura API.
+- BACKEND-ROADMAP.md: decisiones y límites de esta edición.
+
+INSTALACIÓN EN GITHUB PAGES
+1. Haz copia de seguridad de tu versión actual.
+2. Reemplaza index.html.
+3. Reemplaza css/main.css y js/app.js por los del paquete.
+4. Agrega js/api-adapter.js (es un scaffold, aún no conectado).
+5. Conserva assets/logo.svg y cualquier otro recurso existente.
+6. Publica y prueba rutas con hash: #home, #challenges, #community, #gamer, #business.
+
+IMPORTANTE
+Esta es una evolución de frontend/prototipo. No incluye autenticación segura,
+sincronización multiusuario, pagos reales, juez de código seguro ni base de datos.
+La información actual sigue guardándose en localStorage. No publiques secretos.
