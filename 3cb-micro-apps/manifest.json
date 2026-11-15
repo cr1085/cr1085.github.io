@@ -1,0 +1,19 @@
+{
+  "name": "3CB Micro Apps",
+  "short_name": "3CB Apps",
+  "description": "Herramientas digitales gratuitas para emprendedores.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f5f7fb",
+  "theme_color": "#101827",
+  "lang": "es",
+  "icons": [
+    {
+      "src": "./assets/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
